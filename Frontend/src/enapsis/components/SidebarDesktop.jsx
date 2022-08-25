@@ -2,6 +2,7 @@ import { Divider, styled, Typography } from "@mui/material";
 import MuiDrawer from '@mui/material/Drawer';
 
 import { useSidebarStore } from "../../hooks"
+import { SidebarList } from "./SidebarList";
 
 const sidebarWith = 240
 
@@ -76,7 +77,7 @@ export const SidebarDesktop = () => {
             </DrawerHeader>
             <Divider />
             
-            
+            <SidebarList />
         </Drawer>
     )
 }

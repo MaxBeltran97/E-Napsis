@@ -26,7 +26,17 @@ const AppBar = styled(MuiAppBar, { shouldForwardProp: (prop) => prop !== 'open' 
 
 export const Navbar = () => {
 
-    const { isSidebarOpen, toggleSidebar } = useSidebarStore()
+    const { isSidebarOpen, toggleSidebar, toggleActiveItem, closeActiveItem } = useSidebarStore()
+
+    const onClickMenu = () => {
+        if(isSidebarOpen === true) {
+            closeActiveItem()
+            toggleSidebar()
+        }else {
+            toggleSidebar()
+            toggleActiveItem()
+        }
+    }
 
     return (
         <AppBar
@@ -38,7 +48,7 @@ export const Navbar = () => {
         >
             <Toolbar>
                 <IconButton
-                    onClick={toggleSidebar}
+                    onClick={onClickMenu}
                     color='primary'
                     edge='start'
                     sx={{

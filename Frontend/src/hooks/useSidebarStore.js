@@ -1,11 +1,13 @@
 import { useDispatch, useSelector } from 'react-redux'
-import { onCloseSidebar, onOpenSidebar, onToggleSidebar } from '../store/sidebar'
+
+import { onCloseActiveItem, onCloseSidebar, onHandleActiveItem, onHandleActiveOption, onOpenSidebar, onToggleActiveItem, onToggleSidebar } from '../store/sidebar'
 
 export const useSidebarStore = () => {
-    
+
     const dispatch = useDispatch()
-    const { isSidebarOpen } = useSelector(state => state.sidebar)
-    
+    const { isSidebarOpen, activeItem, items } = useSelector(state => state.sidebar)
+
+    //* Sidebar
     const toggleSidebar = () => {
         dispatch(onToggleSidebar())
     }
@@ -18,13 +20,37 @@ export const useSidebarStore = () => {
         dispatch(onCloseSidebar())
     }
 
+    //* Item Active
+    const handleActiveItem = (item) => {
+        dispatch(onHandleActiveItem(item))
+    }
+
+    const toggleActiveItem = () => {
+        dispatch(onToggleActiveItem())
+    }
+
+    const closeActiveItem = () => {
+        dispatch(onCloseActiveItem())
+    }
+
+    //* Option Active
+    const handleActiveOption = (option) => {
+        dispatch(onHandleActiveOption(option))
+    }
+
     return {
         //* Propiedades
         isSidebarOpen,
+        activeItem,
+        items,
 
         //* Metodos
         toggleSidebar,
         openSidebar,
-        closeSidebar
+        closeSidebar,
+        handleActiveItem,
+        toggleActiveItem,
+        closeActiveItem,
+        handleActiveOption
     }
 }
