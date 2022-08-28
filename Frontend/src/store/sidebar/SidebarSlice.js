@@ -4,14 +4,12 @@ export const sidebarSlice = createSlice({
     name: 'sidebar',
     initialState: {
         isSidebarOpen: true,
-        activeItem: {
-            idIcon: 0,
-            name: 'Home'
-        }, // Home, Empresas, Relatores, Participantes, Cursos, Calendario
+        activeItem: {}, // Home, Empresas, Relatores, Participantes, Cursos, Calendario
         items: [
             {
                 idIcon: 0,
                 name: 'Home',
+                url: '/'
             },
             {
                 idIcon: 1,
@@ -20,13 +18,16 @@ export const sidebarSlice = createSlice({
                 activeOption: null,
                 options: [
                     {
-                        name: 'Agregar Empresa'
+                        name: 'Agregar Empresa',
+                        url: '/empresas/agr-empresas'
                     },
                     {
-                        name: 'Mostrar Empresas'
+                        name: 'Mostrar Empresas',
+                        url: '/empresas/mst-empresas'
                     },
                     {
-                        name: 'Importar Empresas'
+                        name: 'Importar Empresas',
+                        url: '/empresas/imp-empresas'
                     }
                 ]
             },
@@ -87,6 +88,7 @@ export const sidebarSlice = createSlice({
             {
                 idIcon: 4,
                 name: 'Calendario',
+                url: '/calendario'
             }
         ]
     },
@@ -113,6 +115,30 @@ export const sidebarSlice = createSlice({
             state.activeItem.isItemOpen = false
         },
 
+        //* Options Item
+        onOpenItem: (state, {payload}) => {
+            state.items = state.items.map((item) => {
+                if(item.name === payload.name){
+                    item.isItemOpen = true
+                }
+                return item
+            })
+        },
+        onCloseItem: (state, {payload}) => {
+            state.items = state.items.map((item) => {
+                if(item.name === payload.name) {
+                    item.isItemOpen = false
+                }
+                return item
+            })
+        },
+        onCloseAllItems: (state) => {
+            state.items = state.items.map((item) => {
+                item.isItemOpen = false
+                return item
+            })
+        },
+
         //* Option Selected
         onHandleActiveOption: (state, {payload}) => {
             state.activeItem.activeOption = payload
@@ -129,6 +155,10 @@ export const {
     onHandleActiveItem,
     onToggleActiveItem,
     onCloseActiveItem,
+    //* Options Item
+    onOpenItem,
+    onCloseItem,
+    onCloseAllItems,
     //* Option Selected 
     onHandleActiveOption
 } = sidebarSlice.actions

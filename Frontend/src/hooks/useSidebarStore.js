@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux'
 
-import { onCloseActiveItem, onCloseSidebar, onHandleActiveItem, onHandleActiveOption, onOpenSidebar, onToggleActiveItem, onToggleSidebar } from '../store/sidebar'
+import { onCloseActiveItem, onCloseAllItems, onCloseItem, onCloseSidebar, onHandleActiveItem, onHandleActiveOption, onOpenItem, onOpenSidebar, onToggleActiveItem, onToggleSidebar } from '../store/sidebar'
 
 export const useSidebarStore = () => {
 
@@ -21,6 +21,24 @@ export const useSidebarStore = () => {
     }
 
     //* Item Active
+    const setByUrlActiveItem = (urlPath) => {
+        items.forEach(item => {
+            if(!!(item.options)) {
+                item.options.forEach(option => {
+                    if(option.url === urlPath) {
+                        dispatch(onHandleActiveItem(item))
+                        dispatch(onHandleActiveOption(option))
+                        dispatch(onToggleActiveItem())
+                    }
+                });
+            }else {
+                if(item.url === urlPath) {
+                    dispatch(onHandleActiveItem(item))
+                }
+            }
+        });
+    }
+
     const handleActiveItem = (item) => {
         dispatch(onHandleActiveItem(item))
     }
@@ -31,6 +49,19 @@ export const useSidebarStore = () => {
 
     const closeActiveItem = () => {
         dispatch(onCloseActiveItem())
+    }
+
+    //* Option Item
+    const openItem = (item) => {
+        dispatch(onOpenItem(item))
+    }
+
+    const closeItem = (item) => {
+        dispatch(onCloseItem(item))
+    }
+
+    const closeAllItems = () => {
+        dispatch(onCloseAllItems())
     }
 
     //* Option Active
@@ -48,9 +79,13 @@ export const useSidebarStore = () => {
         toggleSidebar,
         openSidebar,
         closeSidebar,
+        setByUrlActiveItem,
         handleActiveItem,
         toggleActiveItem,
         closeActiveItem,
+        openItem,
+        closeItem,
+        closeAllItems,
         handleActiveOption
     }
 }

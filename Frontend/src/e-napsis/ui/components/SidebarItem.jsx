@@ -1,7 +1,10 @@
 import { ExpandLess, ExpandMore } from '@mui/icons-material'
 import { CalendarMonthOutlined, ContactPageOutlined, HomeOutlined, PeopleAltOutlined, StorageOutlined } from '@mui/icons-material'
 import { Collapse, List, ListItem, ListItemButton, ListItemIcon, ListItemText } from "@mui/material"
-import { useSidebarStore } from '../../hooks'
+
+import { useNavigate } from "react-router-dom";
+
+import { useSidebarStore } from '../../../hooks'
 
 const ItemIcon = ({ idIcon, active }) => {
     switch (idIcon) {
@@ -23,20 +26,24 @@ const ItemIcon = ({ idIcon, active }) => {
     }
 }
 
-const ItemOption = ({ option, active }) => {
+const ItemOption = ({ item, option, active }) => {
 
-    const { handleActiveOption } = useSidebarStore()
+    const navigate = useNavigate()
+
+    const { handleActiveItem, handleActiveOption } = useSidebarStore()
 
     const onClickOption = () => {
         if (active === false) {
+            handleActiveItem(item)
             handleActiveOption(option)
+            navigate(`../../${option.url}`, {replace: true})
         }
     }
 
     return (
         <ListItemButton onClick={onClickOption}
             sx={{
-                pl: 6, pt: '3px', pb: '3px', 
+                pl: 6, pt: '3px', pb: '3px',
                 borderRadius: 1,
                 borderRight: 4,
                 borderColor: (active) ? 'text.active' : 'background.component'
@@ -52,17 +59,33 @@ const ItemOption = ({ option, active }) => {
 
 export const SidebarItem = ({ item, active }) => {
 
-    const { isSidebarOpen, openSidebar, handleActiveItem, toggleActiveItem } = useSidebarStore()
-    const { idIcon, name, isItemOpen, activeOption, options } = item
+    const navigate = useNavigate()
+
+    const { isSidebarOpen, openSidebar, handleActiveItem, toggleActiveItem, closeActiveItem, openItem, closeItem, closeAllItems } = useSidebarStore()
+    const { idIcon, name, url, isItemOpen, activeOption, options } = item
 
     const onClickItem = () => {
-        if (active === false) {
-            handleActiveItem(item)
-        }
         if (isSidebarOpen === false) {
             openSidebar()
         }
-        toggleActiveItem()
+
+        if (active === false) {
+            if (!(!!options)) {
+                closeAllItems()
+                handleActiveItem(item)
+                navigate(`../${url}`, {replace: true})
+            } else {
+                if (isItemOpen) {
+                    closeItem(item)
+                } else {
+                    closeActiveItem()
+                    closeAllItems()
+                    openItem(item)
+                }
+            }
+        } else {
+            toggleActiveItem()
+        }
     }
 
     return (
@@ -73,8 +96,8 @@ export const SidebarItem = ({ item, active }) => {
             }}
         >
             <ListItemButton onClick={onClickItem}
-                sx={{ 
-                    pl: (isSidebarOpen) ? 3 : 'auto', pt: '12px', pb: '12px', 
+                sx={{
+                    pl: (isSidebarOpen) ? 3 : 'auto', pt: '12px', pb: '12px',
                     borderRadius: 1,
                     borderRight: 4,
                     borderColor: (active && !(!!options && isSidebarOpen)) ? 'text.active' : 'background.component',
@@ -102,8 +125,8 @@ export const SidebarItem = ({ item, active }) => {
                     {
                         options?.map((option) => (
                             (option.name === activeOption?.name)
-                                ? <ItemOption key={option.name} option={activeOption} active={true} />
-                                : <ItemOption key={option.name} option={option} active={false} />
+                                ? <ItemOption key={option.name} item={item} option={activeOption} active={true} />
+                                : <ItemOption key={option.name} item={item} option={option} active={false} />
                         ))
                     }
                 </List>
