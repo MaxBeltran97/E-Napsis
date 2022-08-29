@@ -55,13 +55,16 @@ export const sidebarSlice = createSlice({
                 activeOption: null,
                 options: [
                     {
-                        name: 'Agregar Participante'
+                        name: 'Agregar Participante',
+                        url: '/participantes/agr-participantes'
                     },
                     {
-                        name: 'Mostrar Participantes'
+                        name: 'Mostrar Participantes',
+                        url: '/participantes/mst-participantes'
                     },
                     {
-                        name: 'Importar Participantes'
+                        name: 'Importar Participantes',
+                        url: '/participantes/imp-participantes'
                     }
                 ]
             },
@@ -72,16 +75,20 @@ export const sidebarSlice = createSlice({
                 activeOption: null,
                 options: [
                     {
-                        name: 'Agregar Curso'
+                        name: 'Agregar Curso',
+                        url: 'cursos/agr-cursos'
                     },
                     {
-                        name: 'Mostrar Cursos'
+                        name: 'Mostrar Cursos',
+                        url: 'cursos/mst-cursos'
                     },
                     {
-                        name: 'Importar Cursos'
+                        name: 'Importar Cursos',
+                        url: 'cursos/imp-cursos'
                     },
                     {
-                        name: 'Importar Actividades'
+                        name: 'Importar Actividades',
+                        url: 'cursos/imp-actividades'
                     }
                 ]
             },

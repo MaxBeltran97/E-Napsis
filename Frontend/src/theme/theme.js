@@ -4,11 +4,10 @@ import { red } from "@mui/material/colors";
 export const theme = createTheme({
     palette: {
         primary: {
-            main: '#262254',
-            menuIcon: '#000'
+            main: '#262254'
         },
         secondary: {
-            main: '#543884'
+            main: '#232323'
         },
         error: {
             main: red[400]
@@ -18,7 +17,7 @@ export const theme = createTheme({
         },
         background: {
             default: '#F4F7FC',
-            component: '#fff'
+            component: '#FFF'
         }
     },
 })

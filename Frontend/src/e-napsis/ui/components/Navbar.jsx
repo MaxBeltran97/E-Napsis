@@ -50,7 +50,7 @@ export const Navbar = () => {
             <Toolbar>
                 <IconButton
                     onClick={onClickMenu}
-                    color='primary'
+                    color='secondary'
                     edge='start'
                     sx={{
                         mr: 2
