@@ -1,7 +1,7 @@
 import { List } from '@mui/material'
 import React from 'react'
 
-import { useSidebarStore } from '../../hooks/useSidebarStore'
+import { useSidebarStore } from '../../../hooks'
 import { SidebarItem } from './SidebarItem'
 
 export const SidebarList = () => {

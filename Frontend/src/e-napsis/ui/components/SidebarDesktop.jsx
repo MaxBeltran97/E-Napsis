@@ -1,7 +1,7 @@
 import { Divider, styled, Typography } from "@mui/material";
 import MuiDrawer from '@mui/material/Drawer';
 
-import { useSidebarStore } from "../../hooks"
+import { useSidebarStore } from "../../../hooks"
 import { SidebarList } from "./SidebarList";
 
 const sidebarWith = 240
@@ -58,15 +58,15 @@ export const SidebarDesktop = () => {
     const { isSidebarOpen } = useSidebarStore()
 
     return (
-        <Drawer 
-            variant='permanent' 
+        <Drawer
+            variant='permanent'
             open={isSidebarOpen}
         >
             <DrawerHeader>
-                <Typography 
-                    variant='h6' 
-                    noWrap 
-                    component='div' 
+                <Typography
+                    variant='h6'
+                    noWrap
+                    component='div'
                     width={'100%'}
                     align='center'
                 >
@@ -76,7 +76,7 @@ export const SidebarDesktop = () => {
                 </Typography>
             </DrawerHeader>
             <Divider />
-            
+
             <SidebarList />
         </Drawer>
     )

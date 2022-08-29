@@ -3,7 +3,7 @@ import MuiAppBar from '@mui/material/AppBar';
 import MenuIcon from '@mui/icons-material/Menu'
 import SearchIcon from '@mui/icons-material/Search';
 
-import { useSidebarStore } from "../../hooks";
+import { useSidebarStore } from "../../../hooks";
 
 const sidebarWith = 240
 
@@ -26,10 +26,11 @@ const AppBar = styled(MuiAppBar, { shouldForwardProp: (prop) => prop !== 'open' 
 
 export const Navbar = () => {
 
-    const { isSidebarOpen, toggleSidebar, toggleActiveItem, closeActiveItem } = useSidebarStore()
+    const { isSidebarOpen, toggleSidebar, toggleActiveItem, closeActiveItem, closeAllItems} = useSidebarStore()
 
     const onClickMenu = () => {
         if(isSidebarOpen === true) {
+            closeAllItems()
             closeActiveItem()
             toggleSidebar()
         }else {

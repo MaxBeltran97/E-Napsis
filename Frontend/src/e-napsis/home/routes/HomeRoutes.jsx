@@ -1,10 +1,10 @@
 import { Navigate, Route, Routes } from "react-router-dom"
-import { EnapsisPage } from "../pages"
+import { HomePage } from "../pages"
 
-export const EnapsisRoutes = () => {
+export const HomeRoutes = () => {
     return (
         <Routes>
-            <Route path="/" element={ <EnapsisPage /> } />
+            <Route path="/" element={ <HomePage /> } />
 
             <Route path="/*" element={ <Navigate to={'/'} /> } />
         </Routes>
