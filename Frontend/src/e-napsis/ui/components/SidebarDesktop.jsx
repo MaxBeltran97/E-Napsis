@@ -1,4 +1,4 @@
-import { Divider, styled, Typography } from "@mui/material";
+import { Divider, Icon, styled, Typography } from "@mui/material";
 import MuiDrawer from '@mui/material/Drawer';
 
 import { useSidebarStore } from "../../../hooks"
@@ -30,7 +30,7 @@ const closedMixin = (theme) => ({
 const DrawerHeader = styled('div')(({ theme }) => ({
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'flex-end',
+    justifyContent: 'center',
     padding: theme.spacing(0, 1),
     // necessary for content to be below app bar
     ...theme.mixins.toolbar,
@@ -59,20 +59,21 @@ export const SidebarDesktop = () => {
 
     return (
         <Drawer
-            variant='permanent'
+            variant= 'permanent'
             open={isSidebarOpen}
         >
             <DrawerHeader>
+                <Icon sx={{display: 'flex'}}>
+                    <img src="../src/e-napsis/ui/data/colocolo.svg" />
+                </Icon>
                 <Typography
                     variant='h6'
-                    noWrap
-                    component='div'
-                    width={'100%'}
-                    align='center'
+                    sx={{
+                        ml: 1,
+                        display: (isSidebarOpen) ? 'block' : 'none'
+                    }}
                 >
-                    {
-                        (isSidebarOpen) ? 'e-Napsis' : 'e-N'
-                    }
+                    e-Napsis
                 </Typography>
             </DrawerHeader>
             <Divider />

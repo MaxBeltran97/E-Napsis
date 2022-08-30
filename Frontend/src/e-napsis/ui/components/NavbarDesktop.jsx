@@ -4,6 +4,7 @@ import MenuIcon from '@mui/icons-material/Menu'
 import SearchIcon from '@mui/icons-material/Search';
 
 import { useSidebarStore } from "../../../hooks";
+import { useEffect } from "react";
 
 const sidebarWith = 240
 
@@ -24,16 +25,16 @@ const AppBar = styled(MuiAppBar, { shouldForwardProp: (prop) => prop !== 'open' 
     })
 }))
 
-export const Navbar = () => {
+export const NavbarDesktop = () => {
 
-    const { isSidebarOpen, toggleSidebar, toggleActiveItem, closeActiveItem, closeAllItems} = useSidebarStore()
+    const { isSidebarOpen, toggleSidebar, toggleActiveItem, closeActiveItem, closeAllItems } = useSidebarStore()
 
     const onClickMenu = () => {
-        if(isSidebarOpen === true) {
+        if (isSidebarOpen === true) {
             closeAllItems()
             closeActiveItem()
             toggleSidebar()
-        }else {
+        } else {
             toggleSidebar()
             toggleActiveItem()
         }
