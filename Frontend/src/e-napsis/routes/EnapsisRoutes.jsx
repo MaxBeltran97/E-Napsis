@@ -6,6 +6,7 @@ import { CompanyRoutes } from "../company/routes"
 import { CoursesRoutes } from "../courses/routes"
 import { HomeRoutes } from "../home/routes"
 import { ParticipantRoutes } from "../participant/routes"
+import { RapporteurRoutes } from "../rapporteur/routes"
 
 import { LayoutApp } from "../ui/layout"
 import { useSidebarStore } from "../../hooks"
@@ -26,6 +27,9 @@ export const EnapsisRoutes = () => {
             <Routes>
                 {/* Empresas */}
                 <Route path="empresas/*" element={<CompanyRoutes />} />
+
+                {/* Relatores */}
+                <Route path="relatores/*" element={<RapporteurRoutes />} />
 
                 {/* Participantes */}
                 <Route path="participantes/*" element={<ParticipantRoutes />} />

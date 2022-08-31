@@ -38,13 +38,16 @@ export const sidebarSlice = createSlice({
                 activeOption: null,
                 options: [
                     {
-                        name: 'Agregar Relator'
+                        name: 'Agregar Relator',
+                        url: 'relatores/agr-relatores'
                     },
                     {
-                        name: 'Mostrar Relatores'
+                        name: 'Mostrar Relatores',
+                        url: 'relatores/mst-relatores'
                     },
                     {
-                        name: 'Importar Relatores'
+                        name: 'Importar Relatores',
+                        url: 'relatores/imp-relatores'
                     }
                 ]
             },
