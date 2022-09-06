@@ -1,7 +1,8 @@
 import { Divider, Icon, styled, Typography } from "@mui/material";
 import MuiDrawer from '@mui/material/Drawer';
 
-import { useSidebarStore } from "../../../hooks"
+import { useSidebarStore } from "../../../../hooks";
+
 import { SidebarList } from "./SidebarList";
 
 const sidebarWith = 240

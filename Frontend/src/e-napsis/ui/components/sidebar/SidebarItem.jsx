@@ -4,7 +4,7 @@ import { Collapse, List, ListItem, ListItemButton, ListItemIcon, ListItemText } 
 
 import { useNavigate } from "react-router-dom";
 
-import { useSidebarStore } from '../../../hooks'
+import { useSidebarStore } from '../../../../hooks'
 
 const ItemIcon = ({ idIcon, active }) => {
     switch (idIcon) {
@@ -84,6 +84,7 @@ export const SidebarItem = ({ item, active }) => {
                 }
             }
         } else {
+            closeAllItems()
             toggleActiveItem()
         }
     }
