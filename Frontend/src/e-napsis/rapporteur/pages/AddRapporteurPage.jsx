@@ -5,13 +5,14 @@ import { GridInputs } from "../../ui/components/grid/GridInputs"
 
 import { InputEmail, InputFile, InputPhoneNumber, InputRadio, InputSelect, InputText } from "../../ui/components/input"
 
+import { tipoBanco, tipoContrato, tipoCuenta, tipoEspecialidad } from '../../ui/data'
+
 export const AddRapporteurPage = () => {
     const { handleSubmit, formState: { errors }, control } = useForm()
 
     const onSubmit = (data) => {
         event.preventDefault()
         console.log(data)
-        // console.log(control._formValues.firstName)
     }
 
     return (
@@ -31,7 +32,7 @@ export const AddRapporteurPage = () => {
                         <InputPhoneNumber name={'Teléfono Oficina'} label={'officePhone'} identifier={'+02'} length={8} control={control} error={errors.officePhone} />
                         {/* Fecha de nacimiento */}
                         <InputText name={'Profesión'} label={'profession'} required={true} control={control} error={errors.profession} />
-                        <InputSelect name={'Especialidad'} label={'specialty'} items={[]} required={true} control={control} error={errors.specialty} />
+                        <InputSelect name={'Especialidad'} label={'specialty'} items={tipoEspecialidad} required={true} control={control} error={errors.specialty} />
                         <InputSelect name={'Estado Civil'} label={'maritalStatus'} items={[]} control={control} error={errors.maritalStatus} />
                         <InputText name={'Dirección'} label={'address'} control={control} error={errors.address} />
                         {/* Region */}
@@ -43,12 +44,12 @@ export const AddRapporteurPage = () => {
                 </Grid>
                 <Grid item xs={12} lg={6}>
                     <GridInputs title={'Tipo de Contrato'}>
-                        <InputSelect name={'Contrato'} label={'contract'} defaultText={'Seleccione tipo de contrato'} items={[]} required={true} control={control} error={errors.contract} />
+                        <InputSelect name={'Contrato'} label={'contract'} defaultText={'Seleccione tipo de contrato'} items={tipoContrato} required={true} control={control} error={errors.contract} />
                     </GridInputs>
                     <GridInputs title={'Datos de Depósito'}>
-                        <InputSelect name={'Banco'} label={'bank'} items={[]} required={true} control={control} error={errors.bank} />
+                        <InputSelect name={'Banco'} label={'bank'} items={tipoBanco} required={true} control={control} error={errors.bank} />
                         {/* N* de Cuenta */}
-                        <InputSelect name={'Tipo de Cuenta'} label={'bankAccount'} defaultText={'Seleccione tipo de cuenta'} items={[]} required={true} control={control} error={errors.bankAccount} />
+                        <InputSelect name={'Tipo de Cuenta'} label={'bankAccount'} defaultText={'Seleccione tipo de cuenta'} items={tipoCuenta} required={true} control={control} error={errors.bankAccount} />
                     </GridInputs>
                     <GridInputs title={'Privilegios Adicionales'}>
                         <InputRadio name={'Subir Archivos por Curso'} label={'uploadFiles'} items={['Si', 'No']} itemDefault={1} control={control} />
