@@ -18,7 +18,7 @@ export const InputRadio = ({ name, label, items = [], itemDefault, control }) =>
                     defaultValue={label + '-' + items[itemDefault]}
 
                     render={({field}) => (
-                        <RadioGroup {...field} row>
+                        <RadioGroup {...field} row sx={{ ml: 1 }}>
                             {
                                 items.map((item) => (
                                     <FormControlLabel

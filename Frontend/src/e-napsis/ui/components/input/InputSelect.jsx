@@ -55,7 +55,7 @@ export const InputSelect = ({ name, label, defaultText = 'Seleccione...', items 
                             >
                                 <MenuItem value=""><em>{defaultText}</em></MenuItem>
                                 {
-                                    items.map((item) => (
+                                    items?.map((item) => (
                                         <MenuItem key={item.value} value={item.value}>
                                             {item.name}
                                         </MenuItem>
