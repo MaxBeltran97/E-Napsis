@@ -2,7 +2,7 @@ import { Grid, Typography } from '@mui/material'
 
 export const GridInputs = ({children, title}) => {
     return (
-        <Grid item sx={{pl: 6, pr: 6, pt: 4}}>
+        <Grid item sx={{pl: 6, pr: 4, pt: 4}}>
             <Typography 
                 sx={{ 
                     fontSize: '20px', 
