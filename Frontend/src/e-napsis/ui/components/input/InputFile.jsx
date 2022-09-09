@@ -105,7 +105,7 @@ export const InputFile = ({ name, textButton, helperText, label, allowedExtensio
                                 {
                                     (!!error)
                                     ? error.message
-                                    : (helperText)
+                                    : `(${helperText})`
                                 }
                             </FormHelperText>
                         </FormControl>
