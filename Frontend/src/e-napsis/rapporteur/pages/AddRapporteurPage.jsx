@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form"
 import { Grid, Input, Typography } from "@mui/material"
 import { GridInputs } from "../../ui/components/grid/GridInputs"
 
-import { InputEmail, InputFile, InputPhoneNumber, InputRadio, InputSelect, InputText } from "../../ui/components/input"
+import { InputDate, InputEmail, InputFile, InputPhoneNumber, InputRadio, InputSelect, InputText } from "../../ui/components/input"
 
 import { tipoBanco, tipoContrato, tipoCuenta, tipoEspecialidad } from '../../ui/data'
 
@@ -31,6 +31,8 @@ export const AddRapporteurPage = () => {
                         <InputPhoneNumber name={'Teléfono Fijo'} label={'homePhone'} identifier={'+02'} length={8} control={control} error={errors.homePhone} />
                         <InputPhoneNumber name={'Teléfono Oficina'} label={'officePhone'} identifier={'+02'} length={8} control={control} error={errors.officePhone} />
                         {/* Fecha de nacimiento */}
+                        <InputDate name={'Fecha de Nacimiento'} label={'birthday'} max={true} control={control} error={errors.birthday} />
+                        {/*  */}
                         <InputText name={'Profesión'} label={'profession'} required={true} control={control} error={errors.profession} />
                         <InputSelect name={'Especialidad'} label={'specialty'} items={tipoEspecialidad} required={true} control={control} error={errors.specialty} />
                         <InputSelect name={'Estado Civil'} label={'maritalStatus'} items={[]} control={control} error={errors.maritalStatus} />
