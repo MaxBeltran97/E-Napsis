@@ -1,7 +1,9 @@
 import { FormControlLabel, Grid, Radio, RadioGroup, Typography } from "@mui/material"
+import { memo } from "react"
 import { Controller } from 'react-hook-form'
 
-export const InputRadio = ({ name, label, items = [], itemDefault, control }) => {
+export const InputRadio = memo(({ name, label, items = [], itemDefault, control }) => {
+
     return (
         <Grid container
             direction={'row'}
@@ -35,4 +37,4 @@ export const InputRadio = ({ name, label, items = [], itemDefault, control }) =>
             </Grid>
         </Grid>
     )
-}
+})

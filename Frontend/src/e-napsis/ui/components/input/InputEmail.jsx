@@ -1,8 +1,8 @@
 import { Grid, TextField, Typography } from "@mui/material"
-import { useState } from "react"
+import { memo, useState } from "react"
 import { Controller } from 'react-hook-form'
 
-export const InputEmail = ({ name , label, required = false, control, error }) => {
+export const InputEmail = memo(({ name , label, required = false, control, error }) => {
 
     const [active, setActive] = useState(false)
 
@@ -66,4 +66,4 @@ export const InputEmail = ({ name , label, required = false, control, error }) =
             </Grid>
         </Grid>
     )
-}
+})

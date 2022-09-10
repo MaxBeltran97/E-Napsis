@@ -1,8 +1,8 @@
 import { Grid, InputAdornment, TextField, Typography } from "@mui/material"
-import { useState } from "react"
+import { memo, useState } from "react"
 import { Controller } from 'react-hook-form'
 
-export const InputPhoneNumber = ({ name , label, identifier, length, required = false, control, error }) => {
+export const InputPhoneNumber = memo(({ name , label, identifier, length, required = false, control, error }) => {
 
     const [active, setActive] = useState(false)
 
@@ -74,4 +74,4 @@ export const InputPhoneNumber = ({ name , label, identifier, length, required = 
             </Grid>
         </Grid>
     )
-}
+})

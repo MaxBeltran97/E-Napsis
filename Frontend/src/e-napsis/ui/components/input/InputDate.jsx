@@ -4,10 +4,10 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import { differenceInDays, differenceInHours } from "date-fns/esm"
 
 import { es } from 'date-fns/locale'
-import { useState } from "react"
+import { memo, useState } from "react"
 import { Controller } from 'react-hook-form'
 
-export const InputDate = ({ name , label, min = false, max = false, required = false, control, error }) => {
+export const InputDate = memo(({ name , label, min = false, max = false, required = false, control, error }) => {
 
     const [active, setActive] = useState(false)
 
@@ -97,4 +97,4 @@ export const InputDate = ({ name , label, min = false, max = false, required = f
             </Grid>
         </Grid>
     )
-}
+})

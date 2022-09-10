@@ -3,12 +3,12 @@ import { useForm } from "react-hook-form"
 import { Grid, Input, Typography } from "@mui/material"
 import { GridInputs } from "../../ui/components/grid/GridInputs"
 
-import { InputDate, InputEmail, InputFile, InputPhoneNumber, InputRadio, InputSelect, InputText } from "../../ui/components/input"
+import { InputDate, InputEmail, InputFile, InputPhoneNumber, InputRadio, InputRegionComuna, InputSelect, InputText } from "../../ui/components/input"
 
 import { tipoBanco, tipoContrato, tipoCuenta, tipoEspecialidad } from '../../ui/data'
 
 export const AddRapporteurPage = () => {
-    const { handleSubmit, formState: { errors }, control } = useForm()
+    const { handleSubmit, setValue, formState: { errors }, control } = useForm()
 
     const onSubmit = (data) => {
         event.preventDefault()
@@ -30,15 +30,12 @@ export const AddRapporteurPage = () => {
                         <InputPhoneNumber name={'Teléfono Celular'} label={'cellPhone'} identifier={'+56 9'} length={8} required={true} control={control} error={errors.cellPhone} />
                         <InputPhoneNumber name={'Teléfono Fijo'} label={'homePhone'} identifier={'+02'} length={8} control={control} error={errors.homePhone} />
                         <InputPhoneNumber name={'Teléfono Oficina'} label={'officePhone'} identifier={'+02'} length={8} control={control} error={errors.officePhone} />
-                        {/* Fecha de nacimiento */}
                         <InputDate name={'Fecha de Nacimiento'} label={'birthday'} max={true} control={control} error={errors.birthday} />
-                        {/*  */}
                         <InputText name={'Profesión'} label={'profession'} required={true} control={control} error={errors.profession} />
                         <InputSelect name={'Especialidad'} label={'specialty'} items={tipoEspecialidad} required={true} control={control} error={errors.specialty} />
                         <InputSelect name={'Estado Civil'} label={'maritalStatus'} items={[]} control={control} error={errors.maritalStatus} />
                         <InputText name={'Dirección'} label={'address'} control={control} error={errors.address} />
-                        {/* Region */}
-                        {/* Comuna */}
+                        <InputRegionComuna control={control} setValue={setValue} />
                         <InputRadio name={'Estado'} label={'condition'} items={['Activo', 'No Activo']} itemDefault={0} control={control} />
                         <InputFile name={'Archivos Relevantes'} textButton={'Subir Archivos'} helperText={'CV, Títulos, Diplomas, etc.'} label={'rapporteurFiles'} allowedExtensions={['pdf' ,'docx']} multiple={true} control={control} error={errors.rapporteurFiles} />
                         <InputFile name={'Firma'} textButton={'Subir Imagen'} helperText={'.jpeg, .jpg, .png'} label={'signature'} allowedExtensions={['jpeg' ,'jpg', 'png']} control={control} error={errors.signature} />
