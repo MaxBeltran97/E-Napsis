@@ -1,10 +1,10 @@
 import { ErrorOutlineOutlined, FileDownloadDoneOutlined, FileUploadOutlined } from "@mui/icons-material"
 import { Button, FormControl, FormHelperText, Grid, Typography } from "@mui/material"
-import { useRef } from "react"
+import { memo, useRef } from "react"
 import { useState } from "react"
 import { Controller } from 'react-hook-form'
 
-export const InputFile = ({ name, textButton, helperText, label, allowedExtensions = [], required = false, multiple = false, control, error }) => {
+export const InputFile = memo(({ name, textButton, helperText, label, allowedExtensions = [], required = false, multiple = false, control, error }) => {
 
     const [fileReady, setFileReady] = useState(null)
     const [value, setValue] = useState("")
@@ -124,4 +124,4 @@ export const InputFile = ({ name, textButton, helperText, label, allowedExtensio
             </Grid>
         </Grid>
     )
-}
+})

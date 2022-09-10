@@ -1,9 +1,9 @@
 import { FormControl, FormHelperText, Grid, InputLabel, MenuItem, Select, Typography } from "@mui/material"
-import { useState } from "react"
+import { memo, useState } from "react"
 import { Controller } from 'react-hook-form'
 
-export const InputSelect = ({ name, label, defaultText = 'Seleccione...', items = [], required = false, control, error }) => {
-
+export const InputSelect = memo(({ name, label, defaultText = 'Seleccione...', items = [], required = false, control, error }) => {
+    
     const [active, setActive] = useState(false)
 
     const onFocus = () => {
@@ -75,10 +75,8 @@ export const InputSelect = ({ name, label, defaultText = 'Seleccione...', items 
                             message: '*Este campo es obligatorio'
                         }
                     }}
-
-                    onBlur={onBlur}
                 />
             </Grid>
         </Grid>
     )
-}
+})
