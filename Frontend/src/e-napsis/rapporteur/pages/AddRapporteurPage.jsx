@@ -1,19 +1,35 @@
 import { useForm } from "react-hook-form"
+import { useState } from "react"
 
-import { Grid, Input, Typography } from "@mui/material"
-import { GridInputs } from "../../ui/components/grid/GridInputs"
+import { Button, Grid, Typography } from "@mui/material"
+import LoadingButton from '@mui/lab/LoadingButton';
+import { ErrorOutlineOutlined, SaveOutlined } from "@mui/icons-material"
 
+import { GridInputs, GridButtons } from "../../ui/components/grid"
 import { InputDate, InputEmail, InputFile, InputPhoneNumber, InputRadio, InputRegionComuna, InputSelect, InputText } from "../../ui/components/input"
 
 import { radioBoolean, radioBooleanActive, tipoBanco, tipoContrato, tipoCuenta, tipoEspecialidad } from '../../ui/data'
+import { useEffect } from "react";
 
 export const AddRapporteurPage = () => {
     const { handleSubmit, setValue, formState: { errors }, control } = useForm()
+    const [loading, setLoading] = useState(false)
+    const [errorsForm, setErrorsForm] = useState(false)
 
     const onSubmit = (data) => {
         event.preventDefault()
+        setLoading(true)
         console.log(data)
     }
+
+    useEffect(() => {
+        if(Object.entries(errors).length === 0) {
+            setErrorsForm(false)
+        }else {
+            setErrorsForm(true)
+        }
+    }, [Object.entries(errors).length])
+
 
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -37,8 +53,8 @@ export const AddRapporteurPage = () => {
                         <InputText name={'Dirección'} label={'address'} control={control} error={errors.address} />
                         <InputRegionComuna control={control} setValue={setValue} />
                         <InputRadio name={'Estado'} label={'condition'} items={radioBooleanActive} posDefault={0} control={control} />
-                        <InputFile name={'Archivos Relevantes'} textButton={'Subir Archivos'} helperText={'CV, Títulos, Diplomas, etc.'} label={'rapporteurFiles'} allowedExtensions={['pdf' ,'docx']} multiple={true} control={control} error={errors.rapporteurFiles} />
-                        <InputFile name={'Firma'} textButton={'Subir Imagen'} helperText={'.jpeg, .jpg, .png'} label={'signature'} allowedExtensions={['jpeg' ,'jpg', 'png']} control={control} error={errors.signature} />
+                        <InputFile name={'Archivos Relevantes'} textButton={'Subir Archivos'} helperText={'CV, Títulos, Diplomas, etc.'} label={'rapporteurFiles'} allowedExtensions={['pdf', 'docx']} multiple={true} control={control} error={errors.rapporteurFiles} />
+                        <InputFile name={'Firma'} textButton={'Subir Imagen'} helperText={'.jpeg, .jpg, .png'} label={'signature'} allowedExtensions={['jpeg', 'jpg', 'png']} control={control} error={errors.signature} />
                     </GridInputs>
                 </Grid>
                 <Grid item xs={12} lg={6}>
@@ -59,10 +75,28 @@ export const AddRapporteurPage = () => {
                         <InputRadio name={'Acreditado'} label={'acredited'} items={radioBoolean} posDefault={1} control={control} />
                         <InputRadio name={'En proceso de Acreditación'} label={'acreditationProcess'} items={radioBoolean} posDefault={1} control={control} />
                     </GridInputs>
+
+                    <GridButtons center={true}>
+                        <LoadingButton type="submit" variant="outlined" loading={loading} color={(errorsForm) ? 'error' : 'primary'}>
+                            {
+                                (errorsForm)
+                                ? (
+                                    <>
+                                        <ErrorOutlineOutlined sx={{ mr: 1 }} />
+                                        Error al guardar
+                                    </>  
+                                )
+                                : (
+                                    <>
+                                        <SaveOutlined sx={{ mr: 1 }} />
+                                        Guardar Relator
+                                    </>
+                                )
+                            }
+                        </LoadingButton>
+                    </GridButtons>
                 </Grid>
             </Grid>
-
-            <Input type="submit" />
         </form>
     )
 }
