@@ -2,7 +2,7 @@ import { FormControlLabel, Grid, Radio, RadioGroup, Typography } from "@mui/mate
 import { memo } from "react"
 import { Controller } from 'react-hook-form'
 
-export const InputRadio = memo(({ name, label, items = [], itemDefault, control }) => {
+export const InputRadio = memo(({ name, label, items = [], posDefault, control }) => {
 
     return (
         <Grid container
@@ -17,17 +17,17 @@ export const InputRadio = memo(({ name, label, items = [], itemDefault, control 
                 <Controller 
                     control={control}
                     name={label}
-                    defaultValue={label + '-' + items[itemDefault]}
+                    defaultValue={items[posDefault].value}
 
                     render={({field}) => (
                         <RadioGroup {...field} row sx={{ ml: 1 }}>
                             {
                                 items.map((item) => (
                                     <FormControlLabel
-                                        key={item}
-                                        value={(label + '-' + item)}
+                                        key={item.name}
+                                        value={item.value}
                                         control={<Radio size="small" />}
-                                        label={item}
+                                        label={item.name}
                                     />
                                 ))
                             }

@@ -5,7 +5,7 @@ import { GridInputs } from "../../ui/components/grid/GridInputs"
 
 import { InputDate, InputEmail, InputFile, InputPhoneNumber, InputRadio, InputRegionComuna, InputSelect, InputText } from "../../ui/components/input"
 
-import { tipoBanco, tipoContrato, tipoCuenta, tipoEspecialidad } from '../../ui/data'
+import { radioBoolean, radioBooleanActive, tipoBanco, tipoContrato, tipoCuenta, tipoEspecialidad } from '../../ui/data'
 
 export const AddRapporteurPage = () => {
     const { handleSubmit, setValue, formState: { errors }, control } = useForm()
@@ -36,7 +36,7 @@ export const AddRapporteurPage = () => {
                         <InputSelect name={'Estado Civil'} label={'maritalStatus'} items={[]} control={control} error={errors.maritalStatus} />
                         <InputText name={'Dirección'} label={'address'} control={control} error={errors.address} />
                         <InputRegionComuna control={control} setValue={setValue} />
-                        <InputRadio name={'Estado'} label={'condition'} items={['Activo', 'No Activo']} itemDefault={0} control={control} />
+                        <InputRadio name={'Estado'} label={'condition'} items={radioBooleanActive} posDefault={0} control={control} />
                         <InputFile name={'Archivos Relevantes'} textButton={'Subir Archivos'} helperText={'CV, Títulos, Diplomas, etc.'} label={'rapporteurFiles'} allowedExtensions={['pdf' ,'docx']} multiple={true} control={control} error={errors.rapporteurFiles} />
                         <InputFile name={'Firma'} textButton={'Subir Imagen'} helperText={'.jpeg, .jpg, .png'} label={'signature'} allowedExtensions={['jpeg' ,'jpg', 'png']} control={control} error={errors.signature} />
                     </GridInputs>
@@ -51,13 +51,13 @@ export const AddRapporteurPage = () => {
                         <InputSelect name={'Tipo de Cuenta'} label={'bankAccount'} defaultText={'Seleccione tipo de cuenta'} items={tipoCuenta} required={true} control={control} error={errors.bankAccount} />
                     </GridInputs>
                     <GridInputs title={'Privilegios Adicionales'}>
-                        <InputRadio name={'Subir Archivos por Curso'} label={'uploadFiles'} items={['Si', 'No']} itemDefault={1} control={control} />
-                        <InputRadio name={'Agregar Participantes'} label={'addParticipants'} items={['Si', 'No']} itemDefault={1} control={control} />
+                        <InputRadio name={'Subir Archivos por Curso'} label={'uploadFiles'} items={radioBoolean} posDefault={1} control={control} />
+                        <InputRadio name={'Agregar Participantes'} label={'addParticipants'} items={radioBoolean} posDefault={1} control={control} />
                     </GridInputs>
                     <GridInputs title={'Información Adicional'}>
-                        <InputRadio name={'REUF Actualizada'} label={'reuf'} items={['Si', 'No']} itemDefault={1} control={control} />
-                        <InputRadio name={'Acreditado'} label={'acredited'} items={['Si', 'No']} itemDefault={1} control={control} />
-                        <InputRadio name={'En proceso de Acreditación'} label={'acreditationProcess'} items={['Si', 'No']} itemDefault={1} control={control} />
+                        <InputRadio name={'REUF Actualizada'} label={'reuf'} items={radioBoolean} posDefault={1} control={control} />
+                        <InputRadio name={'Acreditado'} label={'acredited'} items={radioBoolean} posDefault={1} control={control} />
+                        <InputRadio name={'En proceso de Acreditación'} label={'acreditationProcess'} items={radioBoolean} posDefault={1} control={control} />
                     </GridInputs>
                 </Grid>
             </Grid>
