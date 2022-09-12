@@ -3,8 +3,7 @@ import MuiAppBar from '@mui/material/AppBar';
 import MenuIcon from '@mui/icons-material/Menu'
 import SearchIcon from '@mui/icons-material/Search';
 
-import { useSidebarStore } from "../../../hooks";
-import { useEffect } from "react";
+import { useSidebarStore } from "../../../../hooks";
 
 const sidebarWith = 240
 

@@ -2,11 +2,9 @@ import { AppBar, Grid, IconButton, InputAdornment, TextField, Toolbar } from "@m
 import MenuIcon from '@mui/icons-material/Menu'
 import SearchIcon from '@mui/icons-material/Search';
 
-import { useSidebarStore } from "../../../hooks";
-import { useEffect } from "react";
+import { useSidebarStore } from "../../../../hooks";
 
 const sidebarWith = 240
-
 
 export const NavbarMobile = () => {
 

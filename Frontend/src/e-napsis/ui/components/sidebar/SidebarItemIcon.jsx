@@ -1,6 +1,6 @@
 import { CalendarMonthOutlined, ContactPageOutlined, HomeOutlined, PeopleAltOutlined, StorageOutlined } from "@mui/icons-material";
 
-import { useSidebarStore } from "../../../hooks"
+import { useSidebarStore } from "../../../../hooks"
 
 export const SidebarItemIcon = ({textIcon}) => {
     
