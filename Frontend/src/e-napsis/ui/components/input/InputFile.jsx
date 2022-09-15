@@ -12,12 +12,12 @@ export const InputFile = memo(({ name, textButton, helperText, label, allowedExt
     const fileInputRef = useRef()
 
     const isValidExtensions = (files) => {
-        if(files?.length > 0) {
-            for( const file of files ) {
+        if (files?.length > 0) {
+            for (const file of files) {
                 const nameSplit = file.name.split('.')
-                const extension = nameSplit[(nameSplit.length)-1]
-    
-                if(allowedExtensions.includes(extension.toLowerCase()) === false){
+                const extension = nameSplit[(nameSplit.length) - 1]
+
+                if (allowedExtensions.includes(extension.toLowerCase()) === false) {
                     return false
                 }
             }
@@ -32,9 +32,9 @@ export const InputFile = memo(({ name, textButton, helperText, label, allowedExt
         if (target.files.length === 0) {
             setFileReady(null)
         } else {
-            if(target.files.length === 1) {
+            if (target.files.length === 1) {
                 setFileReady('1 archivo')
-            }else{
+            } else {
                 setFileReady(`${target.files.length} archivos`)
             }
         }
@@ -44,7 +44,7 @@ export const InputFile = memo(({ name, textButton, helperText, label, allowedExt
         <Grid container
             direction={'row'}
             alignItems={'center'}
-            sx={{ pl: 2, pt: 1 }}
+            sx={{ pt: 1 }}
         >
             <Grid item xs={5}>
                 <Typography sx={{ color: (!!error) ? 'error.main' : '' }}>{name}</Typography>
@@ -83,8 +83,8 @@ export const InputFile = memo(({ name, textButton, helperText, label, allowedExt
                                             <>
                                                 {
                                                     (!!error)
-                                                    ? <ErrorOutlineOutlined sx={{ mr: 1 }} />
-                                                    : <FileDownloadDoneOutlined sx={{ mr: 1 }} />
+                                                        ? <ErrorOutlineOutlined sx={{ mr: 1 }} />
+                                                        : <FileDownloadDoneOutlined sx={{ mr: 1 }} />
                                                 }
                                                 {fileReady}
                                             </>
@@ -93,21 +93,27 @@ export const InputFile = memo(({ name, textButton, helperText, label, allowedExt
                                             <>
                                                 {
                                                     (!!error)
-                                                    ? <ErrorOutlineOutlined sx={{ mr: 1 }} />
-                                                    : <FileUploadOutlined sx={{ mr: 1 }} />
+                                                        ? <ErrorOutlineOutlined sx={{ mr: 1 }} />
+                                                        : <FileUploadOutlined sx={{ mr: 1 }} />
                                                 }
                                                 {textButton}
                                             </>
                                         )
                                 }
                             </Button>
-                            <FormHelperText error={!!error} sx={{ margin: 0, pl: 1 }}>
-                                {
-                                    (!!error)
-                                    ? error.message
-                                    : `(${helperText})`
-                                }
-                            </FormHelperText>
+                            {
+                                ((!!error) || (!!helperText))
+                                ? (
+                                    <FormHelperText error={!!error} sx={{ margin: 0, pl: 1 }}>
+                                        {
+                                            (!!error)
+                                                ? error.message
+                                                : `(${helperText})`
+                                        }
+                                    </FormHelperText>
+                                )
+                                : null
+                            }
                         </FormControl>
                     )}
 

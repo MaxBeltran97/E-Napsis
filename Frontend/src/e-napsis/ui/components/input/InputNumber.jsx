@@ -2,7 +2,7 @@ import { Grid, InputAdornment, TextField, Typography } from "@mui/material"
 import { memo, useState } from "react"
 import { Controller } from 'react-hook-form'
 
-export const InputPhoneNumber = memo(({ name , label, identifier, length, required = false, control, error }) => {
+export const InputNumber = memo(({ name , label, minLength, maxLength, required = false, control, error }) => {
 
     const [active, setActive] = useState(false)
 
@@ -46,28 +46,26 @@ export const InputPhoneNumber = memo(({ name , label, identifier, length, requir
                                 pl: 1
                             }
                         }}
-                        InputProps={{
-                            startAdornment: <InputAdornment position="start">{identifier}</InputAdornment>
-                        }}
                     />)}
 
                     rules={{
+                        required: {
+                            value: required,
+                            message: '*Este campo es obligatorio.'
+                        },
                         pattern: {
                             value: /^(0|[1-9]\d*)?$/,
                             message: '*Este campo debe ser un número.'
                         },
                         minLength: {
-                            value: length,
-                            message: `*Tamaño de ${length} números.`
+                            value: minLength,
+                            message: `*Tamaño mínimo de ${minLength} números.`
                         },
                         maxLength: {
-                            value: length,
-                            message: `*Tamaño de ${length} números.`
+                            value: maxLength,
+                            message: `*Tamaño máximo de ${maxLength} números.`
                         },
-                        required: {
-                            value: required,
-                            message: '*Este campo es obligatorio.'
-                        }
+                        
                     }}
                 />
             </Grid>

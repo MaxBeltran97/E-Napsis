@@ -13,6 +13,6 @@ export const tipoCuenta = [
     },
     {
         'value': 'cuenta-vista',
-        'name': 'Cuenta Vista'
+        'name': 'Cuenta Vista (Cuenta Rut)'
     }
 ]
