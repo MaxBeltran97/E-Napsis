@@ -17,11 +17,13 @@ const RelatorSchema = Schema({
     },
     rut: {
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
     email: {
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
     cellPhone: {
         type: Number,
@@ -74,7 +76,8 @@ const RelatorSchema = Schema({
     },
     bankAccountNumber: {
         type: Number,
-        required: true
+        required: true,
+        unique: true
     },
     bankAccount: {
         type: String,

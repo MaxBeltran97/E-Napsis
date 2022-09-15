@@ -7,7 +7,7 @@ const Relatores = require('../models/Relator');
 const getRelatores = async(req, res = response) => {
 
     const relatores = await Relator.find()
-                                    .populate('user','name');
+                                    .populate('');
     res.json({
         ok: true,
         relatores
@@ -57,12 +57,7 @@ const actualizarRelator = async(req, res = response) => {
             })
         }
 
-        if ( relator.user.toString() !== uid ) {
-            return res.status(401).json({
-                ok: false,
-                msg: 'No tiene privilegios de editar este relator'
-            })
-        }
+       
         
         const nuevoRelator = {
             ...req.body,
@@ -102,15 +97,9 @@ const eliminarRelator = async(req, res = response) => {
                 msg: 'Relator no existe por ese id'
             })
         }
+     
 
-        if ( relator.user.toString() !== uid ) {
-            return res.status(401).json({
-                ok: false,
-                msg: 'No tiene privilegios de eliminar este relator'
-            })
-        }       
-
-        await Relator.findByIdAndUpdate( relatorId );
+        await Relator.findByIdAndDelete( relatorId );
 
         res.json({
             ok:true,

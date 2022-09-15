@@ -20,37 +20,38 @@ router.use( validarJWT );
 router.get('/', getRelatores);
 
 // Crear un nuevo relator
-router.post('/',
-[
-    check('firstName', 'El nombre es obligatorio').not().isEmpty,
-    check('lastName', 'El apellido es obligatorio').not().isEmpty,
-    check('rut', 'El rut es obligatorio').not().isEmpty,
+router.post(
+    '/',
+ [
+    check('firstName', 'El nombre es obligatorio').not().isEmpty(),
+    check('lastName', 'El apellido es obligatorio').not().isEmpty(),
+    check('rut', 'El rut es obligatorio').not().isEmpty(),
     check('email', 'El email es obligatorio').isEmail(),
-    check('cellPhone', 'El  es obligatorio').not().isEmpty,
-    check('profession', 'La profesión es obligatoria').not().isEmpty,
-    check('speciality', 'La especialidad es obligatoria').not().isEmpty,
-    check('contract', 'El contrato es obligatorio').not().isEmpty,
-    check('bank', 'El banco es obligatorio').not().isEmpty,
-    check('bankAccountNumber', 'El número de cuenta es obligatorio').not().isEmpty,
-    check('bankAccount', 'El banco es obligatorio').not().isEmpty,
-    validarCampos
-],
+   check('cellPhone', 'El  es obligatorio').not().isEmpty(),
+   check('profession', 'La profesión es obligatoria').not().isEmpty(),
+   check('speciality', 'La especialidad es obligatoria').not().isEmpty(),
+   check('contract', 'El contrato es obligatorio').not().isEmpty(),
+   check('bank', 'El banco es obligatorio').not().isEmpty(),
+   check('bankAccountNumber', 'El número de cuenta es obligatorio').not().isEmpty(),
+   check('bankAccount', 'El banco es obligatorio').not().isEmpty(),
+   validarCampos
+], 
 crearRelator );
 
 // Actualizar un relator
 router.put('/:id',
 [
-    check('firstName', 'El nombre es obligatorio').not().isEmpty,
-    check('lastName', 'El apellido es obligatorio').not().isEmpty,
-    check('rut', 'El rut es obligatorio').not().isEmpty,
+    check('firstName', 'El nombre es obligatorio').not().isEmpty(),
+    check('lastName', 'El apellido es obligatorio').not().isEmpty(),
+    check('rut', 'El rut es obligatorio').not().isEmpty(),
     check('email', 'El email es obligatorio').isEmail(),
-    check('cellPhone', 'El  es obligatorio').not().isEmpty,
-    check('profession', 'La profesión es obligatoria').not().isEmpty,
-    check('speciality', 'La especialidad es obligatoria').not().isEmpty,
-    check('contract', 'El contrato es obligatorio').not().isEmpty,
-    check('bank', 'El banco es obligatorio').not().isEmpty,
-    check('bankAccountNumber', 'El número de cuenta es obligatorio').not().isEmpty,
-    check('bankAccount', 'El banco es obligatorio').not().isEmpty,
+    check('cellPhone', 'El  es obligatorio').not().isEmpty(),
+    check('profession', 'La profesión es obligatoria').not().isEmpty(),
+    check('speciality', 'La especialidad es obligatoria').not().isEmpty(),
+    check('contract', 'El contrato es obligatorio').not().isEmpty(),
+    check('bank', 'El banco es obligatorio').not().isEmpty(),
+    check('bankAccountNumber', 'El número de cuenta es obligatorio').not().isEmpty(),
+    check('bankAccount', 'El banco es obligatorio').not().isEmpty(),
     validarCampos
 ],
 actualizarRelator );
