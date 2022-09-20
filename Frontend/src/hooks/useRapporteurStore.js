@@ -1,12 +1,16 @@
 import { useDispatch, useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
-import { onAddNewRapporteur, onDeleteRapporteur, onHandleLoading, onUpdateRapporteur } from "../store/rapporteur/RapporteurSlice"
+import { onAddNewRapporteur, onDeleteRapporteur, onHandleActiveRapporteur, onHandleLoading, onUpdateRapporteur } from "../store/rapporteur/RapporteurSlice"
 
 export const useRapporteurStore = () => {
 
     const dispatch = useDispatch()
     const navigate = useNavigate()
-    const { isLoading, rapporteurs } = useSelector(state => state.rapporteur)
+    const { isLoading, activeRapporteur, rapporteurs } = useSelector(state => state.rapporteur)
+
+    const handleActiveRapporteur = (rapporteur) => {
+        dispatch(onHandleActiveRapporteur(rapporteur))
+    }
 
     const startFilterRapporteur = async(filters) => {
         dispatch(onHandleLoading(true))
@@ -27,6 +31,7 @@ export const useRapporteurStore = () => {
             dispatch(onAddNewRapporteur({...rapporteur, _id: new Date().getTime()}))
         }
 
+        dispatch(onHandleActiveRapporteur({}))
         setTimeout(() => {
             dispatch(onHandleLoading(false))
             navigate('../mst-relatores', {replace: true})
@@ -41,9 +46,11 @@ export const useRapporteurStore = () => {
     return {
         //* Propiedades
         isLoading,
+        activeRapporteur,
         rapporteurs,
 
         //* Metodos
+        handleActiveRapporteur,
         startFilterRapporteur,
         startSavingRapporteur,
         startDeletingRapporteur

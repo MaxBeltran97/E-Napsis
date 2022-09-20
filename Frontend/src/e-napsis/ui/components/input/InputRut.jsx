@@ -15,7 +15,7 @@ export const InputRut = memo(({ name , label, required = false, control, error }
     }
 
     const isValidRut = (rut) => {
-        return /^((0|[1-9]{7,8}))-(([kK0-9]{1}))$/.test(rut)
+        return /^((0|[0-9]{7,8}))-(([kK0-9]{1}))$/.test(rut)
     }
 
     return (

@@ -19,6 +19,7 @@ export const rapporteurSlice = createSlice({
     name: 'rapporteur',
     initialState: {
         isLoading: false,
+        activeRapporteur: {},
         rapporteurs: [
             tempRapporteur,
         ],
@@ -30,6 +31,9 @@ export const rapporteurSlice = createSlice({
         },
         onHandleRapporteurs: (state, {payload}) => {
             state.rapporteurs = payload
+        },
+        onHandleActiveRapporteur: (state, {payload}) => {
+            state.activeRapporteur = payload
         },
         onAddNewRapporteur: (state, {payload}) => {
             state.rapporteurs.push(payload)
@@ -51,6 +55,7 @@ export const rapporteurSlice = createSlice({
 export const {
     onHandleLoading,
     onHandleRapporteurs,
+    onHandleActiveRapporteur,
     onAddNewRapporteur,
     onUpdateRapporteur,
     onDeleteRapporteur

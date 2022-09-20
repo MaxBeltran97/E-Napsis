@@ -1,17 +1,28 @@
 import { CloudUploadOutlined, ContactPageOutlined, DeleteOutlined, Groups2Outlined, ModeOutlined, RadioButtonChecked, RadioButtonUnchecked, Send } from "@mui/icons-material"
 import { Divider, Grid, IconButton, Tooltip, Typography } from "@mui/material"
+import { useNavigate } from "react-router-dom"
 import { useRapporteurStore } from "../../../hooks/useRapporteurStore"
 import { GridPaper } from "../../ui/components/grid"
 import { FilterRapporteurs } from "../components"
 
 export const ShowRapporteursPage = () => {
 
-    const { rapporteurs } = useRapporteurStore()
+    const navigate = useNavigate()
+    const { rapporteurs, handleActiveRapporteur, startDeletingRapporteur } = useRapporteurStore()
+
+    const editRapporteur = (e, rapporteur) => {
+        handleActiveRapporteur(rapporteur)
+        navigate('../agr-relatores', {replace: true})
+    }
+
+    const deleteRapporteur = (e, rapporteur) => {
+        startDeletingRapporteur(rapporteur)
+    }
 
     return (
         <>
             <Typography variant="h5" sx={{ mt: 1, ml: 2 }}>Relatores</Typography>
-            <FilterRapporteurs />
+            {/* <FilterRapporteurs /> */}
 
             <GridPaper>
                 <Grid container alignItems={'center'}>
@@ -40,7 +51,6 @@ export const ShowRapporteursPage = () => {
                     <Grid item xs={12} sx={{ mt: 1 }}>
                         <Divider />
                     </Grid>
-
                 {
                     rapporteurs.map((rapporteur) => (
                         <Grid container sx={{ mt: 2 }} key={rapporteur._id} alignItems={'center'}>
@@ -99,14 +109,14 @@ export const ShowRapporteursPage = () => {
                                 </Grid>
                                 <Grid item sx={{ display: 'flex', justifyContent: 'center' }}>
                                     <Tooltip title={'Modificar'}>
-                                        <IconButton size="small">
+                                        <IconButton size="small" onClick={e => editRapporteur(e, rapporteur)}>
                                             <ModeOutlined />
                                         </IconButton>
                                     </Tooltip>
                                 </Grid>
                                 <Grid item sx={{ display: 'flex', justifyContent: 'center' }}>
                                     <Tooltip title={'Eliminar'}>
-                                        <IconButton size="small">
+                                        <IconButton size="small" onClick={e => deleteRapporteur(e, rapporteur)}>
                                             <DeleteOutlined color="error" />
                                         </IconButton>
                                     </Tooltip>

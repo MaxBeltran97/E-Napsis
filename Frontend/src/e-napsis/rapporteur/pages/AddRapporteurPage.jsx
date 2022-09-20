@@ -14,9 +14,9 @@ import { radioBoolean, radioBooleanActive, tipoBanco, tipoContrato, tipoCuenta, 
 
 export const AddRapporteurPage = () => {
 
-    const { isLoading, startSavingRapporteur } = useRapporteurStore()
+    const { isLoading, activeRapporteur, startSavingRapporteur } = useRapporteurStore()
 
-    const { handleSubmit, setValue, formState: { errors }, control } = useForm()
+    const { handleSubmit, setValue, formState: { errors }, control } = useForm({defaultValues: activeRapporteur})
     //TODO: pageLoading
     const [errorsForm, setErrorsForm] = useState(false)
 
@@ -57,7 +57,7 @@ export const AddRapporteurPage = () => {
                         <InputPhoneNumber name={'Teléfono Oficina'} label={'officePhone'} identifier={'+02'} length={8} control={control} error={errors.officePhone} />
                         <InputDate name={'Fecha de Nacimiento'} label={'birthday'} max={true} control={control} error={errors.birthday} />
                         <InputText name={'Profesión'} label={'profession'} required={true} control={control} error={errors.profession} />
-                        <InputSelect name={'Especialidad'} label={'specialty'} items={tipoEspecialidad} required={true} control={control} error={errors.specialty} />
+                        <InputSelect name={'Especialidad'} label={'speciality'} items={tipoEspecialidad} required={true} control={control} error={errors.speciality} />
                         <InputSelect name={'Estado Civil'} label={'maritalStatus'} items={tipoEstadoCivil} control={control} error={errors.maritalStatus} />
                         <InputText name={'Dirección'} label={'address'} control={control} error={errors.address} />
                         <InputRegionComuna control={control} setValue={setValue} />
