@@ -1,7 +1,4 @@
 
-
-
-
 const { Router } = require('express');
 const { check } = require('express-validator');
 
@@ -27,14 +24,14 @@ router.post(
     check('lastName', 'El apellido es obligatorio').not().isEmpty(),
     check('rut', 'El rut es obligatorio').not().isEmpty(),
     check('email', 'El email es obligatorio').isEmail(),
-   check('cellPhone', 'El  es obligatorio').not().isEmpty(),
-   check('profession', 'La profesión es obligatoria').not().isEmpty(),
-   check('speciality', 'La especialidad es obligatoria').not().isEmpty(),
-   check('contract', 'El contrato es obligatorio').not().isEmpty(),
-   check('bank', 'El banco es obligatorio').not().isEmpty(),
-   check('bankAccountNumber', 'El número de cuenta es obligatorio').not().isEmpty(),
-   check('bankAccount', 'El banco es obligatorio').not().isEmpty(),
-   validarCampos
+    check('cellPhone', 'El  es obligatorio').not().isEmpty(),
+    check('profession', 'La profesión es obligatoria').not().isEmpty(),
+    check('speciality', 'La especialidad es obligatoria').not().isEmpty(),
+    check('contract', 'El contrato es obligatorio').not().isEmpty(),
+    check('bank', 'El banco es obligatorio').not().isEmpty(),
+    check('bankAccountNumber', 'El número de cuenta es obligatorio').not().isEmpty(),
+    check('bankAccount', 'El banco es obligatorio').not().isEmpty(),
+    validarCampos
 ], 
 crearRelator );
 
