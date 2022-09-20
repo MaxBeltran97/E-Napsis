@@ -55,7 +55,7 @@ export const InputRegionComuna = memo(({ control, setValue }) => {
             <Grid container
                 direction={'row'}
                 alignItems='center'
-                sx={{ pl: 2, pt: 1 }}
+                sx={{ pt: 1 }}
             >
                 <Grid item xs={5}>
                     <Typography sx={{ color: (activeRegion) ? 'text.active' : '' }}>Región</Typography>
@@ -97,7 +97,7 @@ export const InputRegionComuna = memo(({ control, setValue }) => {
             <Grid container
                 direction={'row'}
                 alignItems='center'
-                sx={{ pl: 2, pt: 1 }}
+                sx={{ pt: 1 }}
             >
                 <Grid item xs={5}>
                     <Typography sx={{ color: (activeComuna) ? 'text.active' : '' }}>Comuna</Typography>

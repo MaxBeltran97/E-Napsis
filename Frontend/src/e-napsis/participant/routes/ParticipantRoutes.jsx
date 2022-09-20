@@ -1,7 +1,13 @@
+import { useEffect } from "react"
 import { Navigate, Route, Routes } from "react-router-dom"
 import { AddParticipantPage, ImportParticipantsPage, ShowParticipantsPage } from "../pages"
 
 export const ParticipantRoutes = () => {
+
+    useEffect(() => {
+        document.title = 'e-Napsis - Participantes'
+    }, [])
+
     return (
         <Routes>
             <Route path="/agr-participantes" element={ <AddParticipantPage /> } />

@@ -1,8 +1,8 @@
-import { Grid, InputAdornment, TextField, Typography } from "@mui/material"
+import { Grid, TextField, Typography } from "@mui/material"
 import { memo, useState } from "react"
 import { Controller } from 'react-hook-form'
 
-export const InputPhoneNumber = memo(({ name , label, identifier, length, required = false, control, error }) => {
+export const InputRut = memo(({ name , label, required = false, control, error }) => {
 
     const [active, setActive] = useState(false)
 
@@ -12,6 +12,10 @@ export const InputPhoneNumber = memo(({ name , label, identifier, length, requir
 
     const onBlur = () => {
         setActive(false)
+    }
+
+    const isValidRut = (rut) => {
+        return /^((0|[0-9]{7,8}))-(([kK0-9]{1}))$/.test(rut)
     }
 
     return (
@@ -35,7 +39,8 @@ export const InputPhoneNumber = memo(({ name , label, identifier, length, requir
                         onBlur={onBlur}
                         error={!!error}
                         helperText={(!!error) ? error.message : ''}
-                        label={(required) ? "Obligatorio*" : ''} 
+                        label={(required) ? "Obligatorio*" : ''}
+                        placeholder={'12345678-9'}
                         fullWidth
                         autoComplete="off"
                         size="small"
@@ -46,27 +51,16 @@ export const InputPhoneNumber = memo(({ name , label, identifier, length, requir
                                 pl: 1
                             }
                         }}
-                        InputProps={{
-                            startAdornment: <InputAdornment position="start">{identifier}</InputAdornment>
-                        }}
+                        InputLabelProps={{ shrink: true }}
                     />)}
 
                     rules={{
-                        pattern: {
-                            value: /^(0|[1-9]\d*)?$/,
-                            message: '*Este campo debe ser un número.'
-                        },
-                        minLength: {
-                            value: length,
-                            message: `*Tamaño de ${length} números.`
-                        },
-                        maxLength: {
-                            value: length,
-                            message: `*Tamaño de ${length} números.`
-                        },
                         required: {
                             value: required,
-                            message: '*Este campo es obligatorio.'
+                            message: '*Este campo es obligatorio'
+                        },
+                        validate: {
+                            checkRut: rut => isValidRut(rut) || '*Rut invalido.'
                         }
                     }}
                 />

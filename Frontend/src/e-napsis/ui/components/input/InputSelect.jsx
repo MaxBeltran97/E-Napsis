@@ -19,7 +19,7 @@ export const InputSelect = memo(({ name, label, defaultText = 'Seleccione...', i
         <Grid container
             direction={'row'}
             alignItems='center'
-            sx={{ pl: 2, pt: 1 }}
+            sx={{ pt: 1 }}
         >
             <Grid item xs={5}>
                 <Typography sx={{ color: (!!error) ? 'error.main' : (active) ? 'text.active' : '' }}>{name}</Typography>

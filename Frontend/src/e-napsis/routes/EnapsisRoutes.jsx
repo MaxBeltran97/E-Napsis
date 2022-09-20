@@ -17,7 +17,7 @@ export const EnapsisRoutes = () => {
     const { setByUrlActiveItem, activeItem } = useSidebarStore()
 
     useEffect(() => {
-        if(!(!!activeItem.name)) {
+        if(!(!!activeItem.name) || (activeItem.activeOption?.url !== pathname)) {
             setByUrlActiveItem(pathname)
         }
     }, [pathname])

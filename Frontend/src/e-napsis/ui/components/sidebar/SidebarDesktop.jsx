@@ -65,7 +65,7 @@ export const SidebarDesktop = () => {
         >
             <DrawerHeader>
                 <Icon sx={{display: 'flex'}}>
-                    <img src="../src/e-napsis/ui/data/colocolo.svg" />
+                    <img src="../src/e-napsis/ui/data/napsis-logo.png" />
                 </Icon>
                 <Typography
                     variant='h6'

@@ -44,7 +44,7 @@ export const InputDate = memo(({ name , label, min = false, max = false, require
         <Grid container
             direction={'row'}
             alignItems='center'
-            sx={{ pl: 2, pt: 1 }}
+            sx={{ pt: 1 }}
         >
             <Grid item xs={5}>
                 <Typography sx={{ color: (!!error) ? 'error.main' : (active) ? 'text.active' : '' }}>{name}</Typography>
@@ -74,7 +74,6 @@ export const InputDate = memo(({ name , label, min = false, max = false, require
                                     sx={{
                                         bgcolor: 'background.component',
                                         "& .MuiFormHelperText-root": {
-                                            bgcolor: 'background.default',
                                             margin: 0,
                                             pl: 1
                                         }

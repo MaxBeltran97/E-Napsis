@@ -1,3 +1,2 @@
 
-export * from './GridButtons'
-export * from './GridInputs'
+export * from './GridPaper'

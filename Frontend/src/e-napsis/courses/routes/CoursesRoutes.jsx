@@ -1,7 +1,13 @@
+import { useEffect } from "react"
 import { Navigate, Route, Routes } from "react-router-dom"
 import { AddCoursesPage, ImportActivitiesPage, ImportCoursesPage, ShowCoursesPage } from "../pages"
 
 export const CoursesRoutes = () => {
+
+    useEffect(() => {
+        document.title = 'e-Napsis - Cursos'
+    }, [])
+
     return (
         <Routes>
             <Route path="/agr-cursos" element={ <AddCoursesPage /> } />

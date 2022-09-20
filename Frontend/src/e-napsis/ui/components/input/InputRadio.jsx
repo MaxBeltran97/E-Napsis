@@ -8,7 +8,7 @@ export const InputRadio = memo(({ name, label, items = [], posDefault, control }
         <Grid container
             direction={'row'}
             alignItems='center'
-            sx={{ pl: 2, pt: 1 }}
+            sx={{ pt: 1 }}
         >
             <Grid item xs={5}>
                 <Typography>{name}</Typography>
@@ -26,7 +26,7 @@ export const InputRadio = memo(({ name, label, items = [], posDefault, control }
                                     <FormControlLabel
                                         key={item.name}
                                         value={item.value}
-                                        control={<Radio size="small" />}
+                                        control={<Radio size="small" sx={{ pt: '10px', pb: '10px' }}/>}
                                         label={item.name}
                                     />
                                 ))
