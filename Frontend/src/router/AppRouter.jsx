@@ -2,7 +2,7 @@ import { Navigate, Route, Routes } from 'react-router-dom'
 
 import { AuthRoutes } from '../auth/routes'
 import { EnapsisRoutes } from '../e-napsis/routes'
-import { useAuthStore } from '../hooks'
+import { useAuthStore } from '@hooks'
 
 export const AppRouter = () => {
 

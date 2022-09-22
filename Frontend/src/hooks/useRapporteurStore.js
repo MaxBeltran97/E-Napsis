@@ -35,7 +35,7 @@ export const useRapporteurStore = () => {
         setTimeout(() => {
             dispatch(onHandleLoading(false))
             navigate('../mst-relatores', {replace: true})
-        }, 2000)
+        }, 1000)
     }
 
     const startDeletingRapporteur = async(rapporteur) => {

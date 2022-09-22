@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const tempRapporteur = {
     _id: 1,
-    firstName: 'Rafael',
+    names: 'Rafael',
     lastName: 'Carvacho',
     rut: '20668572-7',
     condition: true,
