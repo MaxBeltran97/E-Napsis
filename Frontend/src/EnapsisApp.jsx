@@ -1,10 +1,10 @@
-import { AppRouter } from "./router/AppRouter"
-import { AppTheme } from "./theme"
+import { AppTheme } from './theme'
+import { AppRouter } from './router/AppRouter'
 
 export const EnapsisApp = () => {
-    return (
-        <AppTheme>
-            <AppRouter />
-        </AppTheme>
-    )
+  return (
+    <AppTheme>
+      <AppRouter />
+    </AppTheme>
+  )
 }

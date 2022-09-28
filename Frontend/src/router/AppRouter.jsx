@@ -1,22 +1,23 @@
-import { Navigate, Route, Routes } from 'react-router-dom'
+import { Navigate, Route, Routes } from "react-router-dom"
 
-import { AuthRoutes } from '../auth/routes'
-import { EnapsisRoutes } from '../e-napsis/routes'
-import { useAuthStore } from '@hooks'
+import { AUTH, LOGIN } from "@models/publicRoutes"
+
+import { EnapsisRoutes } from "@pages/enapsis/routes"
+import { AuthRoutes } from "@pages/auth/routes"
 
 export const AppRouter = () => {
 
-    const { status } = useAuthStore()
+  const status = 'authenticated'
 
-    return (
-        <Routes>
-            {
-                (status === 'authenticated')
-                ? <Route path='/*' element={<EnapsisRoutes />} />
-                : <Route path='/auth/*' element={<AuthRoutes />} />
-            }
+  return (
+    <Routes>
+      {
+        (status === 'authenticated')
+          ? <Route path="/*" element={<EnapsisRoutes />} />
+          : <Route path={`${AUTH}/*`} element={<AuthRoutes />} />
+      }
 
-            <Route path='/*' element={<Navigate to={'/auth/login'} />} />
-        </Routes>
-    )
+      <Route path="/*" element={<Navigate to={`${AUTH + LOGIN}`} />} />
+    </Routes>
+  )
 }
