@@ -20,12 +20,12 @@ export const AddParticipantPage = () => {
           <Grid container columnSpacing={4} rowSpacing={0}>
             <Grid item xs={12} lg={6}>
               {/* Calendario Cursos con filtrado */}
-              <InputText control={control} name={'Calendario de Cursos'} label={'codigoCurso'} required={true} error={errors.codigoCurso} />
+              <InputText control={control} name={'Calendario de Cursos'} label={'courseCode'} required={true} error={errors.courseCode} />
               <InputRadio control={control} name={'Tipo Participante'} label={'participantType'} items={radioParticipantType} />
 
               <InputCondition value={pType} valueCondition={radioParticipantType[1].value} unregister={unregister} labelCondition={'company'}>
                 {/* Empresas con filtrado */}
-                <InputText control={control} name={'Empresa'} label={'company'} required={true} error={errors.company} />
+                <InputText control={control} name={'Empresa'} label={'company_id'} required={true} error={errors.company_id} />
               </InputCondition>
               
               <InputRadio control={control} name={'Nacionalidad'} label={'nationalityType'} items={radioNationalityType} />

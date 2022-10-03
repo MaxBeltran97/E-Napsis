@@ -16,7 +16,7 @@ export const AddCompanyPage = () => {
       <Grid item xs={12} lg={6}>
         <GridInput title={'Datos de la Empresa'}>
           <InputRut control={control} name={'RUT'} label={'rut'} error={errors.rut} />
-          <InputText control={control} name={'Razón Social'} label={'rs'} required={true} error={errors.rs} />
+          <InputText control={control} name={'Razón Social'} label={'socialReason'} required={true} error={errors.socialReason} />
           <InputText control={control} name={'Nombre de Fantasía'} label={'fantasyName'} required={true} error={errors.fantasyName} />
           <InputText control={control} name={'Giro'} label={'turn'} required={true} error={errors.turn} />
           <InputText control={control} name={'Dirección'} label={'address'} required={true} error={errors.address} />

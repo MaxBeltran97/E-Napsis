@@ -4,7 +4,7 @@ import { Controller } from 'react-hook-form'
 import { FormControl, FormHelperText, InputLabel, MenuItem, Select } from '@mui/material'
 import { InputForm } from '../InputForm'
 
-export const InputSelect = memo(({ control, name, label, required = false, error, defaultText = 'Seleccione...', items = [] }) => {
+export const InputSelect = memo(({ control, name, label, required = false, error, defaultText = 'Seleccione...', items = [], withSize = 7 }) => {
   const [active, setActive] = useState(false)
 
   const onFocus = () => {
@@ -16,7 +16,7 @@ export const InputSelect = memo(({ control, name, label, required = false, error
   }
 
   return (
-    <InputForm name={name} active={active} error={!!error}>
+    <InputForm name={name} active={active} error={!!error} textBoxSize={withSize}>
       <Controller
         control={control}
         name={label}

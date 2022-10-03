@@ -63,6 +63,7 @@ export const InputDate = memo(({ control, name, label, required = false, error, 
                   error={!!error}
                   helperText={(!!error) ? error.message : ''}
                   autoComplete='off'
+                  // fullWidth
                   size='small'
                   sx={{
                     bgcolor: 'background.main',
