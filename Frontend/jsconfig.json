@@ -1,0 +1,13 @@
+{
+    "compilerOptions": {
+        "baseUrl": "./",
+        "paths": {
+            "@assets/*": ["src/assets/*"],
+            "@hooks/*": ["src/hooks/*"],
+            "@models/*": ["src/models/*"],
+            "@components/*": ["src/pages/enapsis/components/*"],
+            "@pages/*": ["src/pages/*"],
+            "@reduxSlices/*": ["src/redux/slices/*"],
+        }
+    }
+}

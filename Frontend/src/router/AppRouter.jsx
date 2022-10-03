@@ -1,15 +1,23 @@
-import { Route, Routes } from 'react-router-dom'
-import { AuthRoutes } from '../auth/routes'
-import { EnapsisRoutes } from '../enapsis/routes'
+import { Navigate, Route, Routes } from "react-router-dom"
+
+import { AUTH, LOGIN } from "@models/publicRoutes"
+
+import { EnapsisRoutes } from "@pages/enapsis/routes"
+import { AuthRoutes } from "@pages/auth/routes"
 
 export const AppRouter = () => {
-    return (
-        <Routes>
-            {/* Login */}
-            <Route path='auth/*' element={ <AuthRoutes /> } />
 
-            {/* E-napsis */}
-            <Route path='/*' element={ <EnapsisRoutes /> } />
-        </Routes>
-    )
+  const status = 'authenticated'
+
+  return (
+    <Routes>
+      {
+        (status === 'authenticated')
+          ? <Route path="/*" element={<EnapsisRoutes />} />
+          : <Route path={`${AUTH}/*`} element={<AuthRoutes />} />
+      }
+
+      <Route path="/*" element={<Navigate to={`${AUTH + LOGIN}`} />} />
+    </Routes>
+  )
 }
