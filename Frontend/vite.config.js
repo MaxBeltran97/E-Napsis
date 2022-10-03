@@ -7,7 +7,12 @@ import path from 'node:path'
 export default defineConfig({
   resolve:{
     alias:{
-      '@hooks' : path.resolve(__dirname, './src/hooks')
+      '@assets': path.resolve(__dirname, './src/assets'),
+      '@hooks': path.resolve(__dirname, './src/hooks'),
+      '@models': path.resolve(__dirname, './src/models'),
+      '@components': path.resolve(__dirname, './src/pages/enapsis/components'),
+      '@pages': path.resolve(__dirname, './src/pages'),
+      '@reduxSlices': path.resolve(__dirname, './src/redux/slices'),
     }
   },
   plugins: [react()]

@@ -4,7 +4,7 @@ import { Provider } from 'react-redux'
 import { BrowserRouter } from 'react-router-dom'
 
 import { EnapsisApp } from './EnapsisApp'
-import { store } from './store'
+import { store } from './redux/store'
 import './styles.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
