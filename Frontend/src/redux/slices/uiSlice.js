@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { ADD_COMPANY, ADD_COURSES, ADD_PARTICIPANTS, ADD_TELLER, CALENDAR, COMPANIES, COURSES, HOME, IMPORT_COMPANIES, IMPORT_COURSES, IMPORT_PARTICIPANTS, IMPORT_TELLERS, PARTICIPANTS, SHOW_COMPANIES, SHOW_COURSES, SHOW_PARTICIPANTS, SHOW_TELLERS, TELLERS } from "@models/privateRoutes";
+import { ADD_COMPANY, ADD_COURSES, ADD_PARTICIPANTS, ADD_TELLER, CALENDAR, COMPANIES, COURSES, HOME, IMPORT_PARTICIPANTS, PARTICIPANTS, SHOW_COMPANIES, SHOW_COURSES, SHOW_PARTICIPANTS, SHOW_TELLERS, TELLERS } from "@models/privateRoutes";
 
 export const uiSlice = createSlice({
   name: 'ui',
@@ -25,10 +25,6 @@ export const uiSlice = createSlice({
           {
             name: 'Mostrar Empresas',
             url: `${COMPANIES + SHOW_COMPANIES}`
-          },
-          {
-            name: 'Importar Empresas',
-            url: `${COMPANIES + IMPORT_COMPANIES}`
           }
         ]
       },
@@ -45,10 +41,6 @@ export const uiSlice = createSlice({
           {
             name: 'Mostrar Relatores',
             url: `${TELLERS + SHOW_TELLERS}`
-          },
-          {
-            name: 'Importar Relatores',
-            url: `${TELLERS + IMPORT_TELLERS}`
           }
         ]
       },
@@ -85,10 +77,6 @@ export const uiSlice = createSlice({
           {
             name: 'Mostrar Cursos',
             url: `${COURSES + SHOW_COURSES}`
-          },
-          {
-            name: 'Importar Cursos',
-            url: `${COURSES + IMPORT_COURSES}`
           }
         ]
       },

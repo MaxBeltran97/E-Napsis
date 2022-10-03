@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form"
 
 import { Grid } from "@mui/material"
 import { GridForm, GridInput } from "@components/grid"
-import { InputFile, InputRadio, InputSelect, InputText } from "@components/input/generic"
+import { InputDate, InputFile, InputRadio, InputSelect, InputText } from "@components/input/generic"
 import { InputComuna, InputEmail, InputPhoneNumber, InputRegion, InputRut } from "@components/input/specific"
 import { ButtonSave } from "@components/button"
 
@@ -23,14 +23,14 @@ export const AddTellerPage = () => {
           <InputText control={control} name={'Apellido Paterno'} label={'lastName'} required={true} error={errors.lastName} />
           <InputText control={control} name={'Apellido Materno'} label={'motherLastName'} required={true} error={errors.motherLastName} />
           <InputText control={control} name={'Nacionalidad'} label={'nationality'} error={errors.nationality} />
-          {/* Date */}
+          <InputDate control={control} name={'Fecha de Nacimiento'} label={'birthday'} error={errors.birthday} maxDate={new Date()} />
           <InputText control={control} name={'Profesión'} label={'profession'} required={true} error={errors.profession} />
           <InputEmail control={control} name={'Email'} label={'email'} required={true} error={errors.email} />
           <InputPhoneNumber control={control} name={'Teléfono Celular'} label={'cellPhone'} required={true} error={errors.cellPhone} identifier={'+56 9'} length={8} />
           <InputSelect control={control} name={'Estado Civil'} label={'maritalStatus'} error={errors.maritalStatus} items={selectMaritalStatus} />
           <InputText control={control} name={'Dirección'} label={'address'} error={errors.address} />
           <InputRegion control={control} name={'Región'} label={'region'} error={errors.region} getValues={getValues} setValue={setValue} items={selectRegiones} labelComuna={'commune'} />
-          <InputComuna control={control} name={'Comuna'} label={'commune'} error={errors.comuna} getValues={getValues} labelRegion={'region'} />
+          <InputComuna control={control} name={'Comuna'} label={'commune'} error={errors.commune} getValues={getValues} labelRegion={'region'} />
           <InputRadio control={control} name={'Estado'} label={'situation'} items={radioBooleanActive} />
           <InputFile control={control} name={'Archivos Relevantes'} label={'tellerFiles'} error={errors.tellerFiles} textButton={'Subir Archivos'} helperText={'CV, Títulos, Diplomas, etc.'} allowedExtensions={['pdf', 'docx', 'png', 'jpg']} multiple={true} />
         </GridInput>

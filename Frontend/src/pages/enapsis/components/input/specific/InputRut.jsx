@@ -37,6 +37,7 @@ export const InputRut = memo(({ control, name, label, required = false, error })
             error={!!error}
             helperText={(!!error) ? error.message : ''}
             label={(required) ? 'Obligatorio*' : ''}
+            placeholder={'12345678-9'}
             fullWidth
             autoComplete='off'
             size='small'
@@ -46,6 +47,7 @@ export const InputRut = memo(({ control, name, label, required = false, error })
                 m: 0, pl: 1
               }
             }}
+            InputLabelProps={{ shrink: true }}
           />
         )}
 

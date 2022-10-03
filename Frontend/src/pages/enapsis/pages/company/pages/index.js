@@ -1,3 +1,3 @@
 export * from './AddCompanyPage';
-export * from './ImportCompaniesPage';
+export * from './AddCompanyPage2Forms';
 export * from './ShowCompaniesPage';

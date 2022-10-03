@@ -30,3 +30,29 @@ export const radioNationalityType = [
     'name': 'Extranjero'
   }
 ]
+
+export const radioParticipantType = [
+  {
+    'value': 'particular',
+    'name': 'Particular'
+  },
+  {
+    'value': 'empresa',
+    'name': 'Empresa'
+  }
+]
+
+export const radioGenderType = [
+  {
+    'value': 'femenino',
+    'name': 'Femenino'
+  },
+  {
+    'value': 'masculino',
+    'name': 'Masculino'
+  },
+  {
+    'value': 'otro',
+    'name': 'Otro'
+  }
+]

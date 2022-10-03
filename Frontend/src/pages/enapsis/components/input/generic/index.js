@@ -1,3 +1,4 @@
+export * from './InputDate';
 export * from './InputFile';
 export * from './InputNumber';
 export * from './InputRadio';
