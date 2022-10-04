@@ -44,9 +44,9 @@ class Teller(Resource):
         help="Debe ingresar su nacionalidad."
     )
     parser.add_argument('birthday',
-        type=date,
+        type=str,
         required=False,
-        help="Debe ingresar una contrasena."
+        help="Debe ingresar un birthday."
     )
     parser.add_argument('profession',
         type=str,
@@ -59,7 +59,7 @@ class Teller(Resource):
         help="Debe ingresar su email."
     )
     parser.add_argument('cellPhone',
-        type=str,
+        type=int,
         required=False,
         help="Debe ingresar su numero celular"
     )
@@ -88,6 +88,15 @@ class Teller(Resource):
         required=False,
         help="Debe ingresar su estado"
     )
+    parser.add_argument('reuf',
+        type=bool,
+        required=False,
+        help="Debe ingresar reuf"
+    )
+    parser.add_argument('uploadFiles',
+        type=bool,
+        required=False
+    )
 
     
 
@@ -110,8 +119,12 @@ class Teller(Resource):
             region = data['region']
             commune = data['commune']
             situation = data['situation']
+            reuf = data['reuf']
 
-            new_teller = modelTeller(nationalityType, rut, fullName, lastName, motherLastName, nationality, birthday, profession, email, cellPhone, maritalStatus, address, region, commune, situation)
+            # TODO: variable para un tipo de rol de Relator
+            # uploadFiles = data['uploadFiles']
+
+            new_teller = modelTeller(nationalityType, rut, fullName, lastName, motherLastName, nationality, birthday, profession, email, cellPhone, maritalStatus, address, region, commune, situation, reuf)
 
             db.session.add(new_teller)
     

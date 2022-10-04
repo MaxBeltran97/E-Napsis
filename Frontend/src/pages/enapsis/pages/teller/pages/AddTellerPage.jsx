@@ -9,12 +9,14 @@ import { ButtonSave } from "@components/button"
 import { radioBoolean, radioBooleanActive, radioNationalityType } from "@assets/radio-data"
 import { selectMaritalStatus } from "@assets/select-data"
 import { selectRegiones } from "@assets/select-regiones"
+import { useTellerStore } from "@hooks/useTellerStore"
 
 export const AddTellerPage = () => {
   const { handleSubmit, getValues, setValue, formState: {errors}, control } = useForm()
+  const { isLoading, startSavingTeller } = useTellerStore()
 
   return (
-    <GridForm handleSubmit={handleSubmit} formTitle={'Registro de Relator'} functionFromData={null}>
+    <GridForm handleSubmit={handleSubmit} formTitle={'Registro de Relator'} functionFromData={startSavingTeller}>
       <Grid item xs={12} lg={6}>
         <GridInput title={'Datos Personales'}>
           <InputRadio control={control} name={'Tipo'} label={'nationalityType'} items={radioNationalityType} />

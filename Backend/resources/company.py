@@ -13,7 +13,7 @@ class Company(Resource):
 
     parser.add_argument('rut',
         type=str,
-        required=False,
+        required=True,
         help="Debe ingresar el rut de la empresa"
     )
 
@@ -68,7 +68,7 @@ class Company(Resource):
     parser.add_argument('cellPhone',
         type=int,
         required=False,
-        help="Debe ingresar el tipo de nacionalidad"
+        help="Debe ingresar el tipo de Celular"
     )
 
     parser.add_argument('position',
@@ -84,6 +84,7 @@ class Company(Resource):
     )
 
     def post(self):
+        print(Company.parser.parse_args())
         data = Company.parser.parse_args()
         try:
             rut = data['rut']

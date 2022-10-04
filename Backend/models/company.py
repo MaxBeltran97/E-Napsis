@@ -4,7 +4,7 @@ from helpers.serializable import Serializer
 
 class Company(db.Model, Serializer):
     _id = db.Column(db.Integer, primary_key = True)
-    rut = db.Column(db.String(100), unique=True)
+    rut = db.Column(db.String(100), unique=True, nullable=False)
     socialReason = db.Column(db.String(100), nullable=False)
     fantasyName = db.Column(db.String(100), nullable=False)
     turn = db.Column(db.String(100), nullable=False)

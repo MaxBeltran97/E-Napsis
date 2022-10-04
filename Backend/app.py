@@ -4,20 +4,20 @@ from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from flask_restful import Api
 from flask_mysqldb import MySQL
+
+from redis_app import redis
+from database.db import db
+from database.config import app_config, DevelopmentConfig
+from helpers.sesion import Sesion
+
 from models.company import Company
 from models.participant import Participant
-from redis_app import redis
-from database.db import db                                                                                                 
-from database.config import app_config, DevelopmentConfig
 from models.teller import Teller
-from helpers.sesion import Sesion
+
 from resources.login import Login
 from resources.teller import Teller
 from resources.company import Company
 from resources.participant import Participant
-
-
-
 
 
 # IMPORTACIÓN DE RECURSOS

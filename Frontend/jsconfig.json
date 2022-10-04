@@ -2,7 +2,9 @@
     "compilerOptions": {
         "baseUrl": "./",
         "paths": {
+            "@api/*": ["src/api/*"],
             "@assets/*": ["src/assets/*"],
+            "@helpers/*": ["src/helpers/*"],
             "@hooks/*": ["src/hooks/*"],
             "@models/*": ["src/models/*"],
             "@components/*": ["src/pages/enapsis/components/*"],

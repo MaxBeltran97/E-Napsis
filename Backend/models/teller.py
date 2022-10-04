@@ -9,7 +9,8 @@ class Teller(db.Model, Serializer):
     lastName = db.Column(db.String(100), nullable=False)
     motherLastName = db.Column(db.String(100), nullable=False)
     nationality = db.Column(db.String(100))
-    birthday = db.Column(db.DateTime)
+    # birthday = db.Column(db.DateTime)
+    birthday = db.Column(db.String(100))
     profession = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100), unique=True, nullable=False)
     cellPhone = db.Column(db.Integer)
@@ -18,8 +19,9 @@ class Teller(db.Model, Serializer):
     region = db.Column(db.String(100))
     commune = db.Column(db.String(100))
     situation = db.Column(db.Boolean)
+    reuf = db.Column(db.Boolean)
 
-    def __init__(self, nationalityType, rut, fullName, lastName, motherLastName, nationality, birthday, profession, email, cellPhone, maritalStatus, address, region, commune, situation ):
+    def __init__(self, nationalityType, rut, fullName, lastName, motherLastName, nationality, birthday, profession, email, cellPhone, maritalStatus, address, region, commune, situation, reuf ):
         self.nationalityType = nationalityType
         self.rut = rut
         self.fullName = fullName
@@ -35,6 +37,7 @@ class Teller(db.Model, Serializer):
         self.region = region
         self.commune = commune
         self.situation = situation
+        self.reuf = reuf
    
     def serialize(self):
         d = Serializer.serialize(self)

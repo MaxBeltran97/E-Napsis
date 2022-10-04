@@ -1,3 +1,4 @@
 export * from './authSlice';
-export * from './entitySlice';
+export * from './companySlice';
+export * from './tellerSlice';
 export * from './uiSlice';
