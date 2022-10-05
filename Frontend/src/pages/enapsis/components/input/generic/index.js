@@ -1,3 +1,4 @@
+export * from './InputAutocomplete';
 export * from './InputDate';
 export * from './InputFile';
 export * from './InputNumber';

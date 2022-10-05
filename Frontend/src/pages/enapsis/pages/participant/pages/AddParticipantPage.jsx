@@ -1,20 +1,33 @@
+import { useEffect } from "react"
 import { useForm, useWatch } from "react-hook-form"
 
 import { Grid } from "@mui/material"
 import { GridForm, GridInput } from "@components/grid"
-import { InputRadio, InputText } from "@components/input/generic"
+import { InputAutocomplete, InputRadio, InputText } from "@components/input/generic"
 import { InputEmail, InputRut } from "@components/input/specific"
 import { ButtonSave } from "@components/button"
 
 import { radioGenderType, radioNationalityType, radioParticipantType } from "@assets/radio-data"
 import { InputCondition } from "@components/input/InputCondition"
 
+import { useCompanyStore } from "@hooks/useCompanyStore"
+import { getCompaniesWithAutocomplete } from "@pages/enapsis/helpers"
+
 export const AddParticipantPage = () => {
   const { handleSubmit, unregister, formState: {errors}, control } = useForm()
+  const { companies, startGetCompanies } = useCompanyStore()
   const pType = useWatch({ control, name: 'participantType' })
 
+  useEffect(() => {
+    startGetCompanies()
+  }, [])
+
+  const onSubmit = (data) => {
+    console.log(data)
+  }
+
   return (
-    <GridForm handleSubmit={handleSubmit} formTitle={'Registro de Participante'} functionFromData={null}>
+    <GridForm handleSubmit={handleSubmit} formTitle={'Registro de Participante'} functionFromData={onSubmit}>
       <Grid item xs={12}>
         <GridInput title={'Datos Personales'}>
           <Grid container columnSpacing={4} rowSpacing={0}>
@@ -24,8 +37,7 @@ export const AddParticipantPage = () => {
               <InputRadio control={control} name={'Tipo Participante'} label={'participantType'} items={radioParticipantType} />
 
               <InputCondition value={pType} valueCondition={radioParticipantType[1].value} unregister={unregister} labelCondition={'company'}>
-                {/* Empresas con filtrado */}
-                <InputText control={control} name={'Empresa'} label={'company_id'} required={true} error={errors.company_id} />
+                <InputAutocomplete control={control} name={'Empresa'} label={'company_id'} required={true} error={errors.company_id} items={getCompaniesWithAutocomplete(companies)} />
               </InputCondition>
               
               <InputRadio control={control} name={'Nacionalidad'} label={'nationalityType'} items={radioNationalityType} />
