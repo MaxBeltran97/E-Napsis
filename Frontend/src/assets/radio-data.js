@@ -52,7 +52,7 @@ export const radioGenderType = [
     'name': 'Masculino'
   },
   {
-    'value': 'otro',
+    'value': 'helicoptero_apache',
     'name': 'Otro'
   }
 ]

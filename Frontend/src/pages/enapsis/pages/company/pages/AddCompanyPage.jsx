@@ -7,15 +7,17 @@ import { InputComuna, InputEmail, InputPhoneNumber, InputRegion, InputRut } from
 import { ButtonSave } from '@components/button'
 
 import { selectRegiones } from '@assets/select-regiones'
+import { useCompanyStore } from '@hooks/useCompanyStore'
 
 export const AddCompanyPage = () => {
   const { handleSubmit, getValues, setValue, formState: { errors }, control } = useForm()
+  const { isLoading, startSavingCompany} = useCompanyStore()
 
   return (
-    <GridForm handleSubmit={handleSubmit} formTitle={'Registro de Empresa'}>
+    <GridForm handleSubmit={handleSubmit} formTitle={'Registro de Empresa'} functionFromData={startSavingCompany}>
       <Grid item xs={12} lg={6}>
         <GridInput title={'Datos de la Empresa'}>
-          <InputRut control={control} name={'RUT'} label={'rut'} error={errors.rut} />
+          <InputRut control={control} name={'RUT'} label={'rut'} required={true} error={errors.rut} />
           <InputText control={control} name={'Razón Social'} label={'socialReason'} required={true} error={errors.socialReason} />
           <InputText control={control} name={'Nombre de Fantasía'} label={'fantasyName'} required={true} error={errors.fantasyName} />
           <InputText control={control} name={'Giro'} label={'turn'} required={true} error={errors.turn} />
@@ -35,7 +37,7 @@ export const AddCompanyPage = () => {
         </GridInput>
       </Grid>
 
-      <ButtonSave buttonTitle={'Guardar Empresa'} errorTitle={'Error al Guardar'} isLoading={false} errorsForm={false} />
+      <ButtonSave buttonTitle={'Guardar Empresa'} errorTitle={'Error al Guardar'} isLoading={isLoading} errorsForm={false} />
     </GridForm>
   )
 }

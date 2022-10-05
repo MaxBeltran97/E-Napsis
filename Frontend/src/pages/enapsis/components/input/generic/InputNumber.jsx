@@ -4,7 +4,7 @@ import { Controller } from "react-hook-form"
 import { TextField } from "@mui/material"
 import { InputForm } from "../inputForm"
 
-export const InputNumber = memo(({ control, name, label, required = false, error, minLength, maxLength, placeholder, withSize = 7}) => {
+export const InputNumber = memo(({ control, name, label, required = false, error, minLength, maxLength, withSize = 7}) => {
   const [active, setActive] = useState(false)
 
   const onFocus = () => {
@@ -30,7 +30,7 @@ export const InputNumber = memo(({ control, name, label, required = false, error
             error={!!error}
             helperText={(!!error) ? error.message : ''}
             label={(required) ? 'Obligatorio*' : ''}
-            placeholder={(!!placeholder) ? placeholder : ''}
+            // placeholder={(!!placeholder) ? placeholder : ''}
             fullWidth
             autoComplete="off"
             size='small'
@@ -40,7 +40,7 @@ export const InputNumber = memo(({ control, name, label, required = false, error
                 m: 0, pl: 1
               }
             }}
-            InputLabelProps={{ shrink: (!!placeholder) ? true : false }}
+            // InputLabelProps={{ shrink: (!!placeholder) ? true : false }}
           />
         )}
 
