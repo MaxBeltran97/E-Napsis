@@ -138,8 +138,6 @@ class Teller(Resource):
 
     def get(self):
         try:
-            id = request.args.get('id')
-            print(id)
             teller = modelTeller.query.all()
             return jsonify(modelTeller.serialize_list(teller))
         except Exception as e:

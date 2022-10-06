@@ -18,6 +18,7 @@ from resources.login import Login
 from resources.teller import Teller
 from resources.company import Company
 from resources.participant import Participant
+from resources.course import Course
 
 
 # IMPORTACIÓN DE RECURSOS
@@ -45,6 +46,8 @@ api.add_resource(Teller, '/api/teller')
 api.add_resource(Company, '/api/company')
 
 api.add_resource(Participant, '/api/participant')
+
+api.add_resource(Course, '/api/course')
 
 
 #Se carga raiz
