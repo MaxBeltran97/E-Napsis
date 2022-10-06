@@ -1,6 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 
-import { authSlice, companySlice, participantSlice, tellerSlice, uiSlice } from "./slices";
+import { authSlice, companySlice, courseSlice, participantSlice, tellerSlice, uiSlice } from "./slices";
 
 export const store = configureStore({
   reducer: {
@@ -8,7 +8,8 @@ export const store = configureStore({
     auth: authSlice.reducer,
     company: companySlice.reducer,
     teller: tellerSlice.reducer,
-    participant: participantSlice.reducer
+    participant: participantSlice.reducer,
+    course: courseSlice.reducer
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware({
     serializableCheck: false

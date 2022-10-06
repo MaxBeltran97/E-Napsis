@@ -1,5 +1,4 @@
 import { Divider, Grid, Typography } from '@mui/material'
-import React from 'react'
 
 export const CompanyItem = ({ company }) => {
 
@@ -9,7 +8,7 @@ export const CompanyItem = ({ company }) => {
     <Grid item xs={12}>
       <Grid container alignItems={'center'}>
         <Grid item xs={1}>
-          <Typography sx={{ pl: 1, textAlign: 'center' }}>{_id}</Typography>
+          <Typography sx={{ textAlign: 'center' }}>{_id}</Typography>
         </Grid>
         <Grid item xs={3}>
           <Typography>{socialReason}</Typography>

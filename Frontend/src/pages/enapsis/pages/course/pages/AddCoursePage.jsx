@@ -4,19 +4,17 @@ import { GridForm, GridInput } from "@components/grid"
 import { InputDate, InputNumber, InputRadio, InputText, InputTextArea } from "@components/input/generic"
 import { InputCondition } from "@components/input/InputCondition"
 import { InputCalification, InputNumberAdornment } from "@components/input/specific"
+import { useCourseStore } from "@hooks/useCourseStore"
 import { Grid } from "@mui/material"
 import { useForm, useWatch } from "react-hook-form"
 
 export const AddCoursePage = () => {
-  const { handleSubmit, unregister, getValues, setValue, formState: { errors }, control } = useForm()
+  const { handleSubmit, unregister, formState: { errors }, control } = useForm()
+  const { isLoading, startSavingCourse } = useCourseStore()
   const instructionType = useWatch({ control, name: 'instruction' })
 
-  const onSubmit = (data) => {
-    console.log(data)
-  }
-
   return (
-    <GridForm handleSubmit={handleSubmit} formTitle={'Registro de Curso'} functionFromData={onSubmit}>
+    <GridForm handleSubmit={handleSubmit} formTitle={'Registro de Curso'} functionFromData={startSavingCourse}>
       <Grid item xs={12} lg={8}>
         <GridInput title={'Datos del Curso'}>
           <InputText control={control} name={'Código Sence / Interno'} label={'sence'} required={true} error={errors.sence} />
@@ -39,14 +37,14 @@ export const AddCoursePage = () => {
           {/* Medios Didacticos relator InputP con ArrayField */}
           {/* Material didoctico participantes InputP con ArrayField */}
           <InputTextArea control={control} name={'Evaluación'} label={'evaluation'} error={errors.evaluation} />
-          <InputTextArea control={control} name={'Infraestructura'} label={'infraestructure'} error={errors.infraestructure} />
+          <InputTextArea control={control} name={'Infraestructura'} label={'infrastructure'} error={errors.infrastructure} />
           {/* Equipamiento InputP con ArrayField */}
           <InputNumberAdornment control={control} name={'Valor Efectivo por Participante'} label={'participantValue'} required={true} error={errors.participantValue} adornment={'$'} position={'start'} withSize={3.5} />
           <InputDate control={control} name={'Fecha de Solicitud'} label={'requestDate'} required={true} error={errors.requestDate} minDate={new Date()} />
         </GridInput>
       </Grid>
 
-      <ButtonSave buttonTitle={'Guardar Curso'} errorTitle={'Error al Guardar'} isLoading={false} errorsForm={false} />
+      <ButtonSave buttonTitle={'Guardar Curso'} errorTitle={'Error al Guardar'} isLoading={isLoading} errorsForm={false} />
     </GridForm>
   )
 }

@@ -26,7 +26,7 @@ export const useCompanyStore = () => {
     dispatch(onHandleLoading(true))
 
     try {
-      company = { ...company, cellPhone: parseInt(company.cellPhone, 10) }
+      company = { ...company, cellPhone: parseInt(company.cellPhone) }
       const { data } = await enapsisApi.post('/company', JSON.stringify(company))
       console.log(data)
       navigate('../', {replace: true})

@@ -11,10 +11,10 @@ class Course(Resource):
 
     parser = reqparse.RequestParser()
 
-    parser.add_argument('sense',
+    parser.add_argument('sence',
         type=str,
         required=True,
-        help="Debe ingresar el Sense"
+        help="Debe ingresar el Sence"
     )
 
     parser.add_argument('instruction',
@@ -35,7 +35,7 @@ class Course(Resource):
         help="Debe ingresar el nombre de la actividad"
     )
 
-    parser.add_argument('attendence',
+    parser.add_argument('attendance',
         type=str,
         required=True,
         help="Debe ingresar la asistencia del curso"
@@ -110,11 +110,11 @@ class Course(Resource):
     def post(self):
         data = Course.parser.parse_args()
         try:
-            sense = data['sense']
+            sence = data['sence']
             instruction = data['instruction']
             activityType = data['activityType']
             activityName = data['activityName']
-            attendence = data['attendence']
+            attendance = data['attendance']
             minCalification = data['minCalification']
             minHours = data['minHours']
             participantsNumber = data['participantsNumber']
@@ -127,7 +127,7 @@ class Course(Resource):
             participantValue = data['participantValue']
             requestDate = data['requestDate']
 
-            new_course = modelCourse(sense, instruction, activityType, activityName, attendence, minCalification, minHours, participantsNumber, targetPopulation, generalObjectives, totalHours, teachingTechnique, evaluation, infrastructure, participantValue, requestDate)
+            new_course = modelCourse(sence, instruction, activityType, activityName, attendance, minCalification, minHours, participantsNumber, targetPopulation, generalObjectives, totalHours, teachingTechnique, evaluation, infrastructure, participantValue, requestDate)
 
             db.session.add(new_course)
 
