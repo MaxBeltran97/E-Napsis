@@ -56,3 +56,33 @@ export const radioGenderType = [
     'name': 'Otro'
   }
 ]
+
+export const radioInstructionModality = [
+  {
+    'value': 'presencial',
+    'name': 'Presencial'
+  },
+  {
+    'value': 'e_learningSinc',
+    'name': 'E-learning Sincrónico'
+  },
+  {
+    'value': 'e_learningAsinc',
+    'name': 'E-learning Asincrónico'
+  },
+  {
+    'value': 'distancia',
+    'name': 'Distancia-Autoaprendizaje'
+  }
+]
+
+export const radioActivityType = [
+  {
+    'value': 'curso',
+    'name': 'Curso'
+  },
+  {
+    'value': 'seminario',
+    'name': 'Seminario'
+  }
+]

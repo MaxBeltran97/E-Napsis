@@ -1,11 +1,11 @@
 import { memo, useEffect } from "react"
 
-export const InputCondition = memo(({ value , valueCondition, unregister, labelCondition, children }) => {
+export const InputCondition = memo(({ value , valuesConditions = [], unregister, labelCondition, children }) => {
   useEffect(() => {
     unregister(labelCondition)
   }, [value])
 
-  if( value === valueCondition ) {
+  if( valuesConditions.includes(value) ) {
     return (
       <>
         { children }

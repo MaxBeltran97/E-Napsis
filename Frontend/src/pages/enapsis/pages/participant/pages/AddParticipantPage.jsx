@@ -11,23 +11,21 @@ import { radioGenderType, radioNationalityType, radioParticipantType } from "@as
 import { InputCondition } from "@components/input/InputCondition"
 
 import { useCompanyStore } from "@hooks/useCompanyStore"
+import { useParticipantStore } from "@hooks/useParticipantStore"
 import { getCompaniesWithAutocomplete } from "@pages/enapsis/helpers"
 
 export const AddParticipantPage = () => {
   const { handleSubmit, unregister, formState: {errors}, control } = useForm()
   const { companies, startGetCompanies } = useCompanyStore()
+  const { isLoading, startSavingParticipant } = useParticipantStore()
   const pType = useWatch({ control, name: 'participantType' })
 
   useEffect(() => {
     startGetCompanies()
   }, [])
 
-  const onSubmit = (data) => {
-    console.log(data)
-  }
-
   return (
-    <GridForm handleSubmit={handleSubmit} formTitle={'Registro de Participante'} functionFromData={onSubmit}>
+    <GridForm handleSubmit={handleSubmit} formTitle={'Registro de Participante'} functionFromData={startSavingParticipant}>
       <Grid item xs={12}>
         <GridInput title={'Datos Personales'}>
           <Grid container columnSpacing={4} rowSpacing={0}>
@@ -36,7 +34,7 @@ export const AddParticipantPage = () => {
               <InputText control={control} name={'Calendario de Cursos'} label={'courseCode'} required={true} error={errors.courseCode} />
               <InputRadio control={control} name={'Tipo Participante'} label={'participantType'} items={radioParticipantType} />
 
-              <InputCondition value={pType} valueCondition={radioParticipantType[1].value} unregister={unregister} labelCondition={'company'}>
+              <InputCondition value={pType} valuesConditions={[radioParticipantType[1].value]} unregister={unregister} labelCondition={'company_id'}>
                 <InputAutocomplete control={control} name={'Empresa'} label={'company_id'} required={true} error={errors.company_id} items={getCompaniesWithAutocomplete(companies)} />
               </InputCondition>
               
@@ -56,7 +54,7 @@ export const AddParticipantPage = () => {
         </GridInput>
       </Grid>
 
-      <ButtonSave buttonTitle={'Guardar Participante'} errorTitle={'Error al Guardar'} isLoading={false} errorsForm={false} />
+      <ButtonSave buttonTitle={'Guardar Participante'} errorTitle={'Error al Guardar'} isLoading={isLoading} errorsForm={false} />
     </GridForm>
   )
 }
