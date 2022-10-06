@@ -1,10 +1,10 @@
 import { memo, useState } from "react"
 import { Controller } from "react-hook-form"
 
-import { TextField } from "@mui/material"
+import { InputAdornment, TextField } from "@mui/material"
 import { InputForm } from "../inputForm"
 
-export const InputNumber = memo(({ control, name, label, required = false, error, minLength = 0, maxLength = 10, withSize = 7}) => {
+export const InputNumberAdornment = memo(({ control, name, label, required = false, error, minLength = 0, maxLength = 10, minValue, maxValue, placeholder, adornment, position, withSize = 7}) => {
   const [active, setActive] = useState(false)
 
   const onFocus = () => {
@@ -13,6 +13,26 @@ export const InputNumber = memo(({ control, name, label, required = false, error
 
   const onBlur = () => {
     setActive(false)
+  }
+
+  const isValidMinValue = (value) => {
+    if(!!minValue) {
+      const numberValue = parseInt(value)
+      if(numberValue < minValue) {
+        return false
+      }
+    }
+    return true
+  }
+
+  const isValidMaxValue = (value) => {
+    if(!!maxValue) {
+      const numberValue = parseInt(value)
+      if(numberValue > maxValue) {
+        return false
+      }
+    }
+    return true
   }
   
   return (
@@ -30,7 +50,7 @@ export const InputNumber = memo(({ control, name, label, required = false, error
             error={!!error}
             helperText={(!!error) ? error.message : ''}
             label={(required) ? 'Obligatorio*' : ''}
-            // placeholder={(!!placeholder) ? placeholder : ''}
+            placeholder={(!!placeholder) ? placeholder : ''}
             fullWidth
             autoComplete="off"
             size='small'
@@ -40,7 +60,11 @@ export const InputNumber = memo(({ control, name, label, required = false, error
                 m: 0, pl: 1
               }
             }}
-            // InputLabelProps={{ shrink: (!!placeholder) ? true : false }}
+            InputProps={{
+              startAdornment: (position === 'start') ? (<InputAdornment position={position}>{adornment}</InputAdornment>) : null,
+              endAdornment: (position === 'end') ? (<InputAdornment position={position}>{adornment}</InputAdornment>) : null
+            }}
+            InputLabelProps={{ shrink: (!!adornment) ? true : false }}
           />
         )}
 
@@ -60,6 +84,10 @@ export const InputNumber = memo(({ control, name, label, required = false, error
           maxLength: {
             value: maxLength,
             message: `*Tamaño máximo de ${maxLength} números`
+          },
+          validate: {
+            checkMinValue: value => isValidMinValue(value) || `*Valor no debe ser menor a ${minValue}`,
+            checkMaxValue: value => isValidMaxValue(value) || `*Valor no debe ser mayor a ${maxValue}`
           }
         }}
       />

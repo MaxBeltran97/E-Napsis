@@ -5,17 +5,13 @@ import { InputForm } from '../InputForm'
 
 export const InputAutocomplete = memo(({ control, name, label, required = false, error, items = [], withSize = 7 }) => {
   const [active, setActive] = useState(false)
-  
+
   const onFocus = () => {
     setActive(true)
   }
 
   const onBlur = () => {
     setActive(false)
-  }
-
-  const getKey = (e) => {
-    console.log(e)
   }
 
   return (

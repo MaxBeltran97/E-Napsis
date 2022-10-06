@@ -50,7 +50,7 @@ export const AddTellerPage = () => {
         </Grid>
       </Grid>
 
-      <ButtonSave buttonTitle={'Guardar Relator'} errorTitle={'Error al Guardar'} isLoading={false} errorsForm={false} />
+      <ButtonSave buttonTitle={'Guardar Relator'} errorTitle={'Error al Guardar'} isLoading={isLoading} errorsForm={false} />
     </GridForm>
   )
 }

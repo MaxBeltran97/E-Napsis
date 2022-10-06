@@ -1,12 +1,14 @@
-import { onHandleLoading, onHandleTellers } from "@reduxSlices/tellerSlice"
+import { useNavigate } from "react-router-dom"
 import { useDispatch, useSelector } from "react-redux"
 
-import { parseBool } from "@helpers"
 import enapsisApi from "@api/enapsisApi"
+import { onHandleLoading, onHandleTellers } from "@reduxSlices/tellerSlice"
+import { parseBool } from "@helpers"
 
 export const useTellerStore = () => {
 
   const dispatch = useDispatch()
+  const navigate = useNavigate()
   const { isLoading, activeTeller, tellers } = useSelector(state => state.teller)
 
   const startGetTellers = async () => {
@@ -15,7 +17,6 @@ export const useTellerStore = () => {
     try {
       const { data } = await enapsisApi.get('/teller')
       dispatch(onHandleTellers(data))
-      console.log(data)
     } catch (error) {
       console.log(error.response)
     }
@@ -37,6 +38,7 @@ export const useTellerStore = () => {
       delete teller.tellerFiles
       const { data } = await enapsisApi.post('/teller', JSON.stringify(teller))
       console.log(data)
+      navigate('../', {replace: true})
     } catch (error) {
       //TODO Manejar los errores que tira el backend
       console.log(error.response)

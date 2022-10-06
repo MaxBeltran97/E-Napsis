@@ -1,6 +1,7 @@
 import { TextField } from "@mui/material"
 import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers"
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
+import { newDate } from "date-fns-jalali"
 import { differenceInDays, differenceInHours } from "date-fns/esm"
 import { es } from 'date-fns/locale'
 import { memo, useState } from "react"
@@ -53,8 +54,8 @@ export const InputDate = memo(({ control, name, label, required = false, error, 
             <DesktopDatePicker 
               {...field}
               inputFormat={'dd/MM/yyyy'}
-              minDate={!!minDate && new Date(minDate)}
-              maxDate={!!maxDate && new Date(maxDate)}
+              minDate={(!!minDate) ? new Date(minDate) : null}
+              maxDate={(!!maxDate) ? new Date(maxDate) : null}
               renderInput={(params) => (
                 <TextField 
                   {...params}
@@ -62,6 +63,7 @@ export const InputDate = memo(({ control, name, label, required = false, error, 
                   onBlur={onBlur}
                   error={!!error}
                   helperText={(!!error) ? error.message : ''}
+                  label={(required) ? 'Obligatorio*' : ''}
                   autoComplete='off'
                   // fullWidth
                   size='small'
@@ -71,6 +73,7 @@ export const InputDate = memo(({ control, name, label, required = false, error, 
                       m: 0, pl: 1
                     }
                   }}
+                  InputLabelProps={{ shrink: true }}
                 />
               )}
             />
