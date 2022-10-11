@@ -1,4 +1,5 @@
 export * from './InputAutocomplete';
+export * from './InputAutocompleteAsync';
 export * from './InputDate';
 export * from './InputFile';
 export * from './InputNumber';

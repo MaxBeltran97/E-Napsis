@@ -1,15 +1,22 @@
-import { radioActivityType, radioInstructionModality } from "@assets/radio-data"
-import { ButtonSave } from "@components/button"
-import { GridForm, GridInput } from "@components/grid"
-import { InputDate, InputNumber, InputRadio, InputText, InputTextArea } from "@components/input/generic"
-import { InputCondition } from "@components/input/InputCondition"
-import { InputCalification, InputNumberAdornment } from "@components/input/specific"
-import { useCourseStore } from "@hooks/useCourseStore"
-import { Grid } from "@mui/material"
 import { useForm, useWatch } from "react-hook-form"
+
+import { Grid } from "@mui/material"
+import { GridForm, GridInput } from "@components/grid"
+import { InputCondition } from "@components/input/InputCondition"
+import { InputAutocompleteAsync, InputDate, InputNumber, InputRadio, InputText, InputTextArea } from "@components/input/generic"
+import { InputCalification, InputNumberAdornment } from "@components/input/specific"
+import { ButtonSave } from "@components/button"
+
+import { radioActivityType, radioInstructionModality } from "@assets/radio-data"
+
+import { useCourseStore } from "@hooks/useCourseStore"
+import { useTellerStore } from "@hooks/useTellerStore"
+import { getTellersWithAutocomplete } from "@pages/enapsis/helpers/getTellersWithAutocomplete"
+
 
 export const AddCoursePage = () => {
   const { handleSubmit, unregister, formState: { errors }, control } = useForm()
+  const { isLoading: isLoadingTeller, tellers, startGetTellers } = useTellerStore()
   const { isLoading, startSavingCourse } = useCourseStore()
   const instructionType = useWatch({ control, name: 'instruction' })
 
@@ -33,6 +40,7 @@ export const AddCoursePage = () => {
           <InputTextArea control={control} name={'Objetivos Generales'} label={'generalObjectives'} error={errors.generalObjectives} />
           {/* Objetivos E-C-H InputPersonalizado con ArrayField */}
           <InputNumber control={control} name={'Horas Totales'} label={'totalHours'} required={true} error={errors.totalHours} withSize={3.5} />
+          <InputAutocompleteAsync control={control} name={'Relatores'} label={'tellers_id'} required={true} error={errors.tellers_id} multiple={true} entities={tellers} startGetEntities={startGetTellers} getFormattedEntities={getTellersWithAutocomplete} loading={isLoadingTeller} />
           <InputTextArea control={control} name={'Método o Técnica de Enseñanza'} label={'teachingTechnique'} error={errors.teachingTechnique} />
           {/* Medios Didacticos relator InputP con ArrayField */}
           {/* Material didoctico participantes InputP con ArrayField */}
