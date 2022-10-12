@@ -24,27 +24,29 @@ export const useCourseStore = () => {
   const startSavingCourse = async (course) => {
     dispatch(onHandleLoading(true))
 
-    try {
-      course = { ...course, 
-        attendance: parseInt(course.attendance),
-        minCalification: parseFloat(course.minCalification.replace(',','.')),
-        participantsNumber: parseInt(course.participantsNumber),
-        totalHours: parseInt(course.totalHours),
-        participantValue: parseInt(course.participantValue),
-        requestDate: new Date(course.requestDate)
-      }
-      if(!!course.minHours) {
-        course = { ...course, minHours: parseInt(course.minHours)}
-      } else {
-        course = { ...course, minHours: null }
-      }
-      const { data } = await enapsisApi.post('/course', JSON.stringify(course))
-      console.log(data)
-      navigate('../', {replace: true})
-    } catch (error) {
-      //TODO Manejar los errores que tira el backend
-      console.log(error.response)
-    }
+    console.log(course)
+
+    // try {
+    //   course = { ...course, 
+    //     attendance: parseInt(course.attendance),
+    //     minCalification: parseFloat(course.minCalification.replace(',','.')),
+    //     participantsNumber: parseInt(course.participantsNumber),
+    //     totalHours: parseInt(course.totalHours),
+    //     participantValue: parseInt(course.participantValue),
+    //     requestDate: new Date(course.requestDate)
+    //   }
+    //   if(!!course.minHours) {
+    //     course = { ...course, minHours: parseInt(course.minHours)}
+    //   } else {
+    //     course = { ...course, minHours: null }
+    //   }
+    //   const { data } = await enapsisApi.post('/course', JSON.stringify(course))
+    //   console.log(data)
+    //   navigate('../', {replace: true})
+    // } catch (error) {
+    //   //TODO Manejar los errores que tira el backend
+    //   console.log(error.response)
+    // }
     dispatch(onHandleLoading(false))
   }
 
