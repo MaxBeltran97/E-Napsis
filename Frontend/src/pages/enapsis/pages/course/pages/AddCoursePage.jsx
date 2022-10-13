@@ -36,18 +36,17 @@ export const AddCoursePage = () => {
               <InputTextArea control={control} name={'Objetivos Generales'} label={'generalObjectives'} error={errors.generalObjectives} />
             </Grid>
             <Grid item xs={12}>
-              {/* Objetivos E-C-H InputPersonalizado con ArrayField */}
-              <InputActivitiesContentHours control={control} name={'Actividades - Contenidos - Desglose de Horas'} label={'activitiesContentHours'} />
+              <InputActivitiesContentHours control={control} name={'Actividades - Contenidos - Desglose de Horas'} label={'activitiesContentHours'} error={errors.activitiesContentHours} />
             </Grid>
             <Grid item xs={12} lg={8}>
               <InputNumber control={control} name={'Horas Totales'} label={'totalHours'} required={true} error={errors.totalHours} withSize={3.5} />
               <InputAutocompleteAsync control={control} name={'Relatores'} label={'tellers_id'} required={true} error={errors.tellers_id} multiple={true} entities={tellers} startGetEntities={startGetTellers} getFormattedEntities={getTellersWithAutocomplete} loading={isLoadingTeller} />
               <InputTextArea control={control} name={'Método o Técnica de Enseñanza'} label={'teachingTechnique'} error={errors.teachingTechnique} />
-              <InputFieldArray control={control} name={'Medios Didácticos de Apoyo al Relator'} label={'tellerSupport'} textArea={true} />
-              <InputFieldArray control={control} name={'Material Didáctico a Quedar en Poder de los Participantes'} label={'supportMaterialParticipant'} textArea={true} />
+              <InputFieldArray control={control} name={'Medios Didácticos de Apoyo al Relator'} label={'tellerSupport'} error={errors.tellerSupport} textArea={true} />
+              <InputFieldArray control={control} name={'Material Didáctico a Quedar en Poder de los Participantes'} label={'supportMaterialParticipant'} error={errors.supportMaterialParticipant} textArea={true} />
               <InputTextArea control={control} name={'Evaluación'} label={'evaluation'} error={errors.evaluation} />
               <InputTextArea control={control} name={'Infraestructura'} label={'infrastructure'} error={errors.infrastructure} />
-              <InputFieldArray control={control} name={'Equipamiento'} label={'equipment'} />
+              <InputFieldArray control={control} name={'Equipamiento'} label={'equipment'} error={errors.equipment} />
               <InputNumberAdornment control={control} name={'Valor Efectivo por Participante'} label={'participantValue'} required={true} error={errors.participantValue} adornment={'$'} position={'start'} withSize={3.5} />
               <InputDate control={control} name={'Fecha de Solicitud'} label={'requestDate'} required={true} error={errors.requestDate} minDate={new Date()} />
             </Grid>

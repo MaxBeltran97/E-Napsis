@@ -3,7 +3,7 @@ import { Button, Grid, IconButton, TextField, Typography } from "@mui/material"
 import { memo, useEffect, useState } from "react"
 import { Controller, useFieldArray } from "react-hook-form"
 
-export const InputFieldArray = memo(({ control, name, label, textArea = false }) => {
+export const InputFieldArray = memo(({ control, name, label, error, textArea = false }) => {
   const [active, setActive] = useState(false)
   const [deleteActive, setDeleteActive] = useState(true)
   const { fields: items, append: appendItemRow, remove: removeItemRow } = useFieldArray({ control, name: label })
@@ -35,7 +35,6 @@ export const InputFieldArray = memo(({ control, name, label, textArea = false })
   useEffect(() => {
     removeItemRow(0)
   }, [removeItemRow])
-  
 
   return (
     <Grid container sx={{ pt: 1 }}>
@@ -68,7 +67,7 @@ export const InputFieldArray = memo(({ control, name, label, textArea = false })
                       onBlur={onBlur}
                       fullWidth
                       multiline={textArea}
-                      rows={textArea ? 4 : 1}
+                      minRows={textArea ? 4 : 1}
                       autoComplete='off'
                       size='small'
                       sx={{
@@ -88,14 +87,25 @@ export const InputFieldArray = memo(({ control, name, label, textArea = false })
                       {...field}
                       onFocus={onFocus}
                       onBlur={onBlur}
+                      error={(!!error) ? !!(error[index]?.amount) : false}
+                      helperText={(!!error) ? !!(error[index]?.amount) ? error[index].amount.message : '' : ''}
                       fullWidth
                       autoComplete='off'
                       size='small'
                       sx={{
-                        bgcolor: 'background.main'
+                        bgcolor: 'background.main',
+                        '& .MuiFormHelperText-root': {
+                          m: 0, pl: 1
+                        }
                       }}
                     />
                   )}
+                  rules={{
+                    pattern: {
+                      value: /^(0|[1-9]\d*)?$/,
+                      message: '*Este campo debe ser un número'
+                    }
+                  }}
                 />
               </Grid>
               <Grid item xs={0.5} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-start' }}>
