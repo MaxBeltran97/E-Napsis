@@ -126,8 +126,12 @@ class Course(Resource):
             infrastructure = data['infrastructure']
             participantValue = data['participantValue']
             requestDate = data['requestDate']
-
+   
             new_course = modelCourse(sence, instruction, activityType, activityName, attendance, minCalification, minHours, participantsNumber, targetPopulation, generalObjectives, totalHours, teachingTechnique, evaluation, infrastructure, participantValue, requestDate)
+            
+
+            ##Heinz
+            db.session.remove()
 
             db.session.add(new_course)
 

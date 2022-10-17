@@ -22,6 +22,8 @@ class TestingConfig(Config):
     """
     SQLALCHEMY_DATABASE_URI = "mysql+pymysql://root:tec.wor_08@192.168.5.60:3306/Sineduc"
     SQLALCHEMY_POOL_RECYCLE = 300
+    SQLALCHEMY_POOL_SIZE = 2000
+    SQLALCHEMY_POOL_TIMEOUT = 320
     TESTING = True 
     DEBUG = True
     REDIS_URL = "redis://@redis:6379/0"
@@ -32,6 +34,8 @@ class ProductionConfig(Config):
     """
     SQLALCHEMY_DATABASE_URI = "mysql+pymysql://root:tec.wor_08@192.168.5.26:3306/Sineduc"
     SQLALCHEMY_POOL_RECYCLE = 300
+    SQLALCHEMY_POOL_SIZE = 2000
+    SQLALCHEMY_POOL_TIMEOUT = 320
     REDIS_URL = "redis://@redis:6379/0"
 
 app_config = {
