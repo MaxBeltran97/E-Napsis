@@ -3,6 +3,7 @@ export * from './InputCalification';
 export * from './InputComuna';
 export * from './InputEmail';
 export * from './InputFieldArray';
+export * from './InputFilesView';
 export * from './InputNumberAdornment';
 export * from './InputPhoneNumber';
 export * from './InputRegion';

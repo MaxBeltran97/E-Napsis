@@ -1,5 +1,5 @@
 import { Route, Routes, useLocation } from 'react-router-dom'
-import { CALENDAR, COMPANIES, COURSES, PARTICIPANTS, TELLERS } from '@models/privateRoutes'
+import { CALENDAR_COURSE, COMPANIES, COURSES, PARTICIPANTS, TELLERS } from '@models/privateRoutes'
 
 import { LayoutApp } from '../layout'
 
@@ -12,10 +12,12 @@ import { TellerRoutes } from '../pages/teller/routes'
 
 import { useUiStore } from '@hooks/useUiStore'
 import { useEffect } from 'react'
+import { useCompanyStore } from '@hooks/useCompanyStore'
 
 export const EnapsisRoutes = () => {
   const { pathname } = useLocation()
   const { setByUrlSidebarActiveItem, sidebarActiveItem } = useUiStore()
+  const { startGetCompanies } = useCompanyStore()
 
   useEffect(() => {
     if(!(!!sidebarActiveItem.name) || (sidebarActiveItem.activeOption?.url !== pathname)) {
@@ -29,6 +31,10 @@ export const EnapsisRoutes = () => {
     }
   }, [sidebarActiveItem])
 
+  useEffect(() => {
+    startGetCompanies()
+  }, [])
+
   return (
     <LayoutApp>
       <Routes>
@@ -40,7 +46,7 @@ export const EnapsisRoutes = () => {
         
         <Route path={`${COURSES}/*`} element={<CourseRoutes />} />
 
-        <Route path={`${CALENDAR}/*`} element={<CalendarRoutes />} />
+        <Route path={`${CALENDAR_COURSE}/*`} element={<CalendarRoutes />} />
 
         <Route path='/*' element={<HomeRoutes />} />
       </Routes>

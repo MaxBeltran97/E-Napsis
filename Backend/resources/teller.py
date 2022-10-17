@@ -126,6 +126,8 @@ class Teller(Resource):
 
             new_teller = modelTeller(nationalityType, rut, fullName, lastName, motherLastName, nationality, birthday, profession, email, cellPhone, maritalStatus, address, region, commune, situation, reuf)
 
+            db.session.remove()
+
             db.session.add(new_teller)
     
             db.session.commit()

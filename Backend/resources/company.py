@@ -5,8 +5,6 @@ from flask_restful import Resource, reqparse
 from database.db import db
 
 
-
-
 class Company(Resource):
 
     parser = reqparse.RequestParser()

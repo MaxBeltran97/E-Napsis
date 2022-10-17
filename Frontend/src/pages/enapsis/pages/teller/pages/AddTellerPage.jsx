@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form"
 import { Grid } from "@mui/material"
 import { GridForm, GridInput } from "@components/grid"
 import { InputDate, InputFile, InputRadio, InputSelect, InputText } from "@components/input/generic"
-import { InputComuna, InputEmail, InputPhoneNumber, InputRegion, InputRut } from "@components/input/specific"
+import { InputComuna, InputEmail, InputFilesView, InputPhoneNumber, InputRegion, InputRut } from "@components/input/specific"
 import { ButtonSave } from "@components/button"
 
 import { radioBoolean, radioBooleanActive, radioNationalityType } from "@assets/radio-data"
@@ -12,7 +12,7 @@ import { selectRegiones } from "@assets/select-regiones"
 import { useTellerStore } from "@hooks/useTellerStore"
 
 export const AddTellerPage = () => {
-  const { handleSubmit, getValues, setValue, formState: {errors}, control } = useForm()
+  const { handleSubmit, getValues, setValue, formState: { errors }, control } = useForm()
   const { isLoading, startSavingTeller } = useTellerStore()
 
   return (
@@ -34,7 +34,6 @@ export const AddTellerPage = () => {
           <InputRegion control={control} name={'Región'} label={'region'} error={errors.region} getValues={getValues} setValue={setValue} items={selectRegiones} labelComuna={'commune'} />
           <InputComuna control={control} name={'Comuna'} label={'commune'} error={errors.commune} getValues={getValues} labelRegion={'region'} />
           <InputRadio control={control} name={'Estado'} label={'situation'} items={radioBooleanActive} />
-          <InputFile control={control} name={'Archivos Relevantes'} label={'tellerFiles'} error={errors.tellerFiles} textButton={'Subir Archivos'} helperText={'CV, Títulos, Diplomas, etc.'} allowedExtensions={['pdf', 'docx', 'png', 'jpg']} multiple={true} />
         </GridInput>
       </Grid>
       <Grid item xs={12} lg={6}>
@@ -48,6 +47,11 @@ export const AddTellerPage = () => {
             <InputRadio control={control} name={'REUF Actualizada'} label={'reuf'} items={radioBoolean} defaultPos={1} />
           </GridInput>
         </Grid>
+      </Grid>
+      <Grid item xs={12} sx={{ pt: 0 }}>
+        <GridInput title={'Archivos Relevantes'}>
+          <InputFilesView control={control} name={'Archivos del Relator'} label={'tellerFiles'} error={errors.tellerFiles} multiple={true} helperText={'.pdf .docx .png .jpg'} textButton={'Subir Archivos'} allowedExtensions={['pdf', 'docx', 'png', 'jpg']} withSize={9.6} />
+        </GridInput>
       </Grid>
 
       <ButtonSave buttonTitle={'Guardar Relator'} errorTitle={'Error al Guardar'} isLoading={isLoading} errorsForm={false} />

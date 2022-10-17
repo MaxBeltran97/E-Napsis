@@ -1,5 +1,5 @@
 
-export const CalendarPage = () => {
+export const ShowCalendarPage = () => {
   return (
     <div>CalendarPage</div>
   )
