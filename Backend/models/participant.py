@@ -1,4 +1,5 @@
 from database.db import db
+from database.db import ma
 from helpers.serializable import Serializer
 
 
@@ -7,7 +8,7 @@ class Participant(db.Model, Serializer):
     _id = db.Column(db.Integer, primary_key = True)
     courseCode = db.Column(db.String(100), unique=True, nullable=False)
     participantType = db.Column(db.String(100))
-    company_id = db.Column(db.Integer, db.ForeignKey('company._id'))
+    company_id = db.Column(db.Integer, db.ForeignKey('company._id')) #, db.ForeignKey('company._id'))
     nationalityType = db.Column(db.String(100))
     rut = db.Column(db.String(100), unique=True, nullable=False )
     fullName = db.Column(db.String(100), nullable=False)
@@ -35,3 +36,11 @@ class Participant(db.Model, Serializer):
     def serialize(self):
             d = Serializer.serialize(self)
             return d    
+
+
+class ParticipantSchema(ma.Schema):
+    class Meta:
+        fields = ('_id', 'courseCode', 'participantType', 'company_id', 'nationalityType', 'rut', 'fullName', 'lastName', 'motherLastName', 'institution', 'email', 'gender', 'position')
+
+participant_schema = ParticipantSchema()
+participants_schema = ParticipantSchema(many=True)
