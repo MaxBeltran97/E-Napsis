@@ -16,6 +16,7 @@ export const useTellerStore = () => {
 
     try {
       const { data } = await enapsisApi.get('/teller')
+      console.log(data)
       dispatch(onHandleTellers(data))
     } catch (error) {
       console.log(error.response)

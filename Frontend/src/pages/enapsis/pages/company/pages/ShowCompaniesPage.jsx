@@ -7,7 +7,7 @@ import { CompanyItem } from "../components"
 
 export const ShowCompaniesPage = () => {
 
-  const { companies, startGetCompanies } = useCompanyStore()
+  const { isLoading, companies, startGetCompanies } = useCompanyStore()
 
   useEffect(() => {
     startGetCompanies()
@@ -20,17 +20,17 @@ export const ShowCompaniesPage = () => {
       <GridPaper>
         <Grid item xs={12}>
           <Grid container alignItems={'center'}>
-            <Grid item xs={1}>
-              <Typography sx={{ textAlign: 'center' }} >Id</Typography>
-            </Grid>
-            <Grid item xs={3}>
-              <Typography sx={{ textAlign: 'center' }} >Razón Social</Typography>
-            </Grid>
-            <Grid item xs={3}>
-              <Typography sx={{ textAlign: 'center' }} >Nombre de Fantasia</Typography>
+            <Grid item xs={4}>
+              <Typography sx={{ textAlign: 'center' }} >Nombre</Typography>
             </Grid>
             <Grid item xs={2}>
-              <Typography sx={{ textAlign: 'center' }} >RUT Empresa</Typography>
+              <Typography sx={{ textAlign: 'center' }} >RUT</Typography>
+            </Grid>
+            <Grid item xs={3}>
+              <Typography sx={{ textAlign: 'center' }} >Ejecutivo</Typography>
+            </Grid>
+            <Grid item xs={3}>
+              <Typography sx={{ textAlign: 'center' }}>Acciones</Typography>
             </Grid>
             <Grid item xs={12} sx={{ mt: 1 }}>
               <Divider />
@@ -39,9 +39,13 @@ export const ShowCompaniesPage = () => {
         </Grid>
 
         {
-          companies.map((company) => (
-            <CompanyItem key={company._id} company={company} />
-          ))
+          isLoading
+          ? <Grid item xs={12}> <Typography sx={{ textAlign: 'center' }}>Cargando...</Typography> </Grid>
+          : (
+            companies.map((company) => (
+              <CompanyItem key={company._id} company={company} />
+            ))
+          )
         }
       </GridPaper>
     </>
