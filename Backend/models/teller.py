@@ -1,5 +1,9 @@
 from database.db import db
+from database.db import ma
 from helpers.serializable import Serializer
+from flask_marshmallow import Marshmallow
+
+
 
 class Teller(db.Model, Serializer):
     _id = db.Column(db.Integer, primary_key = True)
@@ -43,12 +47,10 @@ class Teller(db.Model, Serializer):
         d = Serializer.serialize(self)
         return d
 
-    @classmethod
-    def getDataById(cls, id):
-        data = None
-        try:
-            if id:
-                data = cls.query.filter(id == id).first()
-            return data
-        except Exception as e:
-            return data    
+
+class TellerSchema(ma.Schema):
+    class Meta:
+        fields = ('_id', 'nationalityType', 'rut', 'fullName', 'lastName', 'motherLastName', 'nationality', 'birthday', 'profession', 'email', 'cellPhone', 'maritalStatus', 'address', 'region', 'commune', 'situation', 'reuf')
+
+teller_schema = TellerSchema()
+tellers_schema = TellerSchema(many=True)

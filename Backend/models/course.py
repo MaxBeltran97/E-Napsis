@@ -1,4 +1,5 @@
 from database.db import db
+from database.db import ma
 from helpers.serializable import Serializer
 
 
@@ -22,13 +23,13 @@ class Course(db.Model, Serializer):
     participantValue = db.Column(db.Integer, nullable=False)
     requestDate = db.Column(db.String(100), nullable=False)
 
-    def __init__(self, sence, instruction, activityType, activityName, attendance, minCalifaction, minHours, participantsNumber, targetPopulation, generalObjectives, totalHours, teachingTechnique, evaluation, infrastructure, participantValue, requestDate):
+    def __init__(self, sence, instruction, activityType, activityName, attendance, minCalification, minHours, participantsNumber, targetPopulation, generalObjectives, totalHours, teachingTechnique, evaluation, infrastructure, participantValue, requestDate):
         self.sence = sence
         self.instruction = instruction
         self.activityType = activityType
         self.activityName = activityName
         self.attendance = attendance
-        self.minCalification = minCalifaction
+        self.minCalification = minCalification
         self.minHours = minHours
         self.participantsNumber = participantsNumber
         self.targetPopulation = targetPopulation
@@ -44,3 +45,10 @@ class Course(db.Model, Serializer):
     def serialize(self):
             d = Serializer.serialize(self)
             return d    
+
+class CourseSchema(ma.Schema):
+    class Meta:
+        fields = ('_id', 'sence', 'instruction', 'activityType', 'activityName', 'attendance', 'minCalification', 'minHours', 'participantsNumber', 'targetPopulation', 'generalObjectives', 'totalHours', 'teachingTechnique', 'evaluation', 'infrastructure', 'participantValue', 'requestDate')
+    
+course_schema = CourseSchema()
+courses_schema = CourseSchema(many=True) 
