@@ -6,7 +6,7 @@ from helpers.serializable import Serializer
 
 class Participant(db.Model, Serializer):
     _id = db.Column(db.Integer, primary_key = True)
-    courseCode = db.Column(db.String(100), unique=True, nullable=False)
+    courseCode = db.Column(db.String(100), nullable=False)
     participantType = db.Column(db.String(100))
     company_id = db.Column(db.Integer, db.ForeignKey('company._id')) #, db.ForeignKey('company._id'))
     nationalityType = db.Column(db.String(100))

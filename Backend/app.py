@@ -1,4 +1,3 @@
-from csv import excel
 import sys,os,click,json
 from turtle import position
 from unittest import result
@@ -8,8 +7,7 @@ from flask_marshmallow import Marshmallow
 from flask_sqlalchemy import SQLAlchemy
 from flask_restful import Api, reqparse
 from flask_mysqldb import MySQL
-import werkzeug
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, null
 
 
 
@@ -681,43 +679,39 @@ def upload_participants():
         
         file = request.files["excel"]                
         
-       
+        msg = "posiciones duplicadas: "
         df = pd.read_excel(file)
         
+        for i in range(len(df.index)):
+            nationalityType = df.loc[i, 'NACIONALIDAD']
+            participantType = df.loc[i, 'CARGO DESEMPEÑADO']
+            rut = df.loc[i, 'RUT']
+            fullName = df.loc[i, 'NOMBRE']
+            lastName = df.loc[i, 'PATERNO']
+            motherLastName = df.loc[i, 'MATERNO']
+            institution = df.loc[i, 'ESTABLECIMIENTO']
+            email = df.loc[i, 'EMAIL']
+            gender = df.loc[i, 'GENERO']
+            position = df.loc[i, 'POSICION']
             
-        nationalityType = df.loc[2, 'NACIONALIDAD']
-        participantType = df.loc[2, 'CARGO DESEMPEÑADO']
-        rut = df.loc[2, 'RUT']
-        fullName = df.loc[2, 'NOMBRE']
-        lastName = df.loc[2, 'PATERNO']
-        motherLastName = df.loc[2, 'MATERNO']
-        institution = df.loc[2, 'ESTABLECIMIENTO']
-        email = df.loc[2, 'EMAIL']
-        gender = df.loc[2, 'GENERO']
-        position = df.loc[2, 'POSICION']
+
+            try:
+                new_participant = modelParticipant(courseCode, participantType, company_id, nationalityType, rut, fullName, lastName, motherLastName, institution, email, gender, position)
+                db.session.add(new_participant)
         
-        new_participant = modelParticipant(courseCode, participantType, company_id, nationalityType, rut, fullName, lastName, motherLastName, institution, email, gender, position)
-        db.session.add(new_participant)
-    
-
-        db.session.commit()
-
-        return participant_schema.jsonify(new_participant)
-
-
-        #header = ['rut','fullName','lastName','motherLastName', 'institution', 'email', 'gender', 'position','nationalityType']
-        #df.columns = header
-        #df = df.assign(participantType = 'empresa')
-        #df = df.assign(courseCode = courseCode)
-        #df = df.assign(company_id = company_id) 
-
-        #engine = create_engine(DevelopmentConfig.SQLALCHEMY_DATABASE_URI)
-        #df.loc[len(df.index)] = df.to_sql('participant', con=engine, if_exists="append", index=False)
-        
-        #df.to_sql('participant', con=engine, if_exists="append", index=False)
-        
-        #return {"message": "Participantes importados con exito"}
-
+                db.session.commit()
+            
+            except Exception as e:
+                
+                msg = (msg + f"{i}, ")
+                db.session.rollback()
+            finally:
+                db.session.close()
+            
+        return {
+            "ok": True,
+            "msg": msg
+        }, 200
     except Exception as e:
             print (e)
             return {"message": "Error al ingresar archivo."}, 500
