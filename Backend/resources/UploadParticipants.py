@@ -3,11 +3,9 @@ from flask import Flask, request, jsonify
 from flask_restful import Resource, reqparse
 from sqlalchemy import create_engine
 from database.db import db
-import argparse
 import werkzeug
 import pandas as pd
 from database.config import DevelopmentConfig
-from models.participant import Participant
 
 
 class UploadParticipants(Resource):
