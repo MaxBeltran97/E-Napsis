@@ -43,7 +43,7 @@ export const AddCoursePage = () => {
               <InputAutocompleteAsync control={control} name={'Relatores'} label={'tellers_id'} required={true} error={errors.tellers_id} multiple={true} entities={tellers} startGetEntities={startGetTellers} getFormattedEntities={getTellersWithAutocomplete} loading={isLoadingTeller} />
               <InputTextArea control={control} name={'Método o Técnica de Enseñanza'} label={'teachingTechnique'} error={errors.teachingTechnique} />
               <InputFieldArray control={control} name={'Medios Didácticos de Apoyo al Relator'} label={'tellerSupport'} error={errors.tellerSupport} textArea={true} />
-              <InputFieldArray control={control} name={'Material Didáctico a Quedar en Poder de los Participantes'} label={'supportMaterialParticipant'} error={errors.supportMaterialParticipant} textArea={true} />
+              <InputFieldArray control={control} name={'Material Didáctico a Quedar en Poder de los Participantes'} label={'participantMaterial'} error={errors.participantMaterial} textArea={true} />
               <InputTextArea control={control} name={'Evaluación'} label={'evaluation'} error={errors.evaluation} />
               <InputTextArea control={control} name={'Infraestructura'} label={'infrastructure'} error={errors.infrastructure} />
               <InputFieldArray control={control} name={'Equipamiento'} label={'equipment'} error={errors.equipment} />

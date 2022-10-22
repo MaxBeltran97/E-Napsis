@@ -24,7 +24,7 @@ export const useCourseStore = () => {
   const startSavingCourse = async (course) => {
     dispatch(onHandleLoading(true))
 
-    console.log(course)
+    console.log(JSON.stringify(course))
 
     // try {
     //   course = { ...course, 

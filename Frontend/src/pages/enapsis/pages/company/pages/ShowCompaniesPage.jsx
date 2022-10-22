@@ -40,12 +40,12 @@ export const ShowCompaniesPage = () => {
 
         {
           isLoading
-          ? <Grid item xs={12}> <Typography sx={{ textAlign: 'center' }}>Cargando...</Typography> </Grid>
-          : (
-            companies.map((company) => (
-              <CompanyItem key={company._id} company={company} />
-            ))
-          )
+            ? <Grid item xs={12}> <Typography sx={{ textAlign: 'center' }}>Cargando...</Typography> </Grid>
+            : (
+              companies.map((company) => (
+                <CompanyItem key={company._id} company={company} />
+              ))
+            )
         }
       </GridPaper>
     </>

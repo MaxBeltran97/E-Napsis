@@ -31,6 +31,9 @@ from models.course import Course as modelCourse
 from models.course import course_schema
 from models.course import courses_schema
 
+from models.courseTellerSupport import *
+from models.courseParticipantMaterial import *
+
 from models.courseActvity import courseActivity
 from models.tellerPerCourse import tellerPerCourse
 from models.courseComplement import courseComplement
@@ -108,47 +111,57 @@ def add_teller():
                                  birthday, profession, email, cellPhone, maritalStatus, address, region, commune, situation, reuf)
 
         db.session.add(new_teller)
-
         db.session.commit()
-
-        return teller_schema.jsonify(new_teller)
-        # return {"message": "Relator guardado con exito :)."}
+        return {
+            "ok": True,
+            "teller": new_teller.serialize()
+        }, 201
     except Exception as e:
         print(e)
-        return {"message": "Error al ingresar un relator."}, 500
+        return {
+            "ok": False,
+            "msg": "Error al guardar el relator"
+        }, 500
+    finally:
+        db.session.close()
 
 
 @app.route('/api/teller', methods=['GET'])
 def get_tellers():
-
     try:
         all_tellers = modelTeller.query.all()
         result = tellers_schema.dump(all_tellers)
-        return jsonify(result)
-
+        return {
+            "ok": True,
+            "tellers": result
+        }, 200
     except Exception as e:
         print(e)
-        return {"message": "Error al obtener un relator."}, 500
+        return {
+            "ok": False,
+            "msg": "Error al obtener los relatores"
+        }, 500
 
 
 @app.route('/api/teller/<_id>', methods=['GET'])
 def get_teller(_id):
-
     try:
-
         teller = modelTeller.query.get(_id)
-        return teller_schema.jsonify(teller)
-
+        return {
+            "ok": True,
+            "teller": teller.serialize()
+        }, 200
     except Exception as e:
         print(e)
-        return {"message": "Error al obtener un relator."}, 500
+        return {
+            "ok": False,
+            "msg": "Error al obtener el relator"
+        }, 500
 
 
 @app.route('/api/teller/<_id>', methods=['PUT'])
 def update_teller(_id):
-
     try:
-
         teller = modelTeller.query.get(_id)
 
         nationalityType = request.json['nationalityType']
@@ -186,26 +199,39 @@ def update_teller(_id):
         teller.reuf = reuf
 
         db.session.commit()
-        return teller_schema.jsonify(teller)
-
+        return {
+            "ok": True,
+            "teller": teller.serialize()
+        }, 200
     except Exception as e:
         print(e)
-        return {"message": "Error al actualizar un relator."}, 500
+        return {
+            "ok": False,
+            "msg": "Error al actualizar el relator"
+        }, 500
+    finally:
+        db.session.close()
 
 
 @app.route('/api/teller/<_id>', methods=['DELETE'])
 def delete_teller(_id):
-
     try:
         teller = modelTeller.query.get(_id)
+
         db.session.delete(teller)
         db.session.commit()
-
-        return teller_schema.jsonify(teller)
-
+        return {
+            "ok": True,
+            "teller": teller.serialize()
+        }, 200
     except Exception as e:
         print(e)
-        return {"message": "Error al eliminar un relator."}, 500
+        return {
+            "ok": False,
+            "msg": "Error al eliminar el relator"
+        }, 500
+    finally:
+        db.session.close()
 
 
 # --------------------------------------------PARTICIPANT
@@ -231,40 +257,52 @@ def add_participant():
                                            rut, fullName, lastName, motherLastName, institution, email, gender, position)
 
         db.session.add(new_participant)
-
         db.session.commit()
-
-        return participant_schema.jsonify(new_participant)
-
+        return {
+            "ok": True,
+            "participant": new_participant.serialize()
+        }, 201
     except Exception as e:
         print(e)
-        return {"message": "Error al ingresar un participante."}, 500
+        return {
+            "ok": False,
+            "msg": "Error al guardar el participante"
+        }, 500
+    finally:
+        db.session.close()
 
 
 @app.route('/api/participant', methods=['GET'])
 def get_participants():
-
     try:
         all_participants = modelParticipant.query.all()
         result = participants_schema.dump(all_participants)
-        return jsonify(result)
-
+        return {
+            "ok": True,
+            "participants": result
+        }, 200
     except Exception as e:
         print(e)
-        return {"message": "Error al obtener los participantes."}, 500
+        return {
+            "ok": False,
+            "msg": "Error al obtener los participantes"
+        }, 500
 
 
 @app.route('/api/participant/<_id>', methods=['GET'])
 def get_participant(_id):
-
     try:
-
         participant = modelParticipant.query.get(_id)
-        return participant_schema.jsonify(participant)
-
+        return {
+            "ok": True,
+            "participant": participant.serialize()
+        }, 200
     except Exception as e:
         print(e)
-        return {"message": "Error al obtener un participante."}, 500
+        return {
+            "ok": False,
+            "msg": "Error al obtener el participante"
+        }, 500
 
 
 @app.route('/api/participant/<_id>', methods=['PUT'])
@@ -299,26 +337,39 @@ def update_participant(_id):
         participant.position = position
 
         db.session.commit()
-        return participant_schema.jsonify(participant)
-
+        return {
+            "ok": True,
+            "participant": participant.serialize()
+        }, 200
     except Exception as e:
         print(e)
-        return {"message": "Error al actualizar un participante."}, 500
+        return {
+            "ok": False,
+            "msg": "Error al actualizar el participante"
+        }, 500
+    finally:
+        db.session.close()
 
 
 @app.route('/api/participant/<_id>', methods=['DELETE'])
 def delete_participant(_id):
-
     try:
         participant = modelParticipant.query.get(_id)
+
         db.session.delete(participant)
         db.session.commit()
-
-        return participant_schema.jsonify(participant)
-
+        return {
+            "ok": True,
+            "participant": participant.serialize()
+        }, 200
     except Exception as e:
         print(e)
-        return {"message": "Error al eliminar un participante."}, 500
+        return {
+            "ok": False,
+            "msg": "Error al eliminar el participante"
+        }, 500
+    finally:
+        db.session.close()
 
 
 # --------------------------------------------COMPANY
@@ -354,6 +405,8 @@ def add_company():
             "ok": False,
             "msg": "Error al guardar la compañia"
         }, 500
+    finally:
+        db.session.close()
 
 
 @app.route('/api/company', methods=['GET'])
@@ -428,6 +481,8 @@ def update_company(_id):
             "ok": False,
             "msg": "Error al actualizar la compañia"
         }, 500
+    finally:
+        db.session.close()
 
 
 @app.route('/api/company/<_id>', methods=['DELETE'])
@@ -446,6 +501,8 @@ def delete_company(_id):
             "ok": False,
             "msg": "Error al eliminar la compañia"
         }, 500
+    finally:
+        db.session.close()
 
 # --------------------------------------------COURSES
 
@@ -470,47 +527,82 @@ def add_courses():
         participantValue = request.json['participantValue']
         requestDate = request.json['requestDate']
 
+
         new_course = modelCourse(sence, instruction, activityType, activityName, attendance, minCalification, minHours, participantsNumber,
                                  targetPopulation, generalObjectives, totalHours, teachingTechnique, evaluation, infrastructure, participantValue, requestDate)
 
-        # Heinz
-        db.session.remove()
-
         db.session.add(new_course)
-
         db.session.commit()
 
-        return course_schema.jsonify(new_course)
+        # Obtener datos para las otras tablas
+        tellerSupport = request.json['tellerSupport']
+        for item in tellerSupport:
+            try:
+                new_courseTellerSupport = CourseTellerSupport(new_course._id, item['description'], item['amount'])
 
+                db.session.add(new_courseTellerSupport)
+                db.session.commit()
+            except Exception as e:
+                print(e)
+
+        participantMaterial = request.json['participantMaterial']
+        for item in participantMaterial:
+            try:
+                new_courseParticipantMaterial = CourseParticipantMaterial(new_course._id, item['description'], item['amount'])
+
+                db.session.add(new_courseParticipantMaterial)
+                db.session.commit()
+            except Exception as e:
+                print(e)
+
+        # Heinz
+        # db.session.remove()
+
+        return {
+            "ok": True,
+            "course": new_course.serialize()
+        }, 201
     except Exception as e:
         print(e)
-        return {"message": "Error al ingresar un curso."}, 500
+        return {
+            "ok": False,
+            "msg": "Error al agregar el curso"
+        }, 500
+    finally:
+        db.session.close()
 
 
 @app.route('/api/course', methods=['GET'])
 def get_courses():
-
     try:
         all_courses = modelCourse.query.all()
         result = courses_schema.dump(all_courses)
-        return jsonify(result)
-
+        return {
+            "ok": True,
+            "courses": result
+        }, 200
     except Exception as e:
         print(e)
-        return {"message": "Error al obtener los cursos."}, 500
+        return {
+            "ok": False,
+            "msg": "Error al obtener los cursos"
+        }, 500
 
 
 @app.route('/api/course/<_id>', methods=['GET'])
 def get_course(_id):
-
     try:
-
         course = modelCourse.query.get(_id)
-        return course_schema.jsonify(course)
-
+        return {
+            "ok": True,
+            "course": course.serialize()
+        }, 200
     except Exception as e:
         print(e)
-        return {"message": "Error al obtener el curso."}, 500
+        return {
+            "ok": False,
+            "msg": "Error al obtener el curso"
+        }, 500
 
 
 @app.route('/api/course/<_id>', methods=['PUT'])
@@ -553,26 +645,39 @@ def update_course(_id):
         course.requestDate = requestDate
 
         db.session.commit()
-        return course_schema.jsonify(course)
-
+        return {
+            "ok": True,
+            "course": course.serialize()
+        }, 200
     except Exception as e:
         print(e)
-        return {"message": "Error al actualizar un curso."}, 500
+        return {
+            "ok": False,
+            "msg": "Error al actualizar el curso"
+        }, 500
+    finally:
+        db.session.close()
 
 
 @app.route('/api/course/<_id>', methods=['DELETE'])
 def delete_course(_id):
-
     try:
         course = modelCourse.query.get(_id)
+
         db.session.delete(course)
         db.session.commit()
-
-        return participant_schema.jsonify(course)
-
+        return {
+            "ok": True,
+            "course": course.serialize()
+        }, 200
     except Exception as e:
         print(e)
-        return {"message": "Error al eliminar un curso."}, 500
+        return {
+            "ok": False,
+            "msg": "Error al eliminar el curso"
+        }, 500
+    finally:
+        db.session.close()
 
 
 # --------------------------------------------
@@ -622,26 +727,26 @@ def addtellerPerCourse():
         return {"message": "Error al obtener los id's"}, 500
 
 
-@app.route('/api/courseComplement', methods=['POST'])
-def addcourseComplement():
-    try:
-        course_id = request.json['course_id']
-        type_id = request.json['type_id']
-        description = request.json['description']
-        amount = request.json['amount']
+# @app.route('/api/courseComplement', methods=['POST'])
+# def addcourseComplement():
+#     try:
+#         course_id = request.json['course_id']
+#         type_id = request.json['type_id']
+#         description = request.json['description']
+#         amount = request.json['amount']
 
-        new_courseComplement = courseComplement(
-            course_id, type_id, description, amount)
+#         new_courseComplement = courseComplement(
+#             course_id, type_id, description, amount)
 
-        db.session.add(new_courseComplement)
+#         db.session.add(new_courseComplement)
 
-        db.session.commit()
+#         db.session.commit()
 
-        return "complementos guardados"
+#         return "complementos guardados"
 
-    except Exception as e:
-        print(e)
-        return {"message": "Error al obtener los complementos del curso"}, 500
+#     except Exception as e:
+#         print(e)
+#         return {"message": "Error al obtener los complementos del curso"}, 500
 
 
 # Se carga el host
