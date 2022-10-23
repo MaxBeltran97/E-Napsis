@@ -20,7 +20,7 @@ class Course(db.Model, Serializer):
     evaluation = db.Column(db.String(500), nullable=False)
     infrastructure = db.Column(db.String(500))
     participantValue = db.Column(db.Integer, nullable=False)
-    requestDate = db.Column(db.String(100), nullable=False)
+    requestDate = db.Column(db.DateTime, nullable=False)
 
     def __init__(self, sence, instruction, activityType, activityName, attendance, minCalification, minHours, participantsNumber, targetPopulation, generalObjectives, totalHours, teachingTechnique, evaluation, infrastructure, participantValue, requestDate):
         self.sence = sence

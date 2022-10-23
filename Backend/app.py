@@ -8,7 +8,6 @@ from flask_cors import CORS
 from flask_marshmallow import Marshmallow
 from flask_sqlalchemy import SQLAlchemy
 from flask_restful import Api
-from flask_mysqldb import MySQL
 import marshmallow
 
 from redis_app import redis
@@ -33,11 +32,9 @@ from models.course import courses_schema
 
 from models.courseTellerSupport import *
 from models.courseParticipantMaterial import *
-
-from models.courseActvity import courseActivity
-from models.tellerPerCourse import tellerPerCourse
-from models.courseComplement import courseComplement
-
+from models.courseEquipment import *
+from models.courseActvityContentHours import *
+from models.courseTeller import *
 
 from resources.login import Login
 # from resources.UploadParticipants import UploadParticipants
@@ -535,6 +532,26 @@ def add_courses():
         db.session.commit()
 
         # Obtener datos para las otras tablas
+        activitiesContentHours = request.json['activitiesContentHours']
+        for item in activitiesContentHours:
+            try:
+                new_courseActivityContentHours = CourseActivityContentHours(new_course._id, item['activity'], item['content'], item['theoreticalHour'], item['practiceHour'], item['eLearningHour'])
+            
+                db.session.add(new_courseActivityContentHours)
+                db.session.commit()
+            except Exception as e:
+                print(e)
+
+        tellers_id = request.json['tellers_id']
+        for item in tellers_id:
+            try:
+                new_courseTeller = CourseTeller(new_course._id, item['teller_id'])
+
+                db.session.add(new_courseTeller)
+                db.session.commit()
+            except Exception as e:
+                print(e)
+
         tellerSupport = request.json['tellerSupport']
         for item in tellerSupport:
             try:
@@ -554,6 +571,16 @@ def add_courses():
                 db.session.commit()
             except Exception as e:
                 print(e)
+        
+        equipment = request.json['equipment']
+        for item in equipment:
+            try:
+                new_courseEquipment = CourseEquipment(new_course._id, item['description'], item['amount'])
+
+                db.session.add(new_courseEquipment)
+                db.session.commit()
+            except Exception as e:
+                print(e)
 
         # Heinz
         # db.session.remove()
@@ -562,7 +589,7 @@ def add_courses():
             "ok": True,
             "course": new_course.serialize()
         }, 201
-    except Exception as e:
+    except Exception as e:  
         print(e)
         return {
             "ok": False,
@@ -623,14 +650,14 @@ def update_course(_id):
         totalHours = request.json['totalHours']
         teachingTechnique = request.json['teachingTechnique']
         evaluation = request.json['evaluation']
-        infrastructure = request.json['infrastructure']
+        infrastructure = request.json['infrastructure']u
         participantValue = request.json['participantValue']
         requestDate = request.json['requestDate']
 
         course.sence = sence
         course.instruction = instruction
         course.activityType = activityType
-        course.activityName = activityName
+        course.activityName = activityNamex
         course.attendance = attendance
         course.minCalification = minCalification
         course.minHours = minHours
@@ -683,48 +710,48 @@ def delete_course(_id):
 # --------------------------------------------
 
 
-@app.route('/api/courseActivity', methods=['POST'])
-def addcourseActivity():
-    try:
-        course_id = request.json['course_id']
-        activity = request.json['activity']
-        content = request.json['content']
-        theoreticalHour = request.json['theoreticalHour']
-        practiceHour = request.json['practiceHour']
-        eLearningHour = request.json['eLearningHour']
+# @app.route('/api/courseActivity', methods=['POST'])
+# def addcourseActivity():
+#     try:
+#         course_id = request.json['course_id']
+#         activity = request.json['activity']
+#         content = request.json['content']
+#         theoreticalHour = request.json['theoreticalHour']
+#         practiceHour = request.json['practiceHour']
+#         eLearningHour = request.json['eLearningHour']
 
-        print(theoreticalHour, practiceHour, eLearningHour)
+#         print(theoreticalHour, practiceHour, eLearningHour)
 
-        new_courseActivity = courseActivity(
-            course_id, activity, content, theoreticalHour, practiceHour, eLearningHour)
+#         new_courseActivity = courseActivity(
+#             course_id, activity, content, theoreticalHour, practiceHour, eLearningHour)
 
-        db.session.add(new_courseActivity)
+#         db.session.add(new_courseActivity)
 
-        db.session.commit()
+#         db.session.commit()
 
-        return "Actividad de curso guardada"
-    except Exception as e:
-        print(e)
-        return {"message": "Error al ingresar una actividad al curso"}, 500
+#         return "Actividad de curso guardada"
+#     except Exception as e:
+#         print(e)
+#         return {"message": "Error al ingresar una actividad al curso"}, 500
 
 
-@app.route('/api/tellerPerCourse', methods=['POST'])
-def addtellerPerCourse():
-    try:
-        teller_id = request.json['teller_id']
-        course_id = request.json['course_id']
+# @app.route('/api/tellerPerCourse', methods=['POST'])
+# def addtellerPerCourse():
+#     try:
+#         teller_id = request.json['teller_id']
+#         course_id = request.json['course_id']
 
-        new_tellerPerCourse = tellerPerCourse(teller_id, course_id)
+#         new_tellerPerCourse = tellerPerCourse(teller_id, course_id)
 
-        db.session.add(new_tellerPerCourse)
+#         db.session.add(new_tellerPerCourse)
 
-        db.session.commit()
+#         db.session.commit()
 
-        return "ids guardados"
+#         return "ids guardados"
 
-    except Exception as e:
-        print(e)
-        return {"message": "Error al obtener los id's"}, 500
+#     except Exception as e:
+#         print(e)
+#         return {"message": "Error al obtener los id's"}, 500
 
 
 # @app.route('/api/courseComplement', methods=['POST'])
