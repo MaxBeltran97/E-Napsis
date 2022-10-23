@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux"
 
 import enapsisApi from "@api/enapsisApi"
 import { onHandleCompanies, onHandleLoading } from "@reduxSlices/companySlice"
+import { parseNull } from "@helpers/parseNull"
 
 export const useCompanyStore = () => {
 
@@ -15,23 +16,41 @@ export const useCompanyStore = () => {
 
     try {
       const { data } = await enapsisApi.get('/company')
-      dispatch(onHandleCompanies(data))
+      if(data.ok) {
+        dispatch(onHandleCompanies(data.companies))
+      }
     } catch (error) {
       console.log(error.response)
     }
-    dispatch(onHandleLoading(false))
+    setTimeout(() => {
+      dispatch(onHandleLoading(false))
+    }, 500)
+  }
+
+  const startGetCompany = async (company_id) => {
+    try {
+      const { data } = await enapsisApi.get(`/company/${company_id}`)
+      if(data.ok) {
+        return data.company
+      }
+    } catch (error) {
+      console.log(error.response)
+    }
+    return null
   }
 
   const startSavingCompany = async (company) => {
     dispatch(onHandleLoading(true))
 
     try {
-      company = { ...company, cellPhone: parseInt(company.cellPhone) }
-      const { data } = await enapsisApi.post('/company', JSON.stringify(company))
-      console.log(data)
-      navigate('../', {replace: true})
+      company = { ...company, cellPhone: parseInt(company.cellPhone), rut: parseNull(company.rut) }
+      const { data } = await enapsisApi.post('/company', JSON.stringify(company), { headers: { 'Content-Type': 'application/json' } })
+      if(data.ok) {
+        navigate('../', {replace: true})
+      }else {
+        //TODO Manejar errores del formulario obtenidos del backend
+      }
     } catch (error) {
-      //TODO Manejar los errores que tira el backend
       console.log(error.response)
     }
     dispatch(onHandleLoading(false))
@@ -50,6 +69,7 @@ export const useCompanyStore = () => {
     //* Metodos
     startGetCompanies,
     startSavingCompany,
+    startGetCompany,
     getCompanyWithId
   }
 }

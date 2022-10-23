@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux"
 
 import enapsisApi from "@api/enapsisApi"
 import { onHandleLoading, onHandleParticipants } from "@reduxSlices/participantSlice"
+import { parseNull } from "@helpers/parseNull"
 
 export const useParticipantStore = () => {
   
@@ -15,25 +16,29 @@ export const useParticipantStore = () => {
 
     try {
       const { data } = await enapsisApi.get('/participant')
-      dispatch(onHandleParticipants(data))
+      if(data.ok) {
+        dispatch(onHandleParticipants(data.participants))
+      }
     } catch (error) {
       console.log(error.response)
     }
-    dispatch(onHandleLoading(false))
+    setTimeout(() => {
+      dispatch(onHandleLoading(false))
+    }, 500)
   }
 
   const startSavingParticipant = async (participant) => {
     dispatch(onHandleLoading(true))
 
     try {
-      if(!(!!participant.company_id)) {
-        participant = { ...participant, company_id: null }
+      participant = { ...participant, company_id: parseNull(participant.company_id) }
+      const { data } = await enapsisApi.post('/participant', JSON.stringify(participant), { headers: { 'Content-Type': 'application/json' } })
+      if(data.ok) {
+        navigate('../', {replace: true})
+      }else {
+        //TODO Manejar errores del formulario obtenidos del backend
       }
-      const { data } = await enapsisApi.post('/participant', JSON.stringify(participant))
-      console.log(data)
-      navigate('../', {replace: true})
     } catch (error) {
-      //TODO Manejar los errores que tira el backend
       console.log(error.response)
     }
     dispatch(onHandleLoading(false))

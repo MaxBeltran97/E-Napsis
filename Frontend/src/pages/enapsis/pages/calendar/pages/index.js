@@ -1,1 +1,2 @@
-export * from './CalendarPage';
+export * from './AddCalendarCoursePage';
+export * from './ShowCalendarPage';

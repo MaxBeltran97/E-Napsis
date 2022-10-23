@@ -28,19 +28,17 @@ export const useCourseStore = () => {
       course = { ...course, 
         attendance: parseInt(course.attendance),
         minCalification: parseFloat(course.minCalification.replace(',','.')),
+        minHours: parseInt(course.minHours),
         participantsNumber: parseInt(course.participantsNumber),
         totalHours: parseInt(course.totalHours),
+        tellers_id: course.tellers_id.map( item => { return { teller_id: item.value } }),
         participantValue: parseInt(course.participantValue),
-        requestDate: new Date(course.requestDate)
+        requestDate: new Date(course.requestDate).toISOString().slice(0, 19).replace('T', ' '),
       }
-      if(!!course.minHours) {
-        course = { ...course, minHours: parseInt(course.minHours)}
-      } else {
-        course = { ...course, minHours: null }
-      }
-      const { data } = await enapsisApi.post('/course', JSON.stringify(course))
-      console.log(data)
-      navigate('../', {replace: true})
+      console.log(course)
+      // const { data } = await enapsisApi.post('/course', JSON.stringify(course))
+      // console.log(data)
+      // navigate('../', {replace: true})
     } catch (error) {
       //TODO Manejar los errores que tira el backend
       console.log(error.response)

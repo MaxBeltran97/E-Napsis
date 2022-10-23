@@ -8,12 +8,12 @@ import { useTellerStore } from "@hooks/useTellerStore"
 
 export const ShowTellersPage = () => {
 
-  const { tellers, startGetTellers } = useTellerStore()
+  const { isLoading, tellers, startGetTellers } = useTellerStore()
 
   useEffect(() => {
     startGetTellers()
   }, [])
-  
+
   return (
     <>
       <Typography variant="h5" sx={{ mt: 1, ml: 2 }}>Relatores</Typography>
@@ -43,9 +43,13 @@ export const ShowTellersPage = () => {
         </Grid>
 
         {
-          tellers.map((teller) => (
-            <TellerItem key={teller._id} teller={teller} />
-          ))
+          isLoading
+            ? <Grid item xs={12}> <Typography sx={{ textAlign: 'center' }}>Cargando...</Typography> </Grid>
+            : (
+              tellers.map((teller) => (
+                <TellerItem key={teller._id} teller={teller} />
+              ))
+            )
         }
       </GridPaper>
     </>

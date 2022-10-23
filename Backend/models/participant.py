@@ -3,14 +3,13 @@ from database.db import ma
 from helpers.serializable import Serializer
 
 
-
 class Participant(db.Model, Serializer):
-    _id = db.Column(db.Integer, primary_key = True)
+    _id = db.Column(db.Integer, primary_key=True)
     courseCode = db.Column(db.String(100), nullable=False)
     participantType = db.Column(db.String(100))
-    company_id = db.Column(db.Integer, db.ForeignKey('company._id')) #, db.ForeignKey('company._id'))
+    company_id = db.Column(db.Integer, db.ForeignKey('company._id'))
     nationalityType = db.Column(db.String(100))
-    rut = db.Column(db.String(100), unique=True, nullable=False )
+    rut = db.Column(db.String(100), unique=True, nullable=False)
     fullName = db.Column(db.String(100), nullable=False)
     lastName = db.Column(db.String(100), nullable=False)
     motherLastName = db.Column(db.String(100))
@@ -32,15 +31,17 @@ class Participant(db.Model, Serializer):
         self.email = email
         self.gender = gender
         self.position = position
-    
+
     def serialize(self):
-            d = Serializer.serialize(self)
-            return d    
+        d = Serializer.serialize(self)
+        return d
 
 
 class ParticipantSchema(ma.Schema):
     class Meta:
-        fields = ('_id', 'courseCode', 'participantType', 'company_id', 'nationalityType', 'rut', 'fullName', 'lastName', 'motherLastName', 'institution', 'email', 'gender', 'position')
+        fields = ('_id', 'courseCode', 'participantType', 'company_id', 'nationalityType', 'rut',
+                  'fullName', 'lastName', 'motherLastName', 'institution', 'email', 'gender', 'position')
+
 
 participant_schema = ParticipantSchema()
 participants_schema = ParticipantSchema(many=True)

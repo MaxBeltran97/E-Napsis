@@ -7,14 +7,19 @@ import { useCompanyStore } from "@hooks/useCompanyStore"
 
 export const ParticipantItem = ({ participant }) => {
 
-  const { getCompanyWithId } = useCompanyStore()
+  const { startGetCompany } = useCompanyStore()
   const { company_id, rut, fullName, lastName, motherLastName } = participant
   const [companyName, setCompanyName] = useState('')
 
+  const getCompanyName = async() => {
+    //TODO Cambiar por getCompanyById para buscar en el store primero
+    const { fantasyName } = await startGetCompany(company_id)
+    setCompanyName(fantasyName)
+  }
+
   useEffect(() => {
     if(!!company_id) {
-      const { fantasyName } = getCompanyWithId(company_id)
-      setCompanyName(fantasyName)
+      getCompanyName()
     }else {
       setCompanyName('Particular')
     }
