@@ -603,6 +603,9 @@ def add_courses():
 def get_courses():
     try:
         all_courses = modelCourse.query.all()
+        print('Cursos:')
+        for course in all_courses:
+            print(course)
         result = courses_schema.dump(all_courses)
         return {
             "ok": True,
@@ -650,14 +653,14 @@ def update_course(_id):
         totalHours = request.json['totalHours']
         teachingTechnique = request.json['teachingTechnique']
         evaluation = request.json['evaluation']
-        infrastructure = request.json['infrastructure']u
+        infrastructure = request.json['infrastructure']
         participantValue = request.json['participantValue']
         requestDate = request.json['requestDate']
 
         course.sence = sence
         course.instruction = instruction
         course.activityType = activityType
-        course.activityName = activityNamex
+        course.activityName = activityName
         course.attendance = attendance
         course.minCalification = minCalification
         course.minHours = minHours

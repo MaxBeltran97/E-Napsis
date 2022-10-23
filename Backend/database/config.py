@@ -7,7 +7,8 @@ class DevelopmentConfig(Config):
     """
     Development configurations
     """
-    SQLALCHEMY_DATABASE_URI = "mysql://root:fideosconsalsa1@localhost/napsis"
+    # SQLALCHEMY_DATABASE_URI = "mysql://root:fideosconsalsa1@localhost/napsis"
+    SQLALCHEMY_DATABASE_URI = "mysql://Diego:admin@localhost/napsis"
     SQLALCHEMY_POOL_RECYCLE = 300
     SQLALCHEMY_POOL_SIZE = 2000
     SQLALCHEMY_POOL_TIMEOUT = 320
