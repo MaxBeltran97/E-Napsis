@@ -1,17 +1,19 @@
 import sys,os,click,json
-from unittest import result
+from turtle import position
 from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
 from flask_marshmallow import Marshmallow
 from flask_sqlalchemy import SQLAlchemy
-from flask_restful import Api
+from flask_restful import Api, reqparse
 from flask_mysqldb import MySQL
-import marshmallow
+from sqlalchemy import create_engine, null
+
 
 
 from redis_app import redis
 from database.db import db
 from database.config import app_config, DevelopmentConfig
+import pandas as pd
 
 
 
@@ -31,13 +33,17 @@ from models.course import Course as modelCourse
 from models.course import course_schema
 from models.course import courses_schema
 
+from models.calendarCourse import CalendarCourse as modelCalendar
+from models.calendarCourse import calendar_schema
+from models.calendarCourse import calendars_schema
+
 from models.courseActvity import courseActivity
 from models.tellerPerCourse import tellerPerCourse
 from models.courseComplement import courseComplement
 
 
 from resources.login import Login
-from resources.UploadParticipants import UploadParticipants
+
 
 
 # IMPORTACIÓN DE RECURSOS
@@ -554,9 +560,160 @@ def delete_course(_id):
 
 
 
+#--------------------------------------------CALENDAR
+
+@app.route('/api/calendar', methods = ['POST'])
+def add_calendar():
+    try:
+        internalCode = request.json['internalCode']
+        internalName = request.json['internalName']
+        course_id = request.json['course_id']
+        instruction = request.json['instruction']
+        courseHours = request.json['courseHours']
+        ejecutionPlace = request.json['ejecutionPlace']
+        ejecutionCity = request.json['ejecutionCity']
+        ejecutionRegion = request.json['ejecutionRegion']
+        startDate = request.json['startDate']
+        participantValue = request.json['participantValue']
+
+
+        new_calendar = modelCalendar(internalCode, internalName, course_id, instruction, courseHours, ejecutionPlace, ejecutionCity, ejecutionRegion, startDate, participantValue)
+
+        db.session.add(new_calendar)
+
+        db.session.commit()
+
+        return calendar_schema.jsonify(new_calendar)
+
+
+    except Exception as e:
+            print(e)
+            return {"message": "Error al ingresar un calendario."}, 500
+
+@app.route('/api/calendar', methods=['GET'])
+def get_calendars():
+
+    try:
+        all_calendars = modelCalendar.query.all()
+        result = calendars_schema.dump(all_calendars)
+        return jsonify(result)
+
+
+    except Exception as e:
+            print(e)
+            return {"message": "Error al obtener los calendario."}, 500
+
+@app.route('/api/calendar/<_id>', methods=['GET'])
+def get_calendar(_id):
+
+    try:
+
+        calendar = modelCalendar.query.get(_id)
+        return calendar_schema.jsonify(calendar)
+
+    except Exception as e:
+        print(e)
+        return {"message": "Error al obtener un calendario."}, 500 
+
+@app.route('/api/calendar/<_id>', methods=['PUT'])
+def update_calendar(_id):
+
+    try:
+
+        calendar = modelCalendar.query.get(_id)
+
+        internalCode = request.json['internalCode']
+        internalName = request.json['internalName']
+        course_id = request.json['course_id']
+        instruction = request.json['instruction']
+        courseHours = request.json['courseHours']
+        ejecutionPlace = request.json['ejecutionPlace']
+        ejecutionCity = request.json['ejecutionCity']
+        ejecutionRegion = request.json['ejecutionRegion']
+        startDate = request.json['startDate']
+        participantValue = request.json['participantValue']
+
+        calendar.internalCode = internalCode
+        calendar.internalName = internalName
+        calendar.course_id = course_id
+        calendar.instruction = instruction
+        calendar.courseHours = courseHours
+        calendar.ejecutionPlace = ejecutionPlace
+        calendar.ejecutionCity = ejecutionCity
+        calendar.ejecutionRegion = ejecutionRegion
+        calendar.startDate = startDate
+        calendar.participantValue = participantValue
+
+        db.session.commit()
+
+        return calendar_schema.jsonify(calendar)
+
+    except Exception as e:
+            print(e)
+            return {"message": "Error al actualizar el calendario."}, 500
+
+@app.route('/api/calendar/<_id>', methods=['DELETE'])
+def delete_calendar(_id):
+
+    try:
+        calendar = modelCalendar.query.get(_id)
+        db.session.delete(calendar)
+        db.session.commit()
+
+        return calendar_schema.jsonify(calendar)
+
+    except Exception as e:
+            print(e)
+            return {"message": "Error al eliminar un relator."}, 500
+
 
 #--------------------------------------------
 
+@app.route('/api/UploadParticipants', methods=['POST'])
+def upload_participants():
+    try:
+        
+        courseCode = request.form['courseCode']
+        company_id = request.form['company_id']
+        
+        file = request.files["excel"]                
+        
+        msg = "posiciones duplicadas: "
+        df = pd.read_excel(file)
+        
+        for i in range(len(df.index)):
+            nationalityType = df.loc[i, 'NACIONALIDAD']
+            participantType = df.loc[i, 'CARGO DESEMPEÑADO']
+            rut = df.loc[i, 'RUT']
+            fullName = df.loc[i, 'NOMBRE']
+            lastName = df.loc[i, 'PATERNO']
+            motherLastName = df.loc[i, 'MATERNO']
+            institution = df.loc[i, 'ESTABLECIMIENTO']
+            email = df.loc[i, 'EMAIL']
+            gender = df.loc[i, 'GENERO']
+            position = df.loc[i, 'POSICION']
+            
+
+            try:
+                new_participant = modelParticipant(courseCode, participantType, company_id, nationalityType, rut, fullName, lastName, motherLastName, institution, email, gender, position)
+                db.session.add(new_participant)
+        
+                db.session.commit()
+            
+            except Exception as e:
+                
+                msg = (msg + f"{i}, ")
+                db.session.rollback()
+            finally:
+                db.session.close()
+            
+        return {
+            "ok": True,
+            "msg": msg
+        }, 200
+    except Exception as e:
+            print (e)
+            return {"message": "Error al ingresar archivo."}, 500
 
 @app.route('/api/courseActivity', methods=['POST'])
 def addcourseActivity():
