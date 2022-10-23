@@ -1,6 +1,5 @@
 import sys,os,click,json
 from turtle import position
-from unittest import result
 from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
 from flask_marshmallow import Marshmallow
@@ -44,7 +43,7 @@ from models.courseComplement import courseComplement
 
 
 from resources.login import Login
-from resources.UploadParticipants import UploadParticipants
+
 
 
 # IMPORTACIÓN DE RECURSOS
