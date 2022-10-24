@@ -1,3 +1,4 @@
+export * from './getCalendarCoursesWithAutocomplete';
 export * from './getCompaniesWithAutocomplete';
 export * from './getCoursesWithAutocomplete';
 export * from './getTellersWithAutocomplete';

@@ -241,7 +241,7 @@ def delete_teller(_id):
 @app.route('/api/participant', methods=['POST'])
 def add_participant():
     try:
-        courseCode = request.json['courseCode']
+        calendarCourse_id = request.json['calendarCourse_id']
         participantType = request.json['participantType']
         company_id = request.json['company_id']
         nationalityType = request.json['nationalityType']
@@ -254,7 +254,7 @@ def add_participant():
         gender = request.json['gender']
         position = request.json['position']
 
-        new_participant = modelParticipant(courseCode, participantType, company_id, nationalityType,
+        new_participant = modelParticipant(calendarCourse_id, participantType, company_id, nationalityType,
                                            rut, fullName, lastName, motherLastName, institution, email, gender, position)
 
         db.session.add(new_participant)
@@ -311,7 +311,7 @@ def update_participant(_id):
     try:
         participant = modelParticipant.query.get(_id)
 
-        courseCode = request.json['courseCode']
+        calendarCourse_id = request.json['calendarCourse_id']
         participantType = request.json['participantType']
         company_id = request.json['company_id']
         nationalityType = request.json['nationalityType']
@@ -324,7 +324,7 @@ def update_participant(_id):
         gender = request.json['gender']
         position = request.json['position']
 
-        participant.courseCode = courseCode
+        participant.calendarCourse_id = calendarCourse_id
         participant.participantType = participantType
         participant.company_id = company_id
         participant.nationalityType = nationalityType
@@ -376,7 +376,8 @@ def delete_participant(_id):
 @app.route('/api/participant/uploadfile', methods=['POST'])
 def upload_file_participants():
     try:
-        courseCode = request.form['courseCode']
+        print('entre')
+        calendarCourse_id = request.form['calendarCourse_id']
         company_id = request.form['company_id']
         file = request.files["excel"]
 
@@ -396,7 +397,7 @@ def upload_file_participants():
             position = df.loc[i, 'POSICION']
 
             try:
-                new_participant = modelParticipant(courseCode, participantType, company_id, nationalityType,
+                new_participant = modelParticipant(calendarCourse_id, participantType, company_id, nationalityType,
                                                    rut, fullName, lastName, motherLastName, institution, email, gender, position)
                 db.session.add(new_participant)
                 db.session.commit()

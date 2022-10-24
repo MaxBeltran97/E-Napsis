@@ -44,6 +44,28 @@ export const useParticipantStore = () => {
     dispatch(onHandleLoading(false))
   }
 
+  const startSavingParticipantFile = async (form) => {
+    dispatch(onHandleLoading(true))
+
+    try {
+      let formData = new FormData()
+      formData.append('calendarCourse_id', form.calendarCourse_id)
+      formData.append('company_id', form.company_id)
+      formData.append('excel', form.excelParticipants[0].file)
+      
+      const { data } = await enapsisApi.post('/participant/uploadfile', formData, { headers: { 'Content-Type': 'multipart/form-data' } })
+      if(data.ok) {
+        console.log('wena wena')
+        navigate('../', {replace: true})
+      }else {
+        //TODO Manejar errores del formulario obteniods del backend
+      }
+    } catch (error) {
+      console.log(error.response)
+    }
+
+  }
+
   return {
     //* Propiedades
     isLoading,
@@ -52,6 +74,7 @@ export const useParticipantStore = () => {
 
     //* Metodos
     startGetParticipants,
-    startSavingParticipant
+    startSavingParticipant,
+    startSavingParticipantFile
   }
 }

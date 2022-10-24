@@ -5,7 +5,7 @@ from helpers.serializable import Serializer
 
 class Participant(db.Model, Serializer):
     _id = db.Column(db.Integer, primary_key=True)
-    courseCode = db.Column(db.String(100), nullable=False)
+    calendarCourse_id = db.Column(db.Integer, db.ForeignKey('calendar_course._id'))
     participantType = db.Column(db.String(100))
     company_id = db.Column(db.Integer, db.ForeignKey('company._id'))
     nationalityType = db.Column(db.String(100))
@@ -18,8 +18,8 @@ class Participant(db.Model, Serializer):
     gender = db.Column(db.String(100))
     position = db.Column(db.String(100))
 
-    def __init__(self, courseCode, participantType, company_id, nationalityType, rut, fullName, lastName, motherLastName, institution, email, gender, position):
-        self.courseCode = courseCode
+    def __init__(self, calendarCourse_id, participantType, company_id, nationalityType, rut, fullName, lastName, motherLastName, institution, email, gender, position):
+        self.calendarCourse_id = calendarCourse_id
         self.participantType = participantType
         self.company_id = company_id
         self.nationalityType = nationalityType
@@ -39,7 +39,7 @@ class Participant(db.Model, Serializer):
 
 class ParticipantSchema(ma.Schema):
     class Meta:
-        fields = ('_id', 'courseCode', 'participantType', 'company_id', 'nationalityType', 'rut',
+        fields = ('_id', 'calendarCourse_id', 'participantType', 'company_id', 'nationalityType', 'rut',
                   'fullName', 'lastName', 'motherLastName', 'institution', 'email', 'gender', 'position')
 
 

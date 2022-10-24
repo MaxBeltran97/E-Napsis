@@ -10,12 +10,14 @@ import { ButtonSave } from "@components/button"
 import { radioGenderType, radioNationalityType, radioParticipantType } from "@assets/radio-data"
 
 import { useCompanyStore } from "@hooks/useCompanyStore"
+import { useCalendarCourseStore } from "@hooks/useCalendarCourseStore"
 import { useParticipantStore } from "@hooks/useParticipantStore"
-import { getCompaniesWithAutocomplete } from "@pages/enapsis/helpers"
+import { getCalendarCoursesWithAutocomplete, getCompaniesWithAutocomplete } from "@pages/enapsis/helpers"
 
 export const AddParticipantPage = () => {
   const { handleSubmit, unregister, formState: {errors}, control } = useForm()
   const { isLoading: isLoadingCompany, companies, startGetCompanies } = useCompanyStore()
+  const { isLoading: isLoadingCalendar, calendarCourses, startGetCalendarCourses } = useCalendarCourseStore()
   const { isLoading, startSavingParticipant } = useParticipantStore()
   const pType = useWatch({ control, name: 'participantType' })
 
@@ -26,7 +28,8 @@ export const AddParticipantPage = () => {
           <Grid container columnSpacing={4} rowSpacing={0}>
             <Grid item xs={12} lg={6}>
               {/* Calendario Cursos con filtrado */}
-              <InputText control={control} name={'Curso Calendarizado'} label={'courseCode'} required={true} error={errors.courseCode} />
+              {/* <InputText control={control} name={'Curso Calendarizado'} label={'courseCode'} required={true} error={errors.courseCode} /> */}
+              <InputAutocompleteAsync control={control} name={'Curso Calendarizado'} label={'calendarCourse_id'} required={true} error={errors.calendarCourse_id} entities={calendarCourses} startGetEntities={startGetCalendarCourses} getFormattedEntities={getCalendarCoursesWithAutocomplete} loading={isLoadingCalendar} />
               <InputRadio control={control} name={'Tipo Participante'} label={'participantType'} items={radioParticipantType} />
 
               <InputCondition value={pType} valuesConditions={[radioParticipantType[1].value]} unregister={unregister} labelCondition={'company_id'}>
