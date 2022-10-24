@@ -1,5 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { ADD_COMPANY, ADD_COURSES, ADD_PARTICIPANTS, ADD_TELLER, CALENDAR, COMPANIES, COURSES, HOME, IMPORT_PARTICIPANTS, PARTICIPANTS, SHOW_COMPANIES, SHOW_COURSES, SHOW_PARTICIPANTS, SHOW_TELLERS, TELLERS } from "@models/privateRoutes";
+import { 
+  ADD_CALENDAR_COURSE, ADD_COMPANY, ADD_COURSES, ADD_PARTICIPANTS, ADD_TELLER, 
+  CALENDAR_COURSE, COMPANIES, COURSES, HOME, IMPORT_PARTICIPANTS, PARTICIPANTS, 
+  SHOW_CALENDAR_COURSE, SHOW_COMPANIES, SHOW_COURSES, SHOW_PARTICIPANTS, SHOW_TELLERS, TELLERS 
+} from "@models/privateRoutes";
 
 export const uiSlice = createSlice({
   name: 'ui',
@@ -83,7 +87,18 @@ export const uiSlice = createSlice({
       {
         name: 'Calendario',
         idIcon: 4,
-        url: `${CALENDAR}`
+        isItemOpen: false,
+        activeOption: {},
+        options: [
+          {
+            name: 'Calendarizar Curso',
+            url: `${CALENDAR_COURSE + ADD_CALENDAR_COURSE}`
+          },
+          {
+            name: 'Mostrar Calendario',
+            url: `${CALENDAR_COURSE + SHOW_CALENDAR_COURSE}`
+          }
+        ]
       }
     ]
   },

@@ -10,7 +10,7 @@ const enapsisApi = axios.create({
 enapsisApi.interceptors.request.use(config => {
   config.headers = {
     ...config.headers,
-    'Content-Type': 'application/json',
+    // 'Content-Type': 'application/json',
     'x-token': localStorage.getItem('token')
   }
 

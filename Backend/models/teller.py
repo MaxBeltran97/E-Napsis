@@ -1,20 +1,19 @@
+from datetime import datetime
 from database.db import db
 from database.db import ma
 from helpers.serializable import Serializer
 from flask_marshmallow import Marshmallow
 
 
-
 class Teller(db.Model, Serializer):
-    _id = db.Column(db.Integer, primary_key = True)
+    _id = db.Column(db.Integer, primary_key=True)
     nationalityType = db.Column(db.String(100))
     rut = db.Column(db.String(100), unique=True, nullable=False)
     fullName = db.Column(db.String(100), nullable=False)
     lastName = db.Column(db.String(100), nullable=False)
     motherLastName = db.Column(db.String(100), nullable=False)
     nationality = db.Column(db.String(100))
-    # birthday = db.Column(db.DateTime)
-    birthday = db.Column(db.String(100))
+    birthday = db.Column(db.DateTime)
     profession = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100), unique=True, nullable=False)
     cellPhone = db.Column(db.Integer)
@@ -25,7 +24,7 @@ class Teller(db.Model, Serializer):
     situation = db.Column(db.Boolean)
     reuf = db.Column(db.Boolean)
 
-    def __init__(self, nationalityType, rut, fullName, lastName, motherLastName, nationality, birthday, profession, email, cellPhone, maritalStatus, address, region, commune, situation, reuf ):
+    def __init__(self, nationalityType, rut, fullName, lastName, motherLastName, nationality, birthday, profession, email, cellPhone, maritalStatus, address, region, commune, situation, reuf):
         self.nationalityType = nationalityType
         self.rut = rut
         self.fullName = fullName
@@ -42,7 +41,7 @@ class Teller(db.Model, Serializer):
         self.commune = commune
         self.situation = situation
         self.reuf = reuf
-   
+
     def serialize(self):
         d = Serializer.serialize(self)
         return d
@@ -50,7 +49,9 @@ class Teller(db.Model, Serializer):
 
 class TellerSchema(ma.Schema):
     class Meta:
-        fields = ('_id', 'nationalityType', 'rut', 'fullName', 'lastName', 'motherLastName', 'nationality', 'birthday', 'profession', 'email', 'cellPhone', 'maritalStatus', 'address', 'region', 'commune', 'situation', 'reuf')
+        fields = ('_id', 'nationalityType', 'rut', 'fullName', 'lastName', 'motherLastName', 'nationality', 'birthday',
+                  'profession', 'email', 'cellPhone', 'maritalStatus', 'address', 'region', 'commune', 'situation', 'reuf')
+
 
 teller_schema = TellerSchema()
 tellers_schema = TellerSchema(many=True)

@@ -16,11 +16,27 @@ export const useTellerStore = () => {
 
     try {
       const { data } = await enapsisApi.get('/teller')
-      dispatch(onHandleTellers(data))
+      if (data.ok) {
+        dispatch(onHandleTellers(data.tellers))
+      }
     } catch (error) {
       console.log(error.response)
     }
-    dispatch(onHandleLoading(false))
+    setTimeout(() => {
+      dispatch(onHandleLoading(false))
+    }, 500)
+  }
+
+  const startGetTeller = async (teller_id) => {
+    try {
+      const { data } = await enapsisApi.get(`/teller/${teller_id}`)
+      if (data.ok) {
+        return data.teller
+      }
+    } catch (error) {
+      console.log(error.response)
+    }
+    return null
   }
 
   const startSavingTeller = async (teller) => {
@@ -28,19 +44,23 @@ export const useTellerStore = () => {
 
     try {
       const tellerFiles = teller.tellerFiles
-      teller = { ...teller, 
-        birthday: new Date(teller.birthday), 
+      teller = {
+        ...teller,
+        birthday: new Date(teller.birthday).toISOString().slice(0, 19).replace('T', ' '),
         cellPhone: parseInt(teller.cellPhone),
         situation: parseBool(teller.situation),
         uploadFiles: parseBool(teller.uploadFiles),
         reuf: parseBool(teller.reuf)
       }
       delete teller.tellerFiles
-      const { data } = await enapsisApi.post('/teller', JSON.stringify(teller))
-      console.log(data)
-      navigate('../', {replace: true})
+      const { data } = await enapsisApi.post('/teller', JSON.stringify(teller), { headers: { 'Content-Type': 'application/json' } })
+      if (data.ok) {
+        //TODO Guardar los tellerFiles
+        navigate('../', { replace: true })
+      } else {
+        //TODO Manejar errores del formulario obtenidos del backend
+      }
     } catch (error) {
-      //TODO Manejar los errores que tira el backend
       console.log(error.response)
     }
     dispatch(onHandleLoading(false))
@@ -54,6 +74,7 @@ export const useTellerStore = () => {
 
     //* Metodos
     startGetTellers,
+    startGetTeller,
     startSavingTeller
   }
 }

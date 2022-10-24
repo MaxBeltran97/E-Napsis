@@ -17,6 +17,7 @@ export const COURSES = '/cursos'
 export const SHOW_COURSES = '/'
 export const ADD_COURSES = '/registrar_curso'
 
-export const CALENDAR = '/calendario'
-export const SHOW_CALENDAR = '/'
+export const CALENDAR_COURSE = '/calendario_curso'
+export const SHOW_CALENDAR_COURSE = '/'
+export const ADD_CALENDAR_COURSE = '/calendarizar_curso'
 

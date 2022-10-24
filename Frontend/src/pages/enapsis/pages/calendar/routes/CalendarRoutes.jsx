@@ -1,14 +1,15 @@
 import { Navigate, Route, Routes } from "react-router-dom"
-import { CALENDAR, SHOW_CALENDAR } from "@models/privateRoutes"
+import { ADD_CALENDAR_COURSE, CALENDAR_COURSE, SHOW_CALENDAR_COURSE } from "@models/privateRoutes"
 
-import { CalendarPage } from "../pages"
+import { AddCalendarCoursePage, ShowCalendarPage } from "../pages"
 
 export const CalendarRoutes = () => {
   return (
     <Routes>
-      <Route path={`${SHOW_CALENDAR}`} element={<CalendarPage />} />
+      <Route path={`${ADD_CALENDAR_COURSE}`} element={<AddCalendarCoursePage />} />
+      <Route path={`${SHOW_CALENDAR_COURSE}`} element={<ShowCalendarPage />} />
 
-      <Route path="/*" element={<Navigate to={`${CALENDAR + SHOW_CALENDAR}`} />} />
+      <Route path="/*" element={<Navigate to={`${CALENDAR_COURSE + SHOW_CALENDAR_COURSE}`} />} />
     </Routes>
   )
 }

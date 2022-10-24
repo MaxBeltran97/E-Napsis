@@ -9,18 +9,11 @@ import { useCompanyStore } from "@hooks/useCompanyStore"
 
 export const ShowParticipantsPage = () => {
 
-  const { participants, startGetParticipants } = useParticipantStore()
-  const { isLoading ,startGetCompanies } = useCompanyStore()
+  const { isLoading ,participants, startGetParticipants } = useParticipantStore()
 
   useEffect(() => {
-    startGetCompanies()
+    startGetParticipants()
   }, [])
-  
-  useEffect(() => {
-    if(isLoading === false) {
-      startGetParticipants()
-    } 
-  }, [isLoading])
 
   return (
     <>
@@ -51,9 +44,13 @@ export const ShowParticipantsPage = () => {
         </Grid>
       
         {
-          participants.map((participant) => (
-            <ParticipantItem key={participant._id} participant={participant} />
-          ))
+          isLoading
+          ? <Grid item xs={12}> <Typography sx={{ textAlign: 'center' }}>Cargando...</Typography> </Grid>
+          : (
+            participants.map((participant) => (
+              <ParticipantItem key={participant._id} participant={participant} />
+            ))
+          )
         }
       </GridPaper>
 

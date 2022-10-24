@@ -18,7 +18,7 @@ export const InputTextArea = memo(({ control, name, label, required = false, err
       <Grid item xs={12}>
         <Typography sx={{ color: (!!error) ? 'error.main' : (active) ? 'text.active' : '' }}>{name}</Typography>
       </Grid>
-      <Grid item xs={12} lg={12}>
+      <Grid item xs={12}>
         <Controller 
           control={control}
           name={label}
