@@ -41,12 +41,12 @@ export const useTellerStore = () => {
 
   const startSavingTeller = async (teller) => {
     dispatch(onHandleLoading(true))
-
+    
     try {
       const tellerFiles = teller.tellerFiles
       teller = {
         ...teller,
-        birthday: new Date(teller.birthday).toISOString().slice(0, 19).replace('T', ' '),
+        birthday: (teller.birthday === '') ? null : new Date(teller.birthday).toISOString().slice(0, 19).replace('T', ' '), //Arreglar esta puta mierda
         cellPhone: parseInt(teller.cellPhone),
         situation: parseBool(teller.situation),
         uploadFiles: parseBool(teller.uploadFiles),
@@ -61,7 +61,7 @@ export const useTellerStore = () => {
         //TODO Manejar errores del formulario obtenidos del backend
       }
     } catch (error) {
-      console.log(error.response)
+      console.log(error)
     }
     dispatch(onHandleLoading(false))
   }
