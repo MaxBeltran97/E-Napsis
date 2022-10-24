@@ -18,16 +18,19 @@ export const InputRegion = memo(({ control, name, label, required = false, error
 
   const onChange = (field, {target}) => {
     const region = target.value
-    const comunaActual = getValues(labelComuna)
-
-    if (!!region) {
-      const comunas = obtenerComunas(region)
-      if(comunas.includes(comunaActual) === false) {
+    if(!!labelComuna) {
+      const comunaActual = getValues(labelComuna)
+  
+      if (!!region) {
+        const comunas = obtenerComunas(region)
+        if(comunas.includes(comunaActual) === false) {
+          setValue(labelComuna, '')
+        }
+      } else {
         setValue(labelComuna, '')
       }
-    } else {
-      setValue(labelComuna, '')
     }
+    
     field.onChange(region)
   }
 

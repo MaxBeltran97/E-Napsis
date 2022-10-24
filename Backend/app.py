@@ -30,9 +30,9 @@ from models.course import Course as modelCourse
 from models.course import course_schema
 from models.course import courses_schema
 
-from models.calendarCourse import CalendarCourse as modelCalendar
-from models.calendarCourse import calendar_schema
-from models.calendarCourse import calendars_schema
+from models.calendarCourse import CalendarCourse as modelCalendarCourse
+from models.calendarCourse import calendar_course_schema
+from models.calendarCourse import calendar_course_schemas
 
 from models.courseTellerSupport import *
 from models.courseParticipantMaterial import *
@@ -373,7 +373,52 @@ def delete_participant(_id):
         db.session.close()
 
 
+@app.route('/api/participant/uploadfile', methods=['POST'])
+def upload_file_participants():
+    try:
+        courseCode = request.form['courseCode']
+        company_id = request.form['company_id']
+        file = request.files["excel"]
+
+        msg = "posiciones duplicadas: "
+        df = pd.read_excel(file)
+
+        for i in range(len(df.index)):
+            nationalityType = df.loc[i, 'NACIONALIDAD']
+            participantType = df.loc[i, 'CARGO DESEMPEÑADO']
+            rut = df.loc[i, 'RUT']
+            fullName = df.loc[i, 'NOMBRE']
+            lastName = df.loc[i, 'PATERNO']
+            motherLastName = df.loc[i, 'MATERNO']
+            institution = df.loc[i, 'ESTABLECIMIENTO']
+            email = df.loc[i, 'EMAIL']
+            gender = df.loc[i, 'GENERO']
+            position = df.loc[i, 'POSICION']
+
+            try:
+                new_participant = modelParticipant(courseCode, participantType, company_id, nationalityType,
+                                                   rut, fullName, lastName, motherLastName, institution, email, gender, position)
+                db.session.add(new_participant)
+                db.session.commit()
+            except Exception as e:
+                msg = (msg + f"{i}, ")
+                db.session.rollback()
+            finally:
+                db.session.close()
+
+        return {
+            "ok": True,
+            "msg": msg
+        }, 200
+    except Exception as e:
+        print(e)
+        return {
+            "ok": False,
+            "msg": "Error al subir el archivo"
+        }, 500
+
 # --------------------------------------------COMPANY
+
 
 @app.route('/api/company', methods=['POST'])
 def add_company():
@@ -507,7 +552,7 @@ def delete_company(_id):
 
 # --------------------------------------------COURSES
 
-
+# Agregar los datos al curso enviado
 @app.route('/api/course', methods=['POST'])
 def add_courses():
     try:
@@ -528,7 +573,6 @@ def add_courses():
         participantValue = request.json['participantValue']
         requestDate = request.json['requestDate']
 
-
         new_course = modelCourse(sence, instruction, activityType, activityName, attendance, minCalification, minHours, participantsNumber,
                                  targetPopulation, generalObjectives, totalHours, teachingTechnique, evaluation, infrastructure, participantValue, requestDate)
 
@@ -539,8 +583,9 @@ def add_courses():
         activitiesContentHours = request.json['activitiesContentHours']
         for item in activitiesContentHours:
             try:
-                new_courseActivityContentHours = CourseActivityContentHours(new_course._id, item['activity'], item['content'], item['theoreticalHour'], item['practiceHour'], item['eLearningHour'])
-            
+                new_courseActivityContentHours = CourseActivityContentHours(
+                    new_course._id, item['activity'], item['content'], item['theoreticalHour'], item['practiceHour'], item['eLearningHour'])
+
                 db.session.add(new_courseActivityContentHours)
                 db.session.commit()
             except Exception as e:
@@ -549,7 +594,8 @@ def add_courses():
         tellers_id = request.json['tellers_id']
         for item in tellers_id:
             try:
-                new_courseTeller = CourseTeller(new_course._id, item['teller_id'])
+                new_courseTeller = CourseTeller(
+                    new_course._id, item['teller_id'])
 
                 db.session.add(new_courseTeller)
                 db.session.commit()
@@ -559,7 +605,8 @@ def add_courses():
         tellerSupport = request.json['tellerSupport']
         for item in tellerSupport:
             try:
-                new_courseTellerSupport = CourseTellerSupport(new_course._id, item['description'], item['amount'])
+                new_courseTellerSupport = CourseTellerSupport(
+                    new_course._id, item['description'], item['amount'])
 
                 db.session.add(new_courseTellerSupport)
                 db.session.commit()
@@ -569,17 +616,19 @@ def add_courses():
         participantMaterial = request.json['participantMaterial']
         for item in participantMaterial:
             try:
-                new_courseParticipantMaterial = CourseParticipantMaterial(new_course._id, item['description'], item['amount'])
+                new_courseParticipantMaterial = CourseParticipantMaterial(
+                    new_course._id, item['description'], item['amount'])
 
                 db.session.add(new_courseParticipantMaterial)
                 db.session.commit()
             except Exception as e:
                 print(e)
-        
+
         equipment = request.json['equipment']
         for item in equipment:
             try:
-                new_courseEquipment = CourseEquipment(new_course._id, item['description'], item['amount'])
+                new_courseEquipment = CourseEquipment(
+                    new_course._id, item['description'], item['amount'])
 
                 db.session.add(new_courseEquipment)
                 db.session.commit()
@@ -593,7 +642,7 @@ def add_courses():
             "ok": True,
             "course": new_course.serialize()
         }, 201
-    except Exception as e:  
+    except Exception as e:
         print(e)
         return {
             "ok": False,
@@ -602,7 +651,7 @@ def add_courses():
     finally:
         db.session.close()
 
-
+# Agregar los datos a cada curso
 @app.route('/api/course', methods=['GET'])
 def get_courses():
     try:
@@ -622,7 +671,7 @@ def get_courses():
             "msg": "Error al obtener los cursos"
         }, 500
 
-
+# Agregar los datos al curso enviado
 @app.route('/api/course/<_id>', methods=['GET'])
 def get_course(_id):
     try:
@@ -638,7 +687,8 @@ def get_course(_id):
             "msg": "Error al obtener el curso"
         }, 500
 
-
+# Actualizar las tablas adyacentes eliminando actualizando y agregando
+# Agregar los datos al curso enviado
 @app.route('/api/course/<_id>', methods=['PUT'])
 def update_course(_id):
     try:
@@ -692,7 +742,7 @@ def update_course(_id):
     finally:
         db.session.close()
 
-
+# Eliminar las tablas adyacentes al eliminar el curso
 @app.route('/api/course/<_id>', methods=['DELETE'])
 def delete_course(_id):
     try:
@@ -713,164 +763,136 @@ def delete_course(_id):
     finally:
         db.session.close()
 
+# --------------------------------------------CALENDAR
 
-# --------------------------------------------
-
-#--------------------------------------------CALENDAR
-
-@app.route('/api/calendar', methods = ['POST'])
+@app.route('/api/calendar', methods=['POST'])
 def add_calendar():
     try:
         internalCode = request.json['internalCode']
         internalName = request.json['internalName']
         course_id = request.json['course_id']
         instruction = request.json['instruction']
-        courseHours = request.json['courseHours']
+        courseTotalHours = request.json['courseTotalHours']
         ejecutionPlace = request.json['ejecutionPlace']
         ejecutionCity = request.json['ejecutionCity']
         ejecutionRegion = request.json['ejecutionRegion']
         startDate = request.json['startDate']
+        endDate = request.json['endDate']
         participantValue = request.json['participantValue']
 
+        new_calendarCourse = modelCalendarCourse(internalCode, internalName, course_id, instruction, courseTotalHours,
+                                     ejecutionPlace, ejecutionCity, ejecutionRegion, startDate, endDate, participantValue)
 
-        new_calendar = modelCalendar(internalCode, internalName, course_id, instruction, courseHours, ejecutionPlace, ejecutionCity, ejecutionRegion, startDate, participantValue)
-
-        db.session.add(new_calendar)
-
+        db.session.add(new_calendarCourse)
         db.session.commit()
 
-        return calendar_schema.jsonify(new_calendar)
-
-
+        return {
+            "ok": True,
+            "calendarCourse": new_calendarCourse.serialize()
+        }, 201
     except Exception as e:
-            print(e)
-            return {"message": "Error al ingresar un calendario."}, 500
+        print(e)
+        return {
+            "ok": False,
+            "msg": "Error al calendarizar un curso"
+        }, 500
+    finally:
+        db.session.close()
+
 
 @app.route('/api/calendar', methods=['GET'])
 def get_calendars():
-
     try:
-        all_calendars = modelCalendar.query.all()
-        result = calendars_schema.dump(all_calendars)
-        return jsonify(result)
-
-
+        all_calendarCourses = modelCalendarCourse.query.all()
+        result = calendar_course_schemas.dump(all_calendarCourses)
+        return {
+            "ok": True,
+            "calendarCourses": result
+        }, 200
     except Exception as e:
-            print(e)
-            return {"message": "Error al obtener los calendario."}, 500
+        print(e)
+        return {
+            "ok": False,
+            "msg": "Error al obtener cursos calendarizados"
+        }, 500
+
 
 @app.route('/api/calendar/<_id>', methods=['GET'])
 def get_calendar(_id):
-
     try:
-
-        calendar = modelCalendar.query.get(_id)
-        return calendar_schema.jsonify(calendar)
-
+        calendarCourse = modelCalendarCourse.query.get(_id)
+        return {
+            "ok": True,
+            "calendarCourse": calendarCourse.serialize()
+        }, 200
     except Exception as e:
         print(e)
-        return {"message": "Error al obtener un calendario."}, 500 
+        return {
+            "ok": False,
+            "msg": "Error al obtener el curso calendarizado"
+        }, 500
+
 
 @app.route('/api/calendar/<_id>', methods=['PUT'])
 def update_calendar(_id):
-
     try:
-
-        calendar = modelCalendar.query.get(_id)
+        calendarCourse = modelCalendarCourse.query.get(_id)
 
         internalCode = request.json['internalCode']
         internalName = request.json['internalName']
         course_id = request.json['course_id']
         instruction = request.json['instruction']
-        courseHours = request.json['courseHours']
+        courseTotalHours = request.json['courseTotalHours']
         ejecutionPlace = request.json['ejecutionPlace']
         ejecutionCity = request.json['ejecutionCity']
         ejecutionRegion = request.json['ejecutionRegion']
         startDate = request.json['startDate']
+        endDate = request.json['endDate']
         participantValue = request.json['participantValue']
 
-        calendar.internalCode = internalCode
-        calendar.internalName = internalName
-        calendar.course_id = course_id
-        calendar.instruction = instruction
-        calendar.courseHours = courseHours
-        calendar.ejecutionPlace = ejecutionPlace
-        calendar.ejecutionCity = ejecutionCity
-        calendar.ejecutionRegion = ejecutionRegion
-        calendar.startDate = startDate
-        calendar.participantValue = participantValue
+        calendarCourse.internalCode = internalCode
+        calendarCourse.internalName = internalName
+        calendarCourse.course_id = course_id
+        calendarCourse.instruction = instruction
+        calendarCourse.courseTotalHours = courseTotalHours
+        calendarCourse.ejecutionPlace = ejecutionPlace
+        calendarCourse.ejecutionCity = ejecutionCity
+        calendarCourse.ejecutionRegion = ejecutionRegion
+        calendarCourse.startDate = startDate
+        calendarCourse.endDate = endDate
+        calendarCourse.participantValue = participantValue
 
         db.session.commit()
-
-        return calendar_schema.jsonify(calendar)
-
+        return {
+            "ok": True,
+            "calendarCourse": calendarCourse.serialize()
+        }, 200
     except Exception as e:
-            print(e)
-            return {"message": "Error al actualizar el calendario."}, 500
+        print(e)
+        return {
+            "ok": False,
+            "msg": "Error al actualizar el curso calendarizado"
+        }, 500
+
 
 @app.route('/api/calendar/<_id>', methods=['DELETE'])
 def delete_calendar(_id):
-
     try:
-        calendar = modelCalendar.query.get(_id)
-        db.session.delete(calendar)
+        calendarCourse = modelCalendarCourse.query.get(_id)
+
+        db.session.delete(calendarCourse)
         db.session.commit()
-
-        return calendar_schema.jsonify(calendar)
-
-    except Exception as e:
-            print(e)
-            return {"message": "Error al eliminar un relator."}, 500
-            
-#--------------------------------------------UPLOADPARTICIPANT
-
-@app.route('/api/UploadParticipants', methods=['POST'])
-def upload_participants():
-    try:
-        
-        courseCode = request.form['courseCode']
-        company_id = request.form['company_id']
-        
-        file = request.files["excel"]                
-        
-        msg = "posiciones duplicadas: "
-        df = pd.read_excel(file)
-        
-        for i in range(len(df.index)):
-            nationalityType = df.loc[i, 'NACIONALIDAD']
-            participantType = df.loc[i, 'CARGO DESEMPEÑADO']
-            rut = df.loc[i, 'RUT']
-            fullName = df.loc[i, 'NOMBRE']
-            lastName = df.loc[i, 'PATERNO']
-            motherLastName = df.loc[i, 'MATERNO']
-            institution = df.loc[i, 'ESTABLECIMIENTO']
-            email = df.loc[i, 'EMAIL']
-            gender = df.loc[i, 'GENERO']
-            position = df.loc[i, 'POSICION']
-            
-
-            try:
-                new_participant = modelParticipant(courseCode, participantType, company_id, nationalityType, rut, fullName, lastName, motherLastName, institution, email, gender, position)
-                db.session.add(new_participant)
-        
-                db.session.commit()
-            
-            except Exception as e:
-                
-                msg = (msg + f"{i}, ")
-                db.session.rollback()
-            finally:
-                db.session.close()
-            
         return {
             "ok": True,
-            "msg": msg
+            "calendarCourse": calendarCourse.serialize()
         }, 200
     except Exception as e:
-            print (e)
-            return {"message": "Error al ingresar archivo."}, 500
-            
-#--------------------------------------------
+        print(e)
+        return {
+            "ok": False,
+            "msg": "Error al eliminar el curso calendarizado"
+        }, 500
 
+# --------------------------------------------
 # Se carga el host
 SQLAlchemy(app)

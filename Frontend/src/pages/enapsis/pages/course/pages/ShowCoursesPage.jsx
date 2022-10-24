@@ -6,7 +6,7 @@ import { CourseItem } from "../components"
 
 export const ShowCoursesPage = () => {
 
-  const { courses, startGetCourses } = useCourseStore()
+  const { isLoading, courses, startGetCourses } = useCourseStore()
 
   useEffect(() => {
     startGetCourses()
@@ -44,9 +44,13 @@ export const ShowCoursesPage = () => {
         </Grid>
 
         {
-          courses.map((course) => (
-            <CourseItem key={course._id} course={course} />
-          ))
+          isLoading
+          ? <Grid item xs={12}> <Typography sx={{ textAlign: 'center' }}>Cargando...</Typography> </Grid>
+          : (
+              courses.map((course) => (
+                <CourseItem key={course._id} course={course} />
+              ))
+          )
         }
       </GridPaper>
     </>

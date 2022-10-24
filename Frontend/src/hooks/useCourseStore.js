@@ -14,33 +14,68 @@ export const useCourseStore = () => {
 
     try {
       const { data } = await enapsisApi.get('/course')
-      dispatch(onHandleCourses(data))
+      if (data.ok) {
+        dispatch(onHandleCourses(data.courses))
+      }
     } catch (error) {
       console.log(error.response)
     }
-    dispatch(onHandleLoading(false))
+    setTimeout(() => {
+      dispatch(onHandleLoading(false))
+    }, 500)
+  }
+
+  const startGetCourse = async (course_id) => {
+    try {
+      const { data } = await enapsisApi.get(`/course/${course_id}`)
+      if (data.ok) {
+        return data.course
+      }
+    } catch (error) {
+      console.log(error.response)
+    }
+    return null
   }
 
   const startSavingCourse = async (course) => {
     dispatch(onHandleLoading(true))
 
     try {
-      course = { ...course, 
+      course = {
+        ...course,
         attendance: parseInt(course.attendance),
-        minCalification: parseFloat(course.minCalification.replace(',','.')),
+        minCalification: parseFloat(course.minCalification.replace(',', '.')),
         minHours: parseInt(course.minHours),
         participantsNumber: parseInt(course.participantsNumber),
+        activitiesContentHours: course.activitiesContentHours.filter(item => { return (item.activity !== '' && item.content !== '') })
+                                                              .map(item => {  return item = {
+                                                                                ...item,
+                                                                                theoreticalHour: parseInt(item.theoreticalHour),
+                                                                                practiceHour: parseInt(item.practiceHour),
+                                                                                eLearningHour: parseInt(item.eLearningHour)
+                                                                              }}),
         totalHours: parseInt(course.totalHours),
-        tellers_id: course.tellers_id.map( item => { return { teller_id: item.value } }),
+        tellers_id: course.tellers_id.map(item => { return { teller_id: item.value } }),
+        tellerSupport: course.tellerSupport.filter(item => { return item.description !== '' })
+                                           .map(item => {return item = {...item, amount: parseInt(item.amount)}}),
+
+        participantMaterial: course.participantMaterial.filter(item => { return item.description !== '' })
+                                                       .map(item => { return item = {...item, amount: parseInt(item.amount)}}),
+
+        equipment: course.equipment.filter(item => { return item.description !== '' })
+                                   .map(item => { return item = {...item, amount: parseInt(item.amount)}}),
+
         participantValue: parseInt(course.participantValue),
         requestDate: new Date(course.requestDate).toISOString().slice(0, 19).replace('T', ' '),
       }
-      console.log(course)
-      // const { data } = await enapsisApi.post('/course', JSON.stringify(course))
-      // console.log(data)
-      // navigate('../', {replace: true})
+
+      const { data } = await enapsisApi.post('/course', JSON.stringify(course), { headers: { 'Content-Type': 'application/json' } })
+      if(data.ok) {
+        navigate('../', {replace: true})
+      }else {
+        //TODO Manejar errores del formulario obtenidos del backend
+      }
     } catch (error) {
-      //TODO Manejar los errores que tira el backend
       console.log(error.response)
     }
     dispatch(onHandleLoading(false))
@@ -54,6 +89,7 @@ export const useCourseStore = () => {
 
     //* Metodos
     startGetCourses,
+    startGetCourse,
     startSavingCourse
   }
 }

@@ -2,6 +2,7 @@ export * from './InputActivitiesContentHours';
 export * from './InputCalification';
 export * from './InputComuna';
 export * from './InputEmail';
+export * from './InputEvaluationDate';
 export * from './InputFieldArray';
 export * from './InputFilesView';
 export * from './InputNumberAdornment';

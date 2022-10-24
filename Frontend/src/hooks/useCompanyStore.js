@@ -68,8 +68,8 @@ export const useCompanyStore = () => {
 
     //* Metodos
     startGetCompanies,
-    startSavingCompany,
     startGetCompany,
+    startSavingCompany,
     getCompanyWithId
   }
 }
