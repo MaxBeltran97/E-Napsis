@@ -12,7 +12,10 @@ import marshmallow
 from redis_app import redis
 from database.db import db
 from database.config import app_config, DevelopmentConfig
+from werkzeug.utils import secure_filename
+from strgen import StringGenerator
 import pandas as pd
+
 
 from models.teller import Teller as modelTeller
 from models.teller import teller_schema
@@ -39,6 +42,8 @@ from models.courseParticipantMaterial import *
 from models.courseEquipment import *
 from models.courseActvityContentHours import *
 from models.courseTeller import *
+from models.tellerUploadFile import *
+
 
 from resources.login import Login
 # from resources.UploadParticipants import UploadParticipants
@@ -48,11 +53,13 @@ from resources.login import Login
 app = Flask(__name__)
 CORS(app)
 ma = Marshmallow(app)
+app.config["UPLOAD_FOLDER_TELLER"] = "assets/tellerFiles"
+ALLOWED_EXTENSIONS = set(["pdf", "docx", "png", "jpg"])
 
 # Se establece enviroment como argumento
-#enviroment = sys.argv[1]
-enviroment = "development"
-#enviroment = "production"
+# enviroment = sys.argv[1]
+# enviroment = "development"
+enviroment = "production"
 
 
 # Se setean variables de configuración según ambient(env)
@@ -64,15 +71,15 @@ api = Api(app)
 
 api.add_resource(Login, '/login')
 
-#api.add_resource(Teller, '/api/teller')
+# api.add_resource(Teller, '/api/teller')
 
-#api.add_resource(Company, '/api/company')
+# api.add_resource(Company, '/api/company')
 
-#api.add_resource(Participant, '/api/participant')
+# api.add_resource(Participant, '/api/participant')
 
-#api.add_resource(Course, '/api/course')
+# api.add_resource(Course, '/api/course')
 
-#api.add_resource(UploadParticipants, '/api/UploadParticipants')
+# api.add_resource(UploadParticipants, '/api/UploadParticipants')
 
 
 # Se carga raiz
@@ -233,6 +240,46 @@ def delete_teller(_id):
         }, 500
     finally:
         db.session.close()
+
+
+@app.route('/api/teller/uploadfile', methods=['POST'])
+def upload_file_teller():
+    try:
+        file = request.files["uploadFile"]
+        teller_id = request.form["teller_id"]
+        name = request.form["name"]
+
+        filesplit = file.filename.split('.')
+        extension = filesplit[len(filesplit)-1]
+
+        flag = True
+        while (flag):
+            try:
+                randomName = StringGenerator(
+                    "[\l\d]{20}").render_list(1, unique=True)[0]
+                nuevoNombreFile = teller_id + randomName + "." + extension
+                new_tellerUpload = TellerUploadFile(
+                    teller_id, name, nuevoNombreFile)
+                db.session.add(new_tellerUpload)
+                db.session.commit()
+                file.save(os.path.join(
+                    app.config["UPLOAD_FOLDER_TELLER"], nuevoNombreFile))
+                flag = False
+            except Exception as e:
+                db.session.rollback()
+            finally:
+                db.session.close()
+
+        return {
+            "ok": True,
+            "msg": "Archivo Subido"
+        }, 200
+    except Exception as e:
+        print(e)
+        return {
+            "ok": False,
+            "msg": "Error al subir un archivo"
+        }, 500
 
 
 # --------------------------------------------PARTICIPANT
@@ -554,6 +601,8 @@ def delete_company(_id):
 # --------------------------------------------COURSES
 
 # Agregar los datos al curso enviado
+
+
 @app.route('/api/course', methods=['POST'])
 def add_courses():
     try:
@@ -653,6 +702,8 @@ def add_courses():
         db.session.close()
 
 # Agregar los datos a cada curso
+
+
 @app.route('/api/course', methods=['GET'])
 def get_courses():
     try:
@@ -673,6 +724,8 @@ def get_courses():
         }, 500
 
 # Agregar los datos al curso enviado
+
+
 @app.route('/api/course/<_id>', methods=['GET'])
 def get_course(_id):
     try:
@@ -690,6 +743,8 @@ def get_course(_id):
 
 # Actualizar las tablas adyacentes eliminando actualizando y agregando
 # Agregar los datos al curso enviado
+
+
 @app.route('/api/course/<_id>', methods=['PUT'])
 def update_course(_id):
     try:
@@ -744,6 +799,8 @@ def update_course(_id):
         db.session.close()
 
 # Eliminar las tablas adyacentes al eliminar el curso
+
+
 @app.route('/api/course/<_id>', methods=['DELETE'])
 def delete_course(_id):
     try:
@@ -766,6 +823,7 @@ def delete_course(_id):
 
 # --------------------------------------------CALENDAR
 
+
 @app.route('/api/calendar', methods=['POST'])
 def add_calendar():
     try:
@@ -782,7 +840,7 @@ def add_calendar():
         participantValue = request.json['participantValue']
 
         new_calendarCourse = modelCalendarCourse(internalCode, internalName, course_id, instruction, courseTotalHours,
-                                     ejecutionPlace, ejecutionCity, ejecutionRegion, startDate, endDate, participantValue)
+                                                 ejecutionPlace, ejecutionCity, ejecutionRegion, startDate, endDate, participantValue)
 
         db.session.add(new_calendarCourse)
         db.session.commit()
@@ -893,6 +951,7 @@ def delete_calendar(_id):
             "ok": False,
             "msg": "Error al eliminar el curso calendarizado"
         }, 500
+
 
 # --------------------------------------------
 # Se carga el host
