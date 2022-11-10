@@ -33,7 +33,9 @@ export const InputFieldArray = memo(({ control, name, label, error, textArea = f
   }, [items])
 
   useEffect(() => {
-    removeItemRow(0)
+    if(items[0]?.description === '' || !(!!items[0])){
+      removeItemRow(0)
+    }
   }, [removeItemRow])
 
   return (

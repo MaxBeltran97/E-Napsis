@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form"
 
 import { Grid } from "@mui/material"
 import { GridForm, GridInput } from "@components/grid"
-import { InputAutocompleteAsync, InputDate, InputNumber, InputRadio, InputText, InputTextArea } from "@components/input/generic"
+import { InputAutocomplete, InputAutocompleteAsync, InputDate, InputNumber, InputRadio, InputText, InputTextArea } from "@components/input/generic"
 import { InputActivitiesContentHours, InputCalification, InputFieldArray, InputNumberAdornment } from "@components/input/specific"
 import { ButtonSave } from "@components/button"
 
@@ -11,15 +11,33 @@ import { radioActivityType, radioInstructionModality } from "@assets/radio-data"
 import { useCourseStore } from "@hooks/useCourseStore"
 import { useTellerStore } from "@hooks/useTellerStore"
 import { getTellersWithAutocomplete } from "@pages/enapsis/helpers/getTellersWithAutocomplete"
+import { useEffect } from "react"
+import { useState } from "react"
 
 
 export const AddCoursePage = () => {
-  const { handleSubmit, formState: { errors }, control } = useForm()
-  const { isLoading: isLoadingTeller, tellers, startGetTellers } = useTellerStore()
-  const { isLoading, startSavingCourse } = useCourseStore()
+  const { tellers, startGetTellers } = useTellerStore()
+  const { isLoading, activeCourse, startSavingCourse, startResetActiveCourse } = useCourseStore()
+
+  const { handleSubmit, formState: { errors }, control } = useForm({defaultValues: activeCourse})
+
+  const [formTitle, setFormTitle] = useState('Registro de Curso')
+  const [buttonTitle, setButtonTitle] = useState('Cuardar Curso')
+
+  useEffect(() => {
+    if(Object.entries(activeCourse).length !== 0) {
+      setFormTitle('Modificar Curso')
+      setButtonTitle('Guardar Cambios')
+    }
+    startResetActiveCourse()
+  }, [])
+
+  useEffect(() => {
+    startGetTellers()
+  }, [])
 
   return (
-    <GridForm handleSubmit={handleSubmit} formTitle={'Registro de Curso'} functionFromData={startSavingCourse}>
+    <GridForm handleSubmit={handleSubmit} formTitle={formTitle} functionFromData={startSavingCourse}>
       <Grid item xs={12}>
         <GridInput title={'Datos del Curso'}>
           <Grid container>
@@ -40,7 +58,7 @@ export const AddCoursePage = () => {
             </Grid>
             <Grid item xs={12} lg={8}>
               <InputNumber control={control} name={'Horas Totales'} label={'totalHours'} required={true} error={errors.totalHours} withSize={3.5} />
-              <InputAutocompleteAsync control={control} name={'Relatores'} label={'tellers_id'} required={true} error={errors.tellers_id} multiple={true} entities={tellers} startGetEntities={startGetTellers} getFormattedEntities={getTellersWithAutocomplete} loading={isLoadingTeller} />
+              <InputAutocomplete control={control} name={'Relatores'} label={'tellers_id'} required={true} error={errors.tellers_id} items={getTellersWithAutocomplete(tellers)} multiple={true} />
               <InputTextArea control={control} name={'Método o Técnica de Enseñanza'} label={'teachingTechnique'} error={errors.teachingTechnique} />
               <InputFieldArray control={control} name={'Medios Didácticos de Apoyo al Relator'} label={'tellerSupport'} error={errors.tellerSupport} textArea={true} />
               <InputFieldArray control={control} name={'Material Didáctico a Quedar en Poder de los Participantes'} label={'participantMaterial'} error={errors.participantMaterial} textArea={true} />
@@ -54,7 +72,7 @@ export const AddCoursePage = () => {
         </GridInput>
       </Grid>
 
-      <ButtonSave buttonTitle={'Guardar Curso'} errorTitle={'Error al Guardar'} isLoading={isLoading} errorsForm={false} />
+      <ButtonSave buttonTitle={buttonTitle} errorTitle={'Error al Guardar'} isLoading={isLoading} errorsForm={false} />
     </GridForm>
   )
 }

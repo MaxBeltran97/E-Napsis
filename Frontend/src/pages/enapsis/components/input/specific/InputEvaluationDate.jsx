@@ -204,7 +204,9 @@ export const InputEvaluationDate = memo(({ control, name = '', label, error, sta
   }, [items])
 
   useEffect(() => {
-    removeItemRow(0)
+    if(items[0]?.evaluationDate === '' || !(!!items[0])) {
+      removeItemRow(0)
+    }
   }, [removeItemRow])
 
   return (

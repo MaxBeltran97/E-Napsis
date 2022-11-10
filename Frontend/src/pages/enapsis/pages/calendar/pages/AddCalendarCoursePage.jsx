@@ -2,7 +2,7 @@ import { useForm, useWatch } from "react-hook-form"
 
 import { Grid } from "@mui/material"
 import { GridForm, GridInput } from "@components/grid"
-import { InputAutocompleteAsync, InputDate, InputNumber, InputText } from "@components/input/generic"
+import { InputAutocomplete, InputAutocompleteAsync, InputDate, InputNumber, InputText } from "@components/input/generic"
 import { InputEvaluationDate, InputNumberAdornment, InputRegion } from "@components/input/specific"
 import { ButtonSave } from "@components/button"
 
@@ -11,23 +11,30 @@ import { selectRegiones } from "@assets/select-regiones"
 import { useCalendarCourseStore } from "@hooks/useCalendarCourseStore"
 import { useCourseStore } from "@hooks/useCourseStore"
 import { getCoursesWithAutocomplete } from "@pages/enapsis/helpers"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 
 export const AddCalendarCoursePage = () => {
-  const { handleSubmit, getValues, setValue, formState: {errors}, control } = useForm()
-  const { isLoading: isLoadingCourse, courses, startGetCourses, startGetCourse } = useCourseStore()
-  const { isLoading, startSavingCalendarCourse } = useCalendarCourseStore()
+  const { courses, startGetCourses, startGetCourse } = useCourseStore()
+  const { isLoading, activeCalendarCourse, startSavingCalendarCourse, startResetActiveCalendarCourse } = useCalendarCourseStore()
+
+  const { handleSubmit, getValues, setValue, formState: {errors}, control } = useForm({defaultValues: activeCalendarCourse})
   const courseId = useWatch({ control, name: 'course_id' })
   const startDate = useWatch({ control, name: 'startDate' })
   const endDate = useWatch({ control, name: 'endDate' })
+
+  const [formTitle, setFormTitle] = useState('Calendarizar Curso')
+  const [buttonTitle, setButtonTitle] = useState('Calendarizar Curso')
 
   const updateData = async() => {
     const { sence, instruction, totalHours, participantValue } = await startGetCourse(courseId)
 
     setValue('sence', sence, { shouldValidate: true })
-    setValue('instruction', instruction, { shouldValidate: true })
-    setValue('courseTotalHours', totalHours, { shouldValidate: true })
-    setValue('participantValue', participantValue, { shouldValidate: true })
+
+    if(Object.entries(activeCalendarCourse).length === 0) {
+      setValue('instruction', instruction, { shouldValidate: true })
+      setValue('courseTotalHours', totalHours, { shouldValidate: true })
+      setValue('participantValue', participantValue, { shouldValidate: true })
+    }
   }
 
   useEffect(() => {
@@ -36,15 +43,28 @@ export const AddCalendarCoursePage = () => {
     }
   }, [courseId])
 
+  useEffect(() => {
+    if(Object.entries(activeCalendarCourse).length !== 0) {
+      setFormTitle('Modificar Curso Calendarizado')
+      setButtonTitle('Guardar Cambios')
+    }
+    startResetActiveCalendarCourse()
+  }, [])
+
+  useEffect(() => {
+    startGetCourses()
+  }, [])
+
   return (
-    <GridForm handleSubmit={handleSubmit} formTitle={'Calendarizar Curso'} functionFromData={startSavingCalendarCourse}>
+    <GridForm handleSubmit={handleSubmit} formTitle={formTitle} functionFromData={startSavingCalendarCourse}>
       <Grid item xs={12}>
         <GridInput title={'Datos a Calendarizar'}>
           <Grid container>
             <Grid item xs={12} lg={8}>
               <InputText control={control} name={'Código Interno'} label={'internalCode'} error={errors.internalCode} />
               <InputText control={control} name={'Nombre Interno'} label={'internalName'} required={true} error={errors.internalName} />
-              <InputAutocompleteAsync control={control} name={'Seleccionar Curso'} label={'course_id'} required={true} error={errors.course_id} entities={courses} startGetEntities={startGetCourses} getFormattedEntities={getCoursesWithAutocomplete} loading={isLoadingCourse} />
+              {/* <InputAutocompleteAsync control={control} name={'Seleccionar Curso'} label={'course_id'} required={true} error={errors.course_id} entities={courses} startGetEntities={startGetCourses} getFormattedEntities={getCoursesWithAutocomplete} loading={isLoadingCourse} /> */}
+              <InputAutocomplete control={control} name={'Seleccionar Curso'} label={'course_id'} required={true} error={errors.course_id} items={getCoursesWithAutocomplete(courses)} />
               {/* disabled */}
               <InputText control={control} name={'Codigo Sence'} label={'sence'} required={true} error={errors.sence} disabled={true} withSize={3.5} />
               <InputText control={control} name={'Modalidad de Instrucción'} label={'instruction'} required={true} error={errors.instruction} disabled={true} withSize={3.5} />
@@ -78,7 +98,7 @@ export const AddCalendarCoursePage = () => {
         </GridInput>
       </Grid>
 
-      <ButtonSave buttonTitle={'Calendarizar Curso'} errorTitle={'Error al Calendarizar'} isLoading={isLoading} errorsForm={false} />
+      <ButtonSave buttonTitle={buttonTitle} errorTitle={'Error al Calendarizar'} isLoading={isLoading} errorsForm={false} />
     </GridForm>
   )
 }

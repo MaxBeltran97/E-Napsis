@@ -19,13 +19,10 @@ export const ShowCoursesPage = () => {
       <GridPaper>
         <Grid item xs={12}>
           <Grid container alignItems={'center'}>
-            <Grid item xs={1}>
-              <Typography sx={{ textAlign: 'center' }}>Id</Typography>
-            </Grid>
             <Grid item xs={4}>
               <Typography sx={{ textAlign: 'center' }}>Nombre</Typography>
             </Grid>
-            <Grid item xs={2}>
+            <Grid item xs={1}>
               <Typography sx={{ textAlign: 'center' }}>Código</Typography>
             </Grid>
             <Grid item xs={2}>
@@ -36,6 +33,9 @@ export const ShowCoursesPage = () => {
             </Grid>
             <Grid item xs={2}>
               <Typography sx={{ textAlign: 'center' }}>Valor</Typography>
+            </Grid>
+            <Grid item xs={2}>
+              <Typography sx={{ textAlign: 'center' }}>Acciones</Typography>
             </Grid>
             <Grid item xs={12} sx={{ mt: 1 }}>
               <Divider />

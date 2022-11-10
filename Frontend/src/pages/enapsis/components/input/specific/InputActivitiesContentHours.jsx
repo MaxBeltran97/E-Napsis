@@ -33,7 +33,9 @@ export const InputActivitiesContentHours = memo(({ control, name, label, error }
   }, [items])
 
   useEffect(() => {
-    removeItemRow(0)
+    if(items[0]?.activity === '' || items[0]?.content === '' || !(!!items[0])) {
+      removeItemRow(0)
+    }
   }, [removeItemRow])
 
   return (

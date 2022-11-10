@@ -1,5 +1,6 @@
 import enapsisApi from "@api/enapsisApi"
-import { onHandleCalendarCourses, onHandleLoading } from "@reduxSlices/calendarCourseSlice"
+import { ADD_CALENDAR_COURSE, CALENDAR_COURSE } from "@models/privateRoutes"
+import { onHandleActiveCalendarCourse, onHandleCalendarCourses, onHandleLoading, onResetActiveCalendarCourse } from "@reduxSlices/calendarCourseSlice"
 import { useDispatch, useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
 
@@ -13,8 +14,8 @@ export const useCalendarCourseStore = () => {
     dispatch(onHandleLoading(true))
 
     try {
-      const {data} = await enapsisApi.get('/calendar')
-      if(data.ok) {
+      const { data } = await enapsisApi.get('/calendar')
+      if (data.ok) {
         dispatch(onHandleCalendarCourses(data.calendarCourses))
       }
     } catch (error) {
@@ -26,35 +27,80 @@ export const useCalendarCourseStore = () => {
   }
 
   const startGetCalendarCourse = async (calendarCourse_id) => {
+    try {
+      const { data } = await enapsisApi.get(`/calendar/${calendarCourse_id}`)
+      if (data.ok) {
+        return data.calendarCourse
+      }
+    } catch (error) {
+      console.log(error.response)
+    }
+    return null
+  }
 
+  const startChangeCalendarCourse = (calendarCourse) => {
+    calendarCourse = {
+      ...calendarCourse,
+      startDate: new Date(calendarCourse.startDate),
+      endDate: new Date(calendarCourse.endDate),
+      evaluationDates: calendarCourse.evaluationDates.map(item => {
+        return item = {
+          ...item,
+          evaluationDate: new Date(item.evaluationDate)
+        }
+      })
+    }
+
+    dispatch(onHandleActiveCalendarCourse(calendarCourse))
+    navigate(`${CALENDAR_COURSE}${ADD_CALENDAR_COURSE}`, { replace: true })
+  }
+
+  const startResetActiveCalendarCourse = () => {
+    dispatch(onResetActiveCalendarCourse())
   }
 
   const startSavingCalendarCourse = async (calendarCourse) => {
     dispatch(onHandleLoading(true))
 
-    try {
-      //TODO falta hacer una tabla para las fechas de las evaluaciones
-      const evaluationDates = calendarCourse.evaluationDates
+    calendarCourse = {
+      ...calendarCourse,
+      courseTotalHours: parseInt(calendarCourse.courseTotalHours),
+      startDate: new Date(calendarCourse.startDate).toISOString().slice(0, 19).replace('T', ' '),
+      endDate: new Date(calendarCourse.endDate).toISOString().slice(0, 19).replace('T', ' '),
+      participantValue: parseInt(calendarCourse.participantValue),
+      evaluationDates: calendarCourse.evaluationDates.filter(item => { return (item.evaluationDate !== '' && item.evaluationDate !== null) })
+        .map(item => {
+          return item = {
+            ...item,
+            evaluationDate: new Date(item.evaluationDate).toISOString().slice(0, 19).replace('T', ' '),
+            percentage: parseInt(item.percentage)
+          }
+        })
+    }
+    delete calendarCourse.sence
 
-      calendarCourse = { 
-        ...calendarCourse, 
-        courseTotalHours: parseInt(calendarCourse.courseTotalHours),
-        startDate: new Date(calendarCourse.startDate).toISOString().slice(0, 19).replace('T', ' '),
-        endDate: new Date(calendarCourse.endDate).toISOString().slice(0, 19).replace('T', ' '),
-        participantValue: parseInt(calendarCourse.participantValue),
+    if (!!calendarCourse._id) {
+      try {
+        const { data } = await enapsisApi.put(`/calendar/${calendarCourse._id}`, JSON.stringify(calendarCourse), { headers: { 'Content-Type': 'application/json' } })
+        if (data.ok) {
+          navigate('../', { replace: true })
+        } else {
+          //TODO Manejar errores del modificar
+        }
+      } catch (error) {
+        console.log(error.response)
       }
-
-      delete calendarCourse.sence
-      delete calendarCourse.evaluationDates
-
-      const { data } = await enapsisApi.post('/calendar', JSON.stringify(calendarCourse), { headers: { 'Content-Type': 'application/json' } }) 
-      if(data.ok) {
-        navigate('../', {replace: true})
-      }else{
-        //TODO Manejar errores del formulario obtenidos del backend
+    } else {
+      try {
+        const { data } = await enapsisApi.post('/calendar', JSON.stringify(calendarCourse), { headers: { 'Content-Type': 'application/json' } })
+        if (data.ok) {
+          navigate('../', { replace: true })
+        } else {
+          //TODO Manejar errores del formulario obtenidos del backend
+        }
+      } catch (error) {
+        console.log(error.response)
       }
-    } catch (error) {
-      console.log(error.response)
     }
     dispatch(onHandleLoading(false))
   }
@@ -68,6 +114,8 @@ export const useCalendarCourseStore = () => {
     //*Metodos
     startGetCalendarCourses,
     startGetCalendarCourse,
+    startChangeCalendarCourse,
+    startResetActiveCalendarCourse,
     startSavingCalendarCourse
   }
 }

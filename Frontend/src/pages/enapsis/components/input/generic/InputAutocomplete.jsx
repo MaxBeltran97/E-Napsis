@@ -8,12 +8,19 @@ export const InputAutocomplete = memo(({ control, name, label, required = false,
   const [active, setActive] = useState(false)
   const defaultValue = useWatch({ control, name: label })
 
-  const [value, setValue] = useState(null)
+  const [value, setValue] = useState((multiple) ? [] : null)
   const [inputValue, setInputValue] = useState('')
 
   useEffect(() => {
-    if(items.length > 0 && !!defaultValue) {
-      setValue(items.find(item => item.value === defaultValue))
+    if (items.length > 0 && !!defaultValue) {
+      if(multiple) {
+        const a = defaultValue.map((dValue) => {
+          return items.find(item => item.value === dValue.value)
+        })
+        setValue(a)
+      }else {
+        setValue(items.find(item => item.value === defaultValue))
+      }
     }
   }, [items])
 
@@ -31,7 +38,7 @@ export const InputAutocomplete = memo(({ control, name, label, required = false,
 
   return (
     <InputForm name={name} active={active} error={!!error} textBoxSize={withSize}>
-      <Controller 
+      <Controller
         control={control}
         name={label}
 
@@ -43,8 +50,12 @@ export const InputAutocomplete = memo(({ control, name, label, required = false,
 
             value={value}
             onChange={(event, newValue) => {
+              if (multiple) {
+                onChange(newValue)
+              } else {
+                onChange(newValue?.value)
+              }
               setValue(newValue)
-              onChange(newValue?.value)
             }}
 
             inputValue={inputValue}
@@ -52,7 +63,7 @@ export const InputAutocomplete = memo(({ control, name, label, required = false,
               setInputValue(newInputValue)
             }}
 
-            isOptionEqualToValue={(option, value) => option.value === value.value }
+            isOptionEqualToValue={(option, value) => option.value === value.value}
             // getOptionLabel={(option) => option.label}
             // onChange={(_, data) => {
             //   if (multiple) {
@@ -73,7 +84,7 @@ export const InputAutocomplete = memo(({ control, name, label, required = false,
             }}
 
             renderInput={(params) => (
-              <TextField 
+              <TextField
                 {...params}
                 {...field}
                 inputRef={ref}

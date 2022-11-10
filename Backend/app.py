@@ -61,16 +61,8 @@ app.config["UPLOAD_FOLDER_CALENDAR"] = "assets/calendarFiles"
 ALLOWED_EXTENSIONS = set(["pdf", "docx", "png", "jpg"])
 
 # Se establece enviroment como argumento
-<<<<<<< Updated upstream
-# enviroment = sys.argv[1]
-enviroment = "development"
-#enviroment = "production"
-=======
-#enviroment = sys.argv[1]
 # enviroment = "development"
 enviroment = "production"
->>>>>>> Stashed changes
-
 
 # Se setean variables de configuración según ambient(env)
 app.config.from_object(app_config[enviroment])
@@ -700,30 +692,32 @@ def add_courses():
 
         courseSerialized = new_course.serialize()
         CourseActivityContentHoursDB = CourseActivityContentHours.query.filter_by(
-            course_id = new_course._id)
-        courseActivityContentHourList = course_course_activity_content_hours_schemas.dump(CourseActivityContentHoursDB)
+            course_id=new_course._id)
+        courseActivityContentHourList = course_course_activity_content_hours_schemas.dump(
+            CourseActivityContentHoursDB)
         courseSerialized['activitiesContentHours'] = courseActivityContentHourList
 
         CourseEquipmentDB = CourseEquipment.query.filter_by(
-            course_id = new_course._id)
+            course_id=new_course._id)
         CourseEquipmentList = course_equipment_schemas.dump(CourseEquipmentDB)
         courseSerialized['equipment'] = CourseEquipmentList
 
         CourseParticipantMaterialDB = CourseParticipantMaterial.query.filter_by(
-            course_id = new_course._id)
-        CourseParticipantMaterialList = course_participant_material_schemas.dump(CourseParticipantMaterialDB)
+            course_id=new_course._id)
+        CourseParticipantMaterialList = course_participant_material_schemas.dump(
+            CourseParticipantMaterialDB)
         courseSerialized['participantMaterial'] = CourseParticipantMaterialList
 
         CourseTellerDB = CourseTeller.query.filter_by(
-            course_id = new_course._id)
+            course_id=new_course._id)
         CourseTellerList = course_teller_schemas.dump(CourseTellerDB)
         courseSerialized['tellers_id'] = CourseTellerList
 
         CourseTellerSupportDB = CourseTellerSupport.query.filter_by(
-            course_id = new_course._id)
-        CourseTellerSupportList = course_teller_support_schemas.dump(CourseTellerSupportDB)
+            course_id=new_course._id)
+        CourseTellerSupportList = course_teller_support_schemas.dump(
+            CourseTellerSupportDB)
         courseSerialized['tellerSupport'] = CourseTellerSupportList
-
 
         return {
             "ok": True,
@@ -748,28 +742,32 @@ def get_courses():
         result = courses_schema.dump(all_courses)
         for item in result:
             CourseActivityContentHoursDB = CourseActivityContentHours.query.filter_by(
-                course_id = item.get('_id'))
-            courseActivityContentHourList = course_course_activity_content_hours_schemas.dump(CourseActivityContentHoursDB)
+                course_id=item.get('_id'))
+            courseActivityContentHourList = course_course_activity_content_hours_schemas.dump(
+                CourseActivityContentHoursDB)
             item['activitiesContentHours'] = courseActivityContentHourList
 
             CourseEquipmentDB = CourseEquipment.query.filter_by(
-                course_id = item.get('_id'))
-            CourseEquipmentList = course_equipment_schemas.dump(CourseEquipmentDB)
+                course_id=item.get('_id'))
+            CourseEquipmentList = course_equipment_schemas.dump(
+                CourseEquipmentDB)
             item['equipment'] = CourseEquipmentList
 
             CourseParticipantMaterialDB = CourseParticipantMaterial.query.filter_by(
-                course_id = item.get('_id'))
-            CourseParticipantMaterialList = course_participant_material_schemas.dump(CourseParticipantMaterialDB)
+                course_id=item.get('_id'))
+            CourseParticipantMaterialList = course_participant_material_schemas.dump(
+                CourseParticipantMaterialDB)
             item['participantMaterial'] = CourseParticipantMaterialList
 
             CourseTellerDB = CourseTeller.query.filter_by(
-                course_id = item.get('_id'))
+                course_id=item.get('_id'))
             CourseTellerList = course_teller_schemas.dump(CourseTellerDB)
             item['tellers_id'] = CourseTellerList
 
             CourseTellerSupportDB = CourseTellerSupport.query.filter_by(
-                course_id = item.get('_id'))
-            CourseTellerSupportList = course_teller_support_schemas.dump(CourseTellerSupportDB)
+                course_id=item.get('_id'))
+            CourseTellerSupportList = course_teller_support_schemas.dump(
+                CourseTellerSupportDB)
             item['tellerSupport'] = CourseTellerSupportList
 
         return {
@@ -784,38 +782,38 @@ def get_courses():
         }, 500
 
 # Agregar los datos al curso enviado
-
-
 @app.route('/api/course/<_id>', methods=['GET'])
 def get_course(_id):
     try:
         course = modelCourse.query.get(_id)
         courseSerialized = course.serialize()
         CourseActivityContentHoursDB = CourseActivityContentHours.query.filter_by(
-            course_id = course._id)
-        courseActivityContentHourList = course_course_activity_content_hours_schemas.dump(CourseActivityContentHoursDB)
+            course_id=course._id)
+        courseActivityContentHourList = course_course_activity_content_hours_schemas.dump(
+            CourseActivityContentHoursDB)
         courseSerialized['activitiesContentHours'] = courseActivityContentHourList
 
         CourseEquipmentDB = CourseEquipment.query.filter_by(
-            course_id = course._id)
+            course_id=course._id)
         CourseEquipmentList = course_equipment_schemas.dump(CourseEquipmentDB)
         courseSerialized['equipment'] = CourseEquipmentList
 
         CourseParticipantMaterialDB = CourseParticipantMaterial.query.filter_by(
-            course_id = course._id)
-        CourseParticipantMaterialList = course_participant_material_schemas.dump(CourseParticipantMaterialDB)
+            course_id=course._id)
+        CourseParticipantMaterialList = course_participant_material_schemas.dump(
+            CourseParticipantMaterialDB)
         courseSerialized['participantMaterial'] = CourseParticipantMaterialList
 
         CourseTellerDB = CourseTeller.query.filter_by(
-            course_id = course._id)
+            course_id=course._id)
         CourseTellerList = course_teller_schemas.dump(CourseTellerDB)
         courseSerialized['tellers_id'] = CourseTellerList
 
         CourseTellerSupportDB = CourseTellerSupport.query.filter_by(
-            course_id = course._id)
-        CourseTellerSupportList = course_teller_support_schemas.dump(CourseTellerSupportDB)
+            course_id=course._id)
+        CourseTellerSupportList = course_teller_support_schemas.dump(
+            CourseTellerSupportDB)
         courseSerialized['tellerSupport'] = CourseTellerSupportList
-
 
         return {
             "ok": True,
@@ -830,8 +828,6 @@ def get_course(_id):
 
 # Actualizar las tablas adyacentes eliminando actualizando y agregando
 # Agregar los datos al curso enviado
-
-
 @app.route('/api/course/<_id>', methods=['PUT'])
 def update_course(_id):
     try:
@@ -1032,35 +1028,34 @@ def update_course(_id):
                     print(e)
 
 # -----------------------------------------------------------
-
         courseSerialized = course.serialize()
         CourseActivityContentHoursDB = CourseActivityContentHours.query.filter_by(
-            course_id = course._id)
-        courseActivityContentHourList = course_course_activity_content_hours_schemas.dump(CourseActivityContentHoursDB)
+            course_id=course._id)
+        courseActivityContentHourList = course_course_activity_content_hours_schemas.dump(
+            CourseActivityContentHoursDB)
         courseSerialized['activitiesContentHours'] = courseActivityContentHourList
 
         CourseEquipmentDB = CourseEquipment.query.filter_by(
-            course_id = course._id)
+            course_id=course._id)
         CourseEquipmentList = course_equipment_schemas.dump(CourseEquipmentDB)
         courseSerialized['equipment'] = CourseEquipmentList
 
         CourseParticipantMaterialDB = CourseParticipantMaterial.query.filter_by(
-            course_id = course._id)
-        CourseParticipantMaterialList = course_participant_material_schemas.dump(CourseParticipantMaterialDB)
+            course_id=course._id)
+        CourseParticipantMaterialList = course_participant_material_schemas.dump(
+            CourseParticipantMaterialDB)
         courseSerialized['participantMaterial'] = CourseParticipantMaterialList
 
         CourseTellerDB = CourseTeller.query.filter_by(
-            course_id = course._id)
+            course_id=course._id)
         CourseTellerList = course_teller_schemas.dump(CourseTellerDB)
         courseSerialized['tellers_id'] = CourseTellerList
 
         CourseTellerSupportDB = CourseTellerSupport.query.filter_by(
-            course_id = course._id)
-        CourseTellerSupportList = course_teller_support_schemas.dump(CourseTellerSupportDB)
+            course_id=course._id)
+        CourseTellerSupportList = course_teller_support_schemas.dump(
+            CourseTellerSupportDB)
         courseSerialized['tellerSupport'] = CourseTellerSupportList
-
-
-
 
         return {
             "ok": True,
@@ -1076,8 +1071,6 @@ def update_course(_id):
         db.session.close()
 
 # Eliminar las tablas adyacentes al eliminar el curso
-
-
 @app.route('/api/course/<_id>', methods=['DELETE'])
 def delete_course(_id):
     try:
@@ -1123,8 +1116,8 @@ def add_calendar():
         db.session.commit()
 
         # Obtener datos para las otras tablas
-        courseEvaluation = request.json['courseEvaluation']
-        for item in courseEvaluation:
+        evaluationDates = request.json['evaluationDates']
+        for item in evaluationDates:
             try:
                 new_calendarCourseEvaluation = CalendarCourseEvaluation(
                     new_calendarCourse._id, item['evaluationDate'], item['percentage'])
@@ -1136,11 +1129,11 @@ def add_calendar():
 
         courseEvaluationDB = CalendarCourseEvaluation.query.filter_by(
             calendarCourse_id=new_calendarCourse._id)
-        
-        
+
         calendarCourseSerialized = new_calendarCourse.serialize()
-        courseEvaluationList = calendarCourseEvaluations_schemas.dump(courseEvaluationDB)
-        calendarCourseSerialized["courseEvaluation"] = courseEvaluationList
+        courseEvaluationList = calendarCourseEvaluations_schemas.dump(
+            courseEvaluationDB)
+        calendarCourseSerialized["evaluationDates"] = courseEvaluationList
 
         return {
             "ok": True,
@@ -1163,9 +1156,10 @@ def get_calendars():
         result = calendar_course_schemas.dump(all_calendarCourses)
         for item in result:
             courseEvaluationDB = CalendarCourseEvaluation.query.filter_by(
-            calendarCourse_id=item.get('_id'))
-            courseEvaluationList = calendarCourseEvaluations_schemas.dump(courseEvaluationDB)
-            item["courseEvaluation"] = courseEvaluationList
+                calendarCourse_id=item.get('_id'))
+            courseEvaluationList = calendarCourseEvaluations_schemas.dump(
+                courseEvaluationDB)
+            item["evaluationDates"] = courseEvaluationList
 
         return {
             "ok": True,
@@ -1185,10 +1179,11 @@ def get_calendar(_id):
         calendarCourse = modelCalendarCourse.query.get(_id)
         courseEvaluationDB = CalendarCourseEvaluation.query.filter_by(
             calendarCourse_id=calendarCourse._id)
-        
+
         calendarCourseSerialized = calendarCourse.serialize()
-        courseEvaluationList = calendarCourseEvaluations_schemas.dump(courseEvaluationDB)
-        calendarCourseSerialized["courseEvaluation"] = courseEvaluationList
+        courseEvaluationList = calendarCourseEvaluations_schemas.dump(
+            courseEvaluationDB)
+        calendarCourseSerialized["evaluationDates"] = courseEvaluationList
 
         return {
             "ok": True,
@@ -1233,7 +1228,7 @@ def update_calendar(_id):
 
         db.session.commit()
 
-        courseEvaluation = request.json['courseEvaluation']
+        courseEvaluation = request.json['evaluationDates']
         courseEvaluationDB = CalendarCourseEvaluation.query.filter_by(
             calendarCourse_id=calendarCourse._id)
 
@@ -1245,7 +1240,7 @@ def update_calendar(_id):
                 if (itemDB._id == item.get('_id')):
                     flag = True
                     itemDB.evaluationDate = item['evaluationDate']
-                    itemDB.percentage = item['percentaged']
+                    itemDB.percentage = item['percentage']
                     db.session.commit()
                     break
             if (flag == False):
@@ -1254,7 +1249,6 @@ def update_calendar(_id):
 
         # Los nuevos que no poseen id se agregan
         for item in courseEvaluation:
-
             if (item.get('_id') == None):
                 try:
                     new_calendarCourseEvaluation = CalendarCourseEvaluation(
@@ -1267,13 +1261,11 @@ def update_calendar(_id):
 
         courseEvaluationDB = CalendarCourseEvaluation.query.filter_by(
             calendarCourse_id=calendarCourse._id)
-        
-        
+
         calendarCourseSerialized = calendarCourse.serialize()
-        courseEvaluationList = calendarCourseEvaluations_schemas.dump(courseEvaluationDB)
-        calendarCourseSerialized["courseEvaluation"] = courseEvaluationList
-
-
+        courseEvaluationList = calendarCourseEvaluations_schemas.dump(
+            courseEvaluationDB)
+        calendarCourseSerialized["evaluationDates"] = courseEvaluationList
 
         return {
             "ok": True,

@@ -1,9 +1,13 @@
+import { useCalendarCourseStore } from "@hooks/useCalendarCourseStore"
 import { CloudUploadOutlined, DeleteOutlined, ModeOutlined, Send } from "@mui/icons-material"
 import { Button, Divider, Grid, IconButton, Tooltip, Typography } from "@mui/material"
 import { useState } from "react"
 import { CalendarCourseDocuments } from "./CalendarCourseDocuments"
 
 export const CalendarCourseItem = ({ calendarCourse }) => {
+
+  const { startChangeCalendarCourse } = useCalendarCourseStore()
+
   const [openDocuments, setOpenDocuments] = useState(false)
 
   const { internalCode, internalName, startDate, endDate } = calendarCourse
@@ -18,9 +22,12 @@ export const CalendarCourseItem = ({ calendarCourse }) => {
     setOpenDocuments(false)
   }
 
+  const onChangeCalendarCourse = () => {
+    startChangeCalendarCourse(calendarCourse)
+  }
+
   return (
     <>
-    
       <Grid item xs={12}>
         <Grid container alignItems={'center'}>
           <Grid item xs={2}>
@@ -52,7 +59,7 @@ export const CalendarCourseItem = ({ calendarCourse }) => {
               </Grid>
               <Grid item>
                 <Tooltip title={'Modificar'}>
-                  <IconButton size="small">
+                  <IconButton onClick={onChangeCalendarCourse} size="small">
                     <ModeOutlined />
                   </IconButton>
                 </Tooltip>
