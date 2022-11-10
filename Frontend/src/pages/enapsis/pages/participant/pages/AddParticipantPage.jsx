@@ -3,7 +3,7 @@ import { useForm, useWatch } from "react-hook-form"
 import { Grid } from "@mui/material"
 import { GridForm, GridInput } from "@components/grid"
 import { InputCondition } from "@components/input/InputCondition"
-import { InputAutocompleteAsync, InputRadio, InputText } from "@components/input/generic"
+import { InputAutocomplete, InputAutocompleteAsync, InputRadio, InputText } from "@components/input/generic"
 import { InputEmail, InputRut } from "@components/input/specific"
 import { ButtonSave } from "@components/button"
 
@@ -13,27 +13,46 @@ import { useCompanyStore } from "@hooks/useCompanyStore"
 import { useCalendarCourseStore } from "@hooks/useCalendarCourseStore"
 import { useParticipantStore } from "@hooks/useParticipantStore"
 import { getCalendarCoursesWithAutocomplete, getCompaniesWithAutocomplete } from "@pages/enapsis/helpers"
+import { useEffect, useState } from "react"
 
 export const AddParticipantPage = () => {
-  const { handleSubmit, unregister, formState: {errors}, control } = useForm()
-  const { isLoading: isLoadingCompany, companies, startGetCompanies } = useCompanyStore()
-  const { isLoading: isLoadingCalendar, calendarCourses, startGetCalendarCourses } = useCalendarCourseStore()
-  const { isLoading, startSavingParticipant } = useParticipantStore()
+  const { companies, startGetCompanies } = useCompanyStore()
+  const { calendarCourses, startGetCalendarCourses } = useCalendarCourseStore()
+  const { isLoading, activeParticipant, startSavingParticipant, startResetActiveParticipant } = useParticipantStore()
+  
+  const { handleSubmit, unregister, formState: {errors}, control } = useForm({defaultValues: activeParticipant})
+  const [formTitle, setFormTitle] = useState('Registro de Participante')
+  const [buttonTitle, setButtonTitle] = useState('Guardar Participante')
   const pType = useWatch({ control, name: 'participantType' })
 
+  useEffect(() => {
+    if(Object.entries(activeParticipant).length !== 0) {
+      setFormTitle('Modificar Participante')
+      setButtonTitle('Guardar Cambios')
+    }
+    startResetActiveParticipant()
+  }, [])
+
+  useEffect(() => {
+    startGetCalendarCourses()
+    startGetCompanies()
+  }, [])
+
   return (
-    <GridForm handleSubmit={handleSubmit} formTitle={'Registro de Participante'} functionFromData={startSavingParticipant}>
+    <GridForm handleSubmit={handleSubmit} formTitle={formTitle} functionFromData={startSavingParticipant}>
       <Grid item xs={12}>
         <GridInput title={'Datos Personales'}>
           <Grid container columnSpacing={4} rowSpacing={0}>
             <Grid item xs={12} lg={6}>
               {/* Calendario Cursos con filtrado */}
               {/* <InputText control={control} name={'Curso Calendarizado'} label={'courseCode'} required={true} error={errors.courseCode} /> */}
-              <InputAutocompleteAsync control={control} name={'Curso Calendarizado'} label={'calendarCourse_id'} required={true} error={errors.calendarCourse_id} entities={calendarCourses} startGetEntities={startGetCalendarCourses} getFormattedEntities={getCalendarCoursesWithAutocomplete} loading={isLoadingCalendar} />
+              {/* <InputAutocompleteAsync control={control} name={'Curso Calendarizado'} label={'calendarCourse_id'} required={true} error={errors.calendarCourse_id} entities={calendarCourses} startGetEntities={startGetCalendarCourses} getFormattedEntities={getCalendarCoursesWithAutocomplete} loading={isLoadingCalendar} /> */}
+              <InputAutocomplete control={control} name={'Curso Calendarizado'} label={'calendarCourse_id'} required={true} error={errors.calendarCourse_id} items={getCalendarCoursesWithAutocomplete(calendarCourses)} />
               <InputRadio control={control} name={'Tipo Participante'} label={'participantType'} items={radioParticipantType} />
 
               <InputCondition value={pType} valuesConditions={[radioParticipantType[1].value]} unregister={unregister} labelCondition={'company_id'}>
-                <InputAutocompleteAsync control={control} name={'Empresa'} label={'company_id'} required={true} error={errors.company_id} entities={companies} startGetEntities={startGetCompanies} getFormattedEntities={getCompaniesWithAutocomplete} loading={isLoadingCompany} />
+                <InputAutocomplete control={control} name={'Empresa'} label={'company_id'} required={true} error={errors.company_id} items={getCompaniesWithAutocomplete(companies)} />
+                {/* <InputAutocompleteAsync control={control} name={'Empresa'} label={'company_id'} required={true} error={errors.company_id} entities={companies} startGetEntities={startGetCompanies} getFormattedEntities={getCompaniesWithAutocomplete} loading={isLoadingCompany} /> */}
               </InputCondition>
               
               <InputRadio control={control} name={'Nacionalidad'} label={'nationalityType'} items={radioNationalityType} />
@@ -52,7 +71,7 @@ export const AddParticipantPage = () => {
         </GridInput>
       </Grid>
 
-      <ButtonSave buttonTitle={'Guardar Participante'} errorTitle={'Error al Guardar'} isLoading={isLoading} errorsForm={false} />
+      <ButtonSave buttonTitle={buttonTitle} errorTitle={'Error al Guardar'} isLoading={isLoading} errorsForm={false} />
     </GridForm>
   )
 }

@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form"
 
 import { Grid } from "@mui/material"
 import { GridForm, GridInput } from "@components/grid"
-import { InputDate, InputFile, InputRadio, InputSelect, InputText } from "@components/input/generic"
+import { InputDate, InputRadio, InputSelect, InputText } from "@components/input/generic"
 import { InputComuna, InputEmail, InputFilesView, InputPhoneNumber, InputRegion, InputRut } from "@components/input/specific"
 import { ButtonSave } from "@components/button"
 
@@ -10,13 +10,25 @@ import { radioBoolean, radioBooleanActive, radioNationalityType } from "@assets/
 import { selectMaritalStatus } from "@assets/select-data"
 import { selectRegiones } from "@assets/select-regiones"
 import { useTellerStore } from "@hooks/useTellerStore"
+import { useState } from "react"
+import { useEffect } from "react"
 
 export const AddTellerPage = () => {
-  const { handleSubmit, getValues, setValue, formState: { errors }, control } = useForm()
-  const { isLoading, startSavingTeller } = useTellerStore()
+  const { isLoading, activeTeller, startSavingTeller, startResetActiveTeller } = useTellerStore()
+  const { handleSubmit, getValues, setValue, formState: { errors }, control } = useForm({defaultValues: activeTeller})
+  const [formTitle, setFormTitle] = useState('Registro de Relator')
+  const [buttonTitle, setButtonTitle] = useState('Guardar Relator')
+
+  useEffect(() => {
+    if(Object.entries(activeTeller).length !== 0) {
+      setFormTitle('Modificar Relator')
+      setButtonTitle('Guardar Cambios')
+    }
+    startResetActiveTeller()
+  }, [])
 
   return (
-    <GridForm handleSubmit={handleSubmit} formTitle={'Registro de Relator'} functionFromData={startSavingTeller}>
+    <GridForm handleSubmit={handleSubmit} formTitle={formTitle} functionFromData={startSavingTeller}>
       <Grid item xs={12} lg={6}>
         <GridInput title={'Datos Personales'}>
           <InputRadio control={control} name={'Tipo'} label={'nationalityType'} items={radioNationalityType} />
@@ -54,7 +66,7 @@ export const AddTellerPage = () => {
         </GridInput>
       </Grid>
 
-      <ButtonSave buttonTitle={'Guardar Relator'} errorTitle={'Error al Guardar'} isLoading={isLoading} errorsForm={false} />
+      <ButtonSave buttonTitle={buttonTitle} errorTitle={'Error al Guardar'} isLoading={isLoading} errorsForm={false} />
     </GridForm>
   )
 }

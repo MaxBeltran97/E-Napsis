@@ -1,11 +1,30 @@
 import { Autocomplete, CircularProgress, Paper, TextField } from '@mui/material'
 import { memo, useEffect, useState } from 'react'
-import { Controller } from 'react-hook-form'
+import { Controller, useWatch } from 'react-hook-form'
 import { InputForm } from '../InputForm'
 
 export const InputAutocompleteAsync = memo(({ control, name, label, required = false, error, multiple = false, entities, startGetEntities, getFormattedEntities, loading, withSize = 7 }) => {
+
+  const value = useWatch({ control, name: label })
+
   const [active, setActive] = useState(false)
   const [items, setItems] = useState([])
+
+  const onStartItems = async() => {
+    await startGetEntities()
+  }
+
+  // const onChangeDefaultValue = () => {
+  //   const valueLabel = items.find(item => item.value === value)
+  //   console.log({valueLabel, label})
+  // }
+
+  useEffect(() => {
+    if(!!value){
+      console.log({value})
+      onStartItems()
+    }
+  }, [])
 
   const onFocus = () => {
     setActive(true)
@@ -15,30 +34,34 @@ export const InputAutocompleteAsync = memo(({ control, name, label, required = f
     setActive(false)
   }
 
-  const onOpen = async() => {
+  const onOpen = async () => {
     await startGetEntities()
   }
 
   useEffect(() => {
-    if(loading === false) {
+    // console.log('se ejecuta', {loading})
+    if (loading === false) {
       setItems([...getFormattedEntities(entities)])
+      // if(!!value){
+      //   onChangeDefaultValue()
+      // }
     }
   }, [loading])
 
   const CustomPaper = (props) => {
-    return <Paper elevation={8} {...props}/>
+    return <Paper elevation={8} {...props} />
   }
-  
 
   return (
     <InputForm name={name} active={active} error={!!error} textBoxSize={withSize}>
-      <Controller 
+      <Controller
         control={control}
         name={label}
         defaultValue={[]}
 
         render={({ field: { ref, onChange, ...field } }) => (
           <Autocomplete
+
             multiple={multiple}
             options={items}
             onOpen={onOpen}
@@ -46,10 +69,10 @@ export const InputAutocompleteAsync = memo(({ control, name, label, required = f
             loadingText={'Cargando...'}
             isOptionEqualToValue={(option, value) => option.value === value.value}
             getOptionLabel={(option) => option.label}
-            onChange={(_, data) => { 
-              if(multiple) {
+            onChange={(_, data) => {
+              if (multiple) {
                 onChange(data)
-              }else {
+              } else {
                 onChange(data?.value)
               }
             }}
@@ -65,7 +88,7 @@ export const InputAutocompleteAsync = memo(({ control, name, label, required = f
             }}
 
             renderInput={(params) => (
-              <TextField 
+              <TextField
                 {...params}
                 {...field}
                 inputRef={ref}

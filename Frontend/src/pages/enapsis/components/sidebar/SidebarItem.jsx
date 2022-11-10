@@ -23,6 +23,7 @@ export const SidebarItem = ({ item, active = false }) => {
       if (isItemOpen) {
         closeAllSidebarItems()
       }else {
+        closeAllSidebarItems()
         openSidebarActiveItem()
       }
     } else {

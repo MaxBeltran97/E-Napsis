@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom"
+import { redirect, useNavigate } from "react-router-dom"
 
 import { ListItemButton, ListItemText } from "@mui/material"
 
@@ -13,6 +13,8 @@ export const SidebarItemOption = ({item, option, active = false}) => {
       changeSidebarActiveItem(item)
       changeSidebarActiveOption(option)
       navigate(`../../${option.url}`, {replace: true})
+    }else {
+      window.location.reload()
     }
   }
 

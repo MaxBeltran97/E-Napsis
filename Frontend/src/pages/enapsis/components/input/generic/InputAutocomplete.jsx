@@ -1,10 +1,21 @@
-import { Autocomplete, TextField } from '@mui/material'
+import { Autocomplete, Paper, TextField } from '@mui/material'
+import { useEffect } from 'react'
 import { memo, useState } from 'react'
-import { Controller } from 'react-hook-form'
+import { Controller, useWatch } from 'react-hook-form'
 import { InputForm } from '../InputForm'
 
-export const InputAutocomplete = memo(({ control, name, label, required = false, error, items = [], withSize = 7 }) => {
+export const InputAutocomplete = memo(({ control, name, label, required = false, error, items = [], multiple = false, withSize = 7 }) => {
   const [active, setActive] = useState(false)
+  const defaultValue = useWatch({ control, name: label })
+
+  const [value, setValue] = useState(null)
+  const [inputValue, setInputValue] = useState('')
+
+  useEffect(() => {
+    if(items.length > 0 && !!defaultValue) {
+      setValue(items.find(item => item.value === defaultValue))
+    }
+  }, [items])
 
   const onFocus = () => {
     setActive(true)
@@ -14,18 +25,44 @@ export const InputAutocomplete = memo(({ control, name, label, required = false,
     setActive(false)
   }
 
+  const CustomPaper = (props) => {
+    return <Paper elevation={8} {...props} />
+  }
+
   return (
     <InputForm name={name} active={active} error={!!error} textBoxSize={withSize}>
       <Controller 
         control={control}
         name={label}
-        defaultValue=''
 
         render={({ field: { ref, onChange, ...field } }) => (
           <Autocomplete
+            multiple={multiple}
             options={items}
-            isOptionEqualToValue={(option, value) => option.value === value.value}
-            onChange={(_, data) => onChange(data?.value)}
+            // freeSolo={true}
+
+            value={value}
+            onChange={(event, newValue) => {
+              setValue(newValue)
+              onChange(newValue?.value)
+            }}
+
+            inputValue={inputValue}
+            onInputChange={(event, newInputValue) => {
+              setInputValue(newInputValue)
+            }}
+
+            isOptionEqualToValue={(option, value) => option.value === value.value }
+            // getOptionLabel={(option) => option.label}
+            // onChange={(_, data) => {
+            //   if (multiple) {
+            //     onChange(data)
+            //   } else {
+            //     onChange(data?.value)
+            //   }
+            // }}
+
+            PaperComponent={CustomPaper}
 
             renderOption={(props, option) => {
               return (
@@ -43,12 +80,16 @@ export const InputAutocomplete = memo(({ control, name, label, required = false,
                 onFocus={onFocus}
                 onBlur={onBlur}
                 error={!!error}
+                helperText={(!!error) ? error.message : ''}
                 label={(required) ? 'Obligatorio*' : ''}
                 fullWidth
                 variant={'outlined'}
                 size='small'
                 sx={{
-                  bgcolor: 'background.main'
+                  bgcolor: 'background.main',
+                  '& .MuiFormHelperText-root': {
+                    m: 0, pl: 1
+                  }
                 }}
               />
             )}

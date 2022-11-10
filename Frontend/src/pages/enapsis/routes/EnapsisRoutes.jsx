@@ -17,7 +17,7 @@ import { useCompanyStore } from '@hooks/useCompanyStore'
 export const EnapsisRoutes = () => {
   const { pathname } = useLocation()
   const { setByUrlSidebarActiveItem, sidebarActiveItem } = useUiStore()
-  const { startGetCompanies } = useCompanyStore()
+  // const { startGetCompanies } = useCompanyStore()
 
   useEffect(() => {
     if(!(!!sidebarActiveItem.name) || (sidebarActiveItem.activeOption?.url !== pathname)) {
@@ -31,9 +31,9 @@ export const EnapsisRoutes = () => {
     }
   }, [sidebarActiveItem])
 
-  useEffect(() => {
-    startGetCompanies()
-  }, [])
+  // useEffect(() => {
+  //   startGetCompanies()
+  // }, [])
 
   return (
     <LayoutApp>

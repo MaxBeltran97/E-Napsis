@@ -8,13 +8,24 @@ import { ButtonSave } from '@components/button'
 
 import { selectRegiones } from '@assets/select-regiones'
 import { useCompanyStore } from '@hooks/useCompanyStore'
+import { useEffect, useState } from 'react'
 
 export const AddCompanyPage = () => {
-  const { handleSubmit, getValues, setValue, formState: { errors }, control } = useForm()
-  const { isLoading, startSavingCompany} = useCompanyStore()
+  const { isLoading, activeCompany, startSavingCompany, startResetActiveCompany} = useCompanyStore()
+  const { handleSubmit, getValues, setValue, formState: { errors }, control } = useForm({defaultValues: activeCompany})
+  const [formTitle, setFormTitle] = useState('Registro de Empresa')
+  const [buttonTitle, setButtonTitle] = useState('Guardar Empresa')
+
+  useEffect(() => {
+    if(Object.entries(activeCompany).length !== 0) {
+      setFormTitle('Modificar Empresa')
+      setButtonTitle('Guardar Cambios')
+    }
+    startResetActiveCompany()
+  }, [])
 
   return (
-    <GridForm handleSubmit={handleSubmit} formTitle={'Registro de Empresa'} functionFromData={startSavingCompany}>
+    <GridForm handleSubmit={handleSubmit} formTitle={formTitle} functionFromData={startSavingCompany}>
       <Grid item xs={12} lg={6}>
         <GridInput title={'Datos de la Empresa'}>
           <InputRut control={control} name={'RUT'} label={'rut'} error={errors.rut} />
@@ -37,7 +48,7 @@ export const AddCompanyPage = () => {
         </GridInput>
       </Grid>
 
-      <ButtonSave buttonTitle={'Guardar Empresa'} errorTitle={'Error al Guardar'} isLoading={isLoading} errorsForm={false} />
+      <ButtonSave buttonTitle={buttonTitle} errorTitle={'Error al Guardar'} isLoading={isLoading} errorsForm={false} />
     </GridForm>
   )
 }

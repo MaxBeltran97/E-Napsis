@@ -1,9 +1,15 @@
+import { useCompanyStore } from '@hooks/useCompanyStore'
 import { DeleteOutlined, ModeOutlined } from '@mui/icons-material'
 import { Divider, Grid, IconButton, Tooltip, Typography } from '@mui/material'
 
 export const CompanyItem = ({ company }) => {
 
+  const { startChangeCompany } = useCompanyStore()
   const { fantasyName, rut, contactName } = company
+
+  const onChangeCompany = () => {
+    startChangeCompany(company)
+  }
 
   return (
     <Grid item xs={12}>
@@ -21,7 +27,7 @@ export const CompanyItem = ({ company }) => {
           <Grid container justifyContent={'space-evenly'} wrap={'wrap'}>
             <Grid item>
               <Tooltip title={'Modificar'}>
-                <IconButton size="small">
+                <IconButton onClick={onChangeCompany} size="small">
                   <ModeOutlined />
                 </IconButton>
               </Tooltip>

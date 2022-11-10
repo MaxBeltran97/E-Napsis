@@ -4,10 +4,13 @@ import { DeleteOutlined, HistoryEdu, ModeOutlined, Send } from "@mui/icons-mater
 import { Divider, Grid, IconButton, Tooltip, Typography } from "@mui/material"
 
 import { useCompanyStore } from "@hooks/useCompanyStore"
+import { useParticipantStore } from "@hooks/useParticipantStore"
 
 export const ParticipantItem = ({ participant }) => {
 
   const { startGetCompany } = useCompanyStore()
+  const { startChangeParticipant } = useParticipantStore()
+
   const { company_id, rut, fullName, lastName, motherLastName } = participant
   const [companyName, setCompanyName] = useState('')
 
@@ -24,6 +27,10 @@ export const ParticipantItem = ({ participant }) => {
       setCompanyName('Particular')
     }
   }, [])
+
+  const onChangeParticipant = () => {
+    startChangeParticipant(participant)
+  }
 
   return (
     <Grid item xs={12}>
@@ -48,7 +55,7 @@ export const ParticipantItem = ({ participant }) => {
             </Grid>
             <Grid item>
               <Tooltip title={'Modificar'}>
-                <IconButton size="small">
+                <IconButton onClick={onChangeParticipant} size="small">
                   <ModeOutlined />
                 </IconButton>
               </Tooltip>

@@ -2,8 +2,9 @@ import { useNavigate } from "react-router-dom"
 import { useDispatch, useSelector } from "react-redux"
 
 import enapsisApi from "@api/enapsisApi"
-import { onHandleCompanies, onHandleLoading } from "@reduxSlices/companySlice"
+import { onHandleActiveCompany, onHandleCompanies, onHandleLoading, onResetActiveCompany } from "@reduxSlices/companySlice"
 import { parseNull } from "@helpers/parseNull"
+import { ADD_COMPANY, COMPANIES } from "@models/privateRoutes"
 
 export const useCompanyStore = () => {
 
@@ -39,26 +40,54 @@ export const useCompanyStore = () => {
     return null
   }
 
+  const startChangeCompany = (company) => {
+    company = { 
+      ...company, 
+      cellPhone: !!(company.cellPhone) ? company.cellPhone : '', 
+      rut: !!(company.rut) ? company.rut : ''
+    }
+    dispatch(onHandleActiveCompany(company))
+    navigate(`${COMPANIES}${ADD_COMPANY}`, {replace: true})
+  }
+
+  const startResetActiveCompany = () => {
+    dispatch(onResetActiveCompany())
+  }
+
   const startSavingCompany = async (company) => {
     dispatch(onHandleLoading(true))
 
-    try {
-      company = { ...company, cellPhone: parseInt(company.cellPhone), rut: parseNull(company.rut) }
-      const { data } = await enapsisApi.post('/company', JSON.stringify(company), { headers: { 'Content-Type': 'application/json' } })
-      if(data.ok) {
-        navigate('../', {replace: true})
-      }else {
-        //TODO Manejar errores del formulario obtenidos del backend
+    company = { ...company, cellPhone: parseInt(company.cellPhone), rut: parseNull(company.rut) }
+    
+    if(!!company._id) { //Modificar una compañia existente
+      try {
+        const { data } = await enapsisApi.put(`/company/${company._id}`, JSON.stringify(company), { headers: { 'Content-Type': 'application/json' } }) 
+        if(data.ok) {
+          navigate('../', {replace: true})
+        }else {
+          //TODO Manejar errores del modificar
+        }
+      } catch (error) {
+        console.log(error.response)
       }
-    } catch (error) {
-      console.log(error.response)
+    }else { //Agregar una compañia nueva
+      try {
+        const { data } = await enapsisApi.post('/company', JSON.stringify(company), { headers: { 'Content-Type': 'application/json' } })
+        if(data.ok) {
+          navigate('../', {replace: true})
+        }else {
+          //TODO Manejar errores del formulario obtenidos del backend
+        }
+      } catch (error) {
+        console.log(error.response)
+      }
     }
     dispatch(onHandleLoading(false))
   }
 
-  const getCompanyWithId = (company_id) => {
-    return companies.find( company => company._id === company_id )
-  }
+  // const getCompanyWithId = (company_id) => {
+  //   return companies.find( company => company._id === company_id )
+  // }
 
   return {
     //* Propiedades
@@ -69,7 +98,9 @@ export const useCompanyStore = () => {
     //* Metodos
     startGetCompanies,
     startGetCompany,
+    startChangeCompany,
+    startResetActiveCompany,
     startSavingCompany,
-    getCompanyWithId
+    // getCompanyWithId
   }
 }

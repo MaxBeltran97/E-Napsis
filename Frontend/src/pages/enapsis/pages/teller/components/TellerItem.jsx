@@ -1,9 +1,15 @@
+import { useTellerStore } from "@hooks/useTellerStore"
 import { CloudUploadOutlined, DeleteOutlined, ModeOutlined, RadioButtonChecked, RadioButtonUnchecked, Send } from "@mui/icons-material"
 import { Divider, Grid, IconButton, Tooltip, Typography } from "@mui/material"
 
 export const TellerItem = ({ teller }) => {
 
+  const { startChangeTeller } = useTellerStore()
   const { situation, fullName, lastName, motherLastName, user } = teller
+
+  const onChangeTeller = () => {
+    startChangeTeller(teller)
+  }
 
   return (
     <Grid item xs={12}>
@@ -48,7 +54,7 @@ export const TellerItem = ({ teller }) => {
             </Grid>
             <Grid item>
               <Tooltip title={'Modificar'}>
-                <IconButton size="small">
+                <IconButton onClick={onChangeTeller} size="small">
                   <ModeOutlined />
                 </IconButton>
               </Tooltip>
