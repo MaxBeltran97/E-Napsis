@@ -29,6 +29,7 @@ class CalendarCourse(db.Model, Serializer):
         self.startDate = startDate
         self.endDate = endDate
         self.participantValue = participantValue
+        self.xd = None
 
     def serialize(self):
         d = Serializer.serialize(self)
@@ -38,7 +39,7 @@ class CalendarCourse(db.Model, Serializer):
 class CalendarCourseSchema(ma.Schema):
     class Meta:
         fields = ('_id', 'internalCode', 'internalName', 'course_id', 'instruction', 'courseTotalHours',
-                  'ejecutionPlace', 'ejecutionCity', 'ejecutionRegion', 'startDate', 'endDate', 'participantValue')
+                  'ejecutionPlace', 'ejecutionCity', 'ejecutionRegion', 'startDate', 'endDate', 'participantValue', 'xd')
 
 
 calendar_course_schema = CalendarCourseSchema()

@@ -21,7 +21,7 @@ class CourseTellerSupport(db.Model, Serializer):
 
 class CourseTellerSupportSchema(ma.Schema):
     class Meta:
-        fields = ('_id', 'course_id', 'description', 'amount')
+        fields = ('_id', 'description', 'amount')
 
 
 course_teller_support_schema = CourseTellerSupportSchema()
