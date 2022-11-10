@@ -61,9 +61,15 @@ app.config["UPLOAD_FOLDER_CALENDAR"] = "assets/calendarFiles"
 ALLOWED_EXTENSIONS = set(["pdf", "docx", "png", "jpg"])
 
 # Se establece enviroment como argumento
+<<<<<<< Updated upstream
 # enviroment = sys.argv[1]
 enviroment = "development"
 #enviroment = "production"
+=======
+#enviroment = sys.argv[1]
+# enviroment = "development"
+enviroment = "production"
+>>>>>>> Stashed changes
 
 
 # Se setean variables de configuración según ambient(env)
