@@ -19,7 +19,7 @@ class CourseTeller(db.Model, Serializer):
 
 class CourseTellerSchema(ma.Schema):
     class Meta:
-        fields = ('_id', 'course_id', 'teller_id')
+        fields = ('teller_id',)
 
 
 course_teller_schema = CourseTellerSchema()

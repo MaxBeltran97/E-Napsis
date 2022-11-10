@@ -21,7 +21,7 @@ class CourseParticipantMaterial(db.Model, Serializer):
 
 class CourseParticipantMaterialSchema(ma.Schema):
     class Meta:
-        fields = ('_id', 'course_id', 'description', 'amount')
+        fields = ('_id', 'description', 'amount')
 
 
 course_participant_material_schema = CourseParticipantMaterialSchema()

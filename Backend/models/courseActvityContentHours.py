@@ -27,7 +27,7 @@ class CourseActivityContentHours(db.Model, Serializer):
 
 class CourseActivityContentHoursSchema(ma.Schema):
     class Meta:
-        fields = ('_id', 'course_id', 'activity', 'content',
+        fields = ('_id', 'activity', 'content',
                   'theoreticalHour', 'practiceHour', 'eLearningHour')
 
 

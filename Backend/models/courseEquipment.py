@@ -21,7 +21,7 @@ class CourseEquipment(db.Model, Serializer):
 
 class CourseEquipmentSchema(ma.Schema):
     class Meta:
-        fields = ('_id', 'course_id', 'description', 'amount')
+        fields = ('_id', 'description', 'amount')
 
 
 course_equipment_schema = CourseEquipmentSchema()
