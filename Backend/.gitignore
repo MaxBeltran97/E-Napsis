@@ -9,6 +9,11 @@ instance/*
 __pycache__/
 *.py[cod]
 *$py.class
+assets/calendarFiles/*
+assets/tellerFiles/*
+
+!assets/calendarFiles/.gitkeep
+!assets/tellerFiles/.gitkeep
 
 # C extensions
 *.so

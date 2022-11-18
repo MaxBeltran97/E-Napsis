@@ -1,4 +1,4 @@
-import { useForm } from "react-hook-form"
+import { useForm, useWatch } from "react-hook-form"
 
 import { Grid } from "@mui/material"
 import { GridForm, GridInput } from "@components/grid"
@@ -20,14 +20,17 @@ export const AddCoursePage = () => {
   const { isLoading, activeCourse, startSavingCourse, startResetActiveCourse } = useCourseStore()
 
   const { handleSubmit, formState: { errors }, control } = useForm({defaultValues: activeCourse})
+  const requestDate = useWatch({ control, name: 'requestDate' })
 
   const [formTitle, setFormTitle] = useState('Registro de Curso')
   const [buttonTitle, setButtonTitle] = useState('Cuardar Curso')
+  const [requestMinDate, setRequestMinDate] = useState(new Date())
 
   useEffect(() => {
     if(Object.entries(activeCourse).length !== 0) {
       setFormTitle('Modificar Curso')
       setButtonTitle('Guardar Cambios')
+      setRequestMinDate(new Date(requestDate))
     }
     startResetActiveCourse()
   }, [])
@@ -66,7 +69,7 @@ export const AddCoursePage = () => {
               <InputTextArea control={control} name={'Infraestructura'} label={'infrastructure'} error={errors.infrastructure} />
               <InputFieldArray control={control} name={'Equipamiento'} label={'equipment'} error={errors.equipment} />
               <InputNumberAdornment control={control} name={'Valor Efectivo por Participante'} label={'participantValue'} required={true} error={errors.participantValue} adornment={'$'} position={'start'} withSize={3.5} />
-              <InputDate control={control} name={'Fecha de Solicitud'} label={'requestDate'} required={true} error={errors.requestDate} minDate={new Date()} />
+              <InputDate control={control} name={'Fecha de Solicitud'} label={'requestDate'} required={true} error={errors.requestDate} minDate={requestMinDate} />
             </Grid>
           </Grid>
         </GridInput>

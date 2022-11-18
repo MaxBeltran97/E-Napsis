@@ -21,9 +21,10 @@ export const AddCalendarCoursePage = () => {
   const courseId = useWatch({ control, name: 'course_id' })
   const startDate = useWatch({ control, name: 'startDate' })
   const endDate = useWatch({ control, name: 'endDate' })
-
+  
   const [formTitle, setFormTitle] = useState('Calendarizar Curso')
   const [buttonTitle, setButtonTitle] = useState('Calendarizar Curso')
+  const [startMinDate, setStartMinDate] = useState(new Date())
 
   const updateData = async() => {
     const { sence, instruction, totalHours, participantValue } = await startGetCourse(courseId)
@@ -47,6 +48,7 @@ export const AddCalendarCoursePage = () => {
     if(Object.entries(activeCalendarCourse).length !== 0) {
       setFormTitle('Modificar Curso Calendarizado')
       setButtonTitle('Guardar Cambios')
+      setStartMinDate(new Date(startDate))
     }
     startResetActiveCalendarCourse()
   }, [])
@@ -74,7 +76,7 @@ export const AddCalendarCoursePage = () => {
               <InputText control={control} name={'Ciudad de Ejecución'} label={'ejecutionCity'} error={errors.ejecutionCity} />
               <InputRegion control={control} name={'Región de Ejecución'} label={'ejecutionRegion'} error={errors.ejecutionRegion} getValues={getValues} setValue={setValue} items={selectRegiones} labelComuna={null} />
               {/* Fechas */}
-              <InputDate control={control} name={'Fecha de Inicio'} label={'startDate'} required={true} error={errors.startDate} minDate={new Date()} maxDate={endDate} />
+              <InputDate control={control} name={'Fecha de Inicio'} label={'startDate'} required={true} error={errors.startDate} minDate={startMinDate} maxDate={endDate} />
               <InputDate control={control} name={'Fecha de Término'} label={'endDate'} required={true} error={errors.endDate} minDate={startDate} />
               {/* Fechas end */}
             </Grid>

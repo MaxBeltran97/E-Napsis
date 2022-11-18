@@ -7,7 +7,7 @@ import { AuthRoutes } from "@pages/auth/routes"
 
 export const AppRouter = () => {
 
-  const status = 'authenticated'
+  const status = 'not-authenticated'
 
   return (
     <Routes>

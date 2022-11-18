@@ -1,3 +1,4 @@
+import { radioInstructionModality } from "@assets/radio-data"
 import { useCourseStore } from "@hooks/useCourseStore"
 import { DeleteOutlined, ModeOutlined } from "@mui/icons-material"
 import { Divider, Grid, IconButton, Tooltip, Typography } from "@mui/material"
@@ -7,6 +8,7 @@ export const CourseItem = ({ course }) => {
   const { startChangeCourse } = useCourseStore()
 
   const { activityName, sence, instruction, totalHours, participantValue } = course
+  const instructionObj = radioInstructionModality.find( element => element.value === instruction )
 
   const onChangeCourse = () => {
     startChangeCourse(course)
@@ -22,7 +24,7 @@ export const CourseItem = ({ course }) => {
           <Typography sx={{ textAlign: 'center' }}>{sence}</Typography>
         </Grid>
         <Grid item xs={2}>
-          <Typography sx={{ textAlign: 'center' }}>{instruction}</Typography>
+          <Typography sx={{ textAlign: 'center' }}>{instructionObj.name}</Typography>
         </Grid>
         <Grid item xs={1}>
           <Typography sx={{ textAlign: 'center' }}>{totalHours}</Typography>

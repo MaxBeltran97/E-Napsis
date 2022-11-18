@@ -7,7 +7,7 @@ import { es } from "date-fns/locale"
 import { memo, useEffect, useState } from "react"
 import { Controller, useFieldArray, useWatch } from "react-hook-form"
 
-const ItemEvaluationDate = memo(({ control, label, index, error, startDate = new Date(), endDate, deleteActive, removeItem }) => {
+const ItemEvaluationDate = memo(({ control, label, index, error, errorPercentage, startDate = new Date(), endDate, deleteActive, removeItem }) => {
   const [active, setActive] = useState(false)
   const [itemError, setItemError] = useState(false)
   const evaluationDate = useWatch({ control, name: `${label}.${index}.evaluationDate` })
@@ -56,21 +56,23 @@ const ItemEvaluationDate = memo(({ control, label, index, error, startDate = new
   }
 
   const isValidItem = (date, value) => {
-    if(value === null) {
+    if (value === null) {
       value = percentage
-    }else if(date === null) {
+    } else if (date === null) {
       date = evaluationDate
     }
 
-    if(((date === '' || date === null) && value === '') || (date !== '' && date !== null && value !== '')){
+    if (((date === '' || date === null) && value === '') || (date !== '' && date !== null && value !== '')) {
       setItemError(false)
-    }else{
+      return true
+    } else {
       setItemError(true)
+      return false
     }
   }
 
   return (
-    <Grid container alignItems='flex-start' sx={{ pt: 1 }} columnSpacing={1}>
+    <Grid container alignItems='flex-start' sx={{ pt: 1 }}>
       <Grid item xs={5} sx={{ display: 'flex', alignItems: 'center', height: 40 }}>
         <Typography sx={{ color: !!(error) ? !!(error[index]) ? 'error.main' : (active) ? 'text.active' : '' : itemError ? 'error.main' : '' }} >Evaluación {index + 1}</Typography>
       </Grid>
@@ -90,9 +92,10 @@ const ItemEvaluationDate = memo(({ control, label, index, error, startDate = new
                 renderInput={(params) => (
                   <TextField
                     {...params}
+                    fullWidth
                     onFocus={onFocus}
                     onBlur={onBlur}
-                    error={(!!error) ? !!(error[index]?.evaluationDate) : itemError}
+                    error={(!!error) ? !!(error[index]?.evaluationDate) ? true : itemError : false }
                     helperText={(!!error) ? !!(error[index]?.evaluationDate) ? error[index]?.evaluationDate.message : '' : ''}
                     autoComplete='off'
                     size="small"
@@ -117,7 +120,7 @@ const ItemEvaluationDate = memo(({ control, label, index, error, startDate = new
           />
         </LocalizationProvider>
       </Grid>
-      <Grid item xs={3.25}>
+      <Grid item xs={3.25} sx={{ pl: 1 }}>
         <Controller
           control={control}
           name={`${label}.${index}.percentage`}
@@ -128,7 +131,7 @@ const ItemEvaluationDate = memo(({ control, label, index, error, startDate = new
               {...field}
               onFocus={onFocus}
               onBlur={onBlur}
-              error={(!!error) ? !!(error[index]?.percentage) : itemError}
+              error={(!!error) ? !!(error[index]?.percentage) ? true : itemError ? true : errorPercentage : false}
               helperText={(!!error) ? !!(error[index]?.percentage) ? error[index]?.percentage.message : '' : ''}
               fullWidth
               autoComplete="off"
@@ -157,7 +160,7 @@ const ItemEvaluationDate = memo(({ control, label, index, error, startDate = new
           }}
         />
       </Grid>
-      <Grid item xs={0.5} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-start' }}>
+      <Grid item xs={0.5} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-start', pl: 1 }}>
         <IconButton onClick={() => removeItem(index)}
           color='error'
           disabled={deleteActive}
@@ -169,11 +172,11 @@ const ItemEvaluationDate = memo(({ control, label, index, error, startDate = new
         <Grid container>
           <Grid item xs={5}></Grid>
           <Grid item xs={7}>
-            <FormHelperText error={true} sx={{ m: 0, pl: 1}}>
+            <FormHelperText error={true} sx={{ m: 0, pl: 1 }}>
               {
                 (itemError)
-                ? '*Ambos campos deben contener datos'
-                : ''
+                  ? '*Ambos campos deben contener datos'
+                  : ''
               }
             </FormHelperText>
           </Grid>
@@ -185,7 +188,26 @@ const ItemEvaluationDate = memo(({ control, label, index, error, startDate = new
 
 export const InputEvaluationDate = memo(({ control, name = '', label, error, startDate, endDate }) => {
   const [deleteActive, setDeleteActive] = useState(true)
-  const { fields: items, append: appendItemRow, remove: removeItemRow } = useFieldArray({ control, name: label })
+  const [errorPercentage, setErrorPercentage] = useState(false)
+  const { fields: items, append: appendItemRow, remove: removeItemRow } = useFieldArray({ control, name: label, rules: { validate: { checkList: percentages => isValidPercentageList(percentages) } } })
+
+  const isValidPercentageList = (percentages) => {
+    let percentageTotal = 0
+    const evaluationDates = percentages.filter(item => { return (item.evaluationDate !== '' && item.evaluationDate !== null) })
+    evaluationDates.map((item) => { percentageTotal += parseInt(item.percentage) })
+    
+    if(evaluationDates.length > 0) {
+      if (percentageTotal !== 100) {
+        setErrorPercentage(true)
+        return(false)
+      } else {
+        setErrorPercentage(false)
+      }
+    }else {
+      setErrorPercentage(false)
+    }
+    return(true)
+  }
 
   const addNewItem = () => {
     appendItemRow({ evaluationDate: '', percentage: '' })
@@ -204,7 +226,7 @@ export const InputEvaluationDate = memo(({ control, name = '', label, error, sta
   }, [items])
 
   useEffect(() => {
-    if(items[0]?.evaluationDate === '' || !(!!items[0])) {
+    if (items[0]?.evaluationDate === '' || !(!!items[0])) {
       removeItemRow(0)
     }
   }, [removeItemRow])
@@ -212,12 +234,12 @@ export const InputEvaluationDate = memo(({ control, name = '', label, error, sta
   return (
     <Grid container sx={{ pt: 1 }}>
       <Grid item xs={12}>
-        <Grid container columnSpacing={1}>
+        <Grid container>
           <Grid item xs={5}></Grid>
           <Grid item xs={3.25}>
             <Typography sx={{ textAlign: 'center' }} >Fecha</Typography>
           </Grid>
-          <Grid item xs={3.25}>
+          <Grid item xs={3.25} sx={{ pl: 1 }}>
             <Typography sx={{ textAlign: 'center' }} >% de Ponderación</Typography>
           </Grid>
         </Grid>
@@ -225,9 +247,21 @@ export const InputEvaluationDate = memo(({ control, name = '', label, error, sta
       <Grid item xs={12}>
         {
           items.map((field, index) => (
-            <ItemEvaluationDate key={field.id} control={control} label={label} index={index} error={error} startDate={startDate} endDate={endDate} deleteActive={deleteActive} removeItem={removeItemRow} />
+            <ItemEvaluationDate key={field.id} control={control} label={label} index={index} error={error} errorPercentage={errorPercentage} startDate={startDate} endDate={endDate} deleteActive={deleteActive} removeItem={removeItemRow} />
           ))
         }
+        <Grid container>
+          <Grid item xs={5}></Grid>
+          <Grid item xs={7}>
+            <FormHelperText error={true} sx={{ m: 0, pl: 1 }}>
+              {
+                (!!errorPercentage)
+                  ? '*La suma de los porcentajes debe ser 100'
+                  : ''
+              }
+            </FormHelperText>
+          </Grid>
+        </Grid>
         <Button onClick={addNewItem}
           variant='outlined'
           color='primary'
