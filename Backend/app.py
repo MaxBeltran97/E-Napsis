@@ -38,6 +38,7 @@ from models.calendarCourse import CalendarCourse as modelCalendarCourse
 from models.calendarCourse import calendar_course_schema
 from models.calendarCourse import calendar_course_schemas
 
+from models.user import *
 from models.courseTellerSupport import *
 from models.courseParticipantMaterial import *
 from models.courseEquipment import *
@@ -46,6 +47,7 @@ from models.courseTeller import *
 from models.tellerUploadFile import *
 from models.calendarCourseUploadFile import *
 from models.calendarCourseEvaluation import *
+from models.userRol import *
 
 
 from resources.login import Login
@@ -687,8 +689,6 @@ def add_courses():
             except Exception as e:
                 print(e)
 
-        # Heinz
-        # db.session.remove()
 
         courseSerialized = new_course.serialize()
         CourseActivityContentHoursDB = CourseActivityContentHours.query.filter_by(
@@ -782,6 +782,8 @@ def get_courses():
         }, 500
 
 # Agregar los datos al curso enviado
+
+
 @app.route('/api/course/<_id>', methods=['GET'])
 def get_course(_id):
     try:
@@ -828,6 +830,8 @@ def get_course(_id):
 
 # Actualizar las tablas adyacentes eliminando actualizando y agregando
 # Agregar los datos al curso enviado
+
+
 @app.route('/api/course/<_id>', methods=['PUT'])
 def update_course(_id):
     try:
@@ -1071,6 +1075,8 @@ def update_course(_id):
         db.session.close()
 
 # Eliminar las tablas adyacentes al eliminar el curso
+
+
 @app.route('/api/course/<_id>', methods=['DELETE'])
 def delete_course(_id):
     try:
@@ -1338,6 +1344,125 @@ def upload_file_calendar():
         }, 500
 
 
+# --------------------------------------------USUARIO
+
+@app.route('/api/user/', methods=['POST'])
+def add_user():
+    try:
+        username = request.json['username']
+        password = request.json['password']
+        email = request.json['email']
+        rol = request.json['rol']
+        avatar = request.json['avatar']
+
+        new_user = User(username, password, email, rol, avatar)
+
+        db.session.add(new_user)
+        db.session.commit()
+        return {
+            "ok": True,
+            "participant": new_user.serialize()
+        }, 201
+    except Exception as e:
+        print(e)
+        return {
+            "ok": False,
+            "msg": "Error al guardar el usuario"
+        }, 500
+    finally:
+        db.session.close()
+
+
+@app.route('/api/user/', methods=['GET'])
+def get_users():
+    try:
+        all_user = User.query.all()
+        result = users_schema.dump(all_user)
+        return {
+            "ok": True,
+            "participants": result
+        }, 200
+    except Exception as e:
+        print(e)
+        return {
+            "ok": False,
+            "msg": "Error al obtener los usuarios"
+        }, 500
+
+
+@app.route('/api/user/<_id>', methods=['GET'])
+def get_user(_id):
+    try:
+        user = User.query.get(_id)
+        return {
+            "ok": True,
+            "participant": user.serialize()
+        }, 200
+    except Exception as e:
+        print(e)
+        return {
+            "ok": False,
+            "msg": "Error al obtener el usuario"
+        }, 500
+
+
+@app.route('/api/user/<_id>', methods=['PUT'])
+def update_user(_id):
+    try:
+        user = User.query.get(_id)
+
+        username = request.json['username']
+        password = request.json['password']
+        email = request.json['email']
+        rol = request.json['rol']
+        avatar = request.json['avatar']
+
+        user.username = username
+        user.password = password
+        user.email = email
+        user.rol = rol
+        user.avatar = avatar
+        
+        db.session.commit()
+        return {
+            "ok": True,
+            "participant": user.serialize()
+        }, 200
+    except Exception as e:
+        print(e)
+        return {
+            "ok": False,
+            "msg": "Error al actualizar el usuario"
+        }, 500
+    finally:
+        db.session.close()
+
+
+@app.route('/api/user/<_id>', methods=['DELETE'])
+def delete_user(_id):
+    try:
+        user = User.query.get(_id)
+
+        db.session.delete(user)
+        db.session.commit()
+        return {
+            "ok": True,
+            "participant": user.serialize()
+        }, 200
+    except Exception as e:
+        print(e)
+        return {
+            "ok": False,
+            "msg": "Error al eliminar el user"
+        }, 500
+    finally:
+        db.session.close() 
+
+
 # --------------------------------------------
+
+
+
+
 # Se carga el host
 SQLAlchemy(app)
