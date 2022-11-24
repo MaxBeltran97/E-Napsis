@@ -64,12 +64,13 @@ CORS(app)
 ma = Marshmallow(app)
 app.config["UPLOAD_FOLDER_TELLER"] = "assets/tellerFiles"
 app.config["UPLOAD_FOLDER_CALENDAR"] = "assets/calendarFiles"
+
 ALLOWED_EXTENSIONS = set(["pdf", "docx", "png", "jpg"])
 jwt = JWTManager(app)
 
 # Se establece enviroment como argumento
-# enviroment = "development"
-enviroment = "production"
+enviroment = "development"
+# enviroment = "production"
 
 # Se setean variables de configuración según ambient(env)
 app.config.from_object(app_config[enviroment])
@@ -300,8 +301,10 @@ def upload_file_teller():
                 nuevoNombreFile = teller_id + randomName + "." + extension
                 new_tellerUpload = TellerUploadFile(
                     teller_id, name, nuevoNombreFile)
+
                 db.session.add(new_tellerUpload)
                 db.session.commit()
+
                 file.save(os.path.join(
                     app.config["UPLOAD_FOLDER_TELLER"], nuevoNombreFile))
                 flag = False
@@ -641,8 +644,6 @@ def delete_company(_id):
 # --------------------------------------------COURSES
 
 # Agregar los datos al curso enviado
-
-
 @app.route('/api/course', methods=['POST'])
 def add_courses():
     try:
@@ -769,8 +770,6 @@ def add_courses():
         db.session.close()
 
 # Agregar los datos a cada curso
-
-
 @app.route('/api/course', methods=['GET'])
 def get_courses():
     try:

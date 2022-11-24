@@ -1,4 +1,4 @@
-import { useForm } from "react-hook-form"
+import { useForm, useWatch } from "react-hook-form"
 
 import { Grid } from "@mui/material"
 import { GridForm, GridInput } from "@components/grid"
@@ -16,13 +16,17 @@ import { useEffect } from "react"
 export const AddTellerPage = () => {
   const { isLoading, activeTeller, startSavingTeller, startResetActiveTeller } = useTellerStore()
   const { handleSubmit, getValues, setValue, formState: { errors }, control } = useForm({defaultValues: activeTeller})
+  const nType = useWatch({ control, name: 'nationalityType' })
+
   const [formTitle, setFormTitle] = useState('Registro de Relator')
   const [buttonTitle, setButtonTitle] = useState('Guardar Relator')
+  const [uploadFiles, setUploadFiles] = useState(true)
 
   useEffect(() => {
     if(Object.entries(activeTeller).length !== 0) {
       setFormTitle('Modificar Relator')
       setButtonTitle('Guardar Cambios')
+      setUploadFiles(false)
     }
     startResetActiveTeller()
   }, [])
@@ -32,10 +36,10 @@ export const AddTellerPage = () => {
       <Grid item xs={12} lg={6}>
         <GridInput title={'Datos Personales'}>
           <InputRadio control={control} name={'Tipo'} label={'nationalityType'} items={radioNationalityType} />
-          <InputRut control={control} name={'RUT o Pasaporte'} label={'rut'} required={true} error={errors.rut} />
+          <InputRut control={control} label={'rut'} required={true} error={errors.rut} dni={(nType === 'extranjero' ? true : false)} />
           <InputText control={control} name={'Nombres'} label={'fullName'} required={true} error={errors.fullName} />
           <InputText control={control} name={'Apellido Paterno'} label={'lastName'} required={true} error={errors.lastName} />
-          <InputText control={control} name={'Apellido Materno'} label={'motherLastName'} required={true} error={errors.motherLastName} />
+          <InputText control={control} name={'Apellido Materno'} label={'motherLastName'} error={errors.motherLastName} />
           <InputText control={control} name={'Nacionalidad'} label={'nationality'} error={errors.nationality} />
           <InputDate control={control} name={'Fecha de Nacimiento'} label={'birthday'} error={errors.birthday} maxDate={new Date()} />
           <InputText control={control} name={'Profesión'} label={'profession'} required={true} error={errors.profession} />
@@ -60,11 +64,17 @@ export const AddTellerPage = () => {
           </GridInput>
         </Grid>
       </Grid>
-      <Grid item xs={12} sx={{ pt: 0 }}>
-        <GridInput title={'Archivos Relevantes'}>
-          <InputFilesView control={control} name={'Archivos del Relator'} label={'tellerFiles'} error={errors.tellerFiles} multiple={true} helperText={'.pdf .docx .png .jpg'} textButton={'Subir Archivos'} allowedExtensions={['pdf', 'docx', 'png', 'jpg']} withSize={9.6} />
-        </GridInput>
-      </Grid>
+      {
+        (uploadFiles)
+        ? (
+          <Grid item xs={12} sx={{ pt: 0 }}>
+            <GridInput title={'Archivos Relevantes'}>
+              <InputFilesView control={control} name={'Archivos del Relator'} label={'tellerFiles'} error={errors.tellerFiles} multiple={true} helperText={'.pdf .docx .png .jpg'} textButton={'Subir Archivos'} allowedExtensions={['pdf', 'docx', 'png', 'jpg']} withSize={9.6} />
+            </GridInput>
+          </Grid>
+        )
+        : null
+      }
 
       <ButtonSave buttonTitle={buttonTitle} errorTitle={'Error al Guardar'} isLoading={isLoading} errorsForm={false} />
     </GridForm>

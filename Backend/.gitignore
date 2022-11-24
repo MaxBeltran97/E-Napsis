@@ -10,6 +10,13 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# Carpetas con archivos de los usuarios o cursos
+assets/calendarFiles/*
+assets/tellerFiles/*
+
+!assets/calendarFiles/.gitkeep
+!assets/tellerFiles/.gitkeep
+
 # C extensions
 *.so
 

@@ -21,3 +21,5 @@ export const CALENDAR_COURSE = '/calendario_curso'
 export const SHOW_CALENDAR_COURSE = '/'
 export const ADD_CALENDAR_COURSE = '/calendarizar_curso'
 
+export const CLASS_BOOKS = '/libro_clases'
+

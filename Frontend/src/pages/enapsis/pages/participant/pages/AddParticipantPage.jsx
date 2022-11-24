@@ -21,9 +21,11 @@ export const AddParticipantPage = () => {
   const { isLoading, activeParticipant, startSavingParticipant, startResetActiveParticipant } = useParticipantStore()
   
   const { handleSubmit, unregister, formState: {errors}, control } = useForm({defaultValues: activeParticipant})
+  const pType = useWatch({ control, name: 'participantType' })
+  const nType = useWatch({ control, name: 'nationalityType' })
+
   const [formTitle, setFormTitle] = useState('Registro de Participante')
   const [buttonTitle, setButtonTitle] = useState('Guardar Participante')
-  const pType = useWatch({ control, name: 'participantType' })
 
   useEffect(() => {
     if(Object.entries(activeParticipant).length !== 0) {
@@ -44,19 +46,15 @@ export const AddParticipantPage = () => {
         <GridInput title={'Datos Personales'}>
           <Grid container columnSpacing={4} rowSpacing={0}>
             <Grid item xs={12} lg={6}>
-              {/* Calendario Cursos con filtrado */}
-              {/* <InputText control={control} name={'Curso Calendarizado'} label={'courseCode'} required={true} error={errors.courseCode} /> */}
-              {/* <InputAutocompleteAsync control={control} name={'Curso Calendarizado'} label={'calendarCourse_id'} required={true} error={errors.calendarCourse_id} entities={calendarCourses} startGetEntities={startGetCalendarCourses} getFormattedEntities={getCalendarCoursesWithAutocomplete} loading={isLoadingCalendar} /> */}
               <InputAutocomplete control={control} name={'Curso Calendarizado'} label={'calendarCourse_id'} required={true} error={errors.calendarCourse_id} items={getCalendarCoursesWithAutocomplete(calendarCourses)} />
               <InputRadio control={control} name={'Tipo Participante'} label={'participantType'} items={radioParticipantType} />
 
               <InputCondition value={pType} valuesConditions={[radioParticipantType[1].value]} unregister={unregister} labelCondition={'company_id'}>
                 <InputAutocomplete control={control} name={'Empresa'} label={'company_id'} required={true} error={errors.company_id} items={getCompaniesWithAutocomplete(companies)} />
-                {/* <InputAutocompleteAsync control={control} name={'Empresa'} label={'company_id'} required={true} error={errors.company_id} entities={companies} startGetEntities={startGetCompanies} getFormattedEntities={getCompaniesWithAutocomplete} loading={isLoadingCompany} /> */}
               </InputCondition>
               
               <InputRadio control={control} name={'Nacionalidad'} label={'nationalityType'} items={radioNationalityType} />
-              <InputRut control={control} name={'RUT o Pasaporte'} label={'rut'} required={true} error={errors.rut} />
+              <InputRut control={control} label={'rut'} required={true} error={errors.rut} dni={(nType === 'extranjero' ? true : false)} />
               <InputText control={control} name={'Nombres'} label={'fullName'} required={true} error={errors.fullName} />
               <InputText control={control} name={'Apellido Paterno'} label={'lastName'} required={true} error={errors.lastName} />
               <InputText control={control} name={'Apellido Materno'} label={'motherLastName'} error={errors.motherLastName} />

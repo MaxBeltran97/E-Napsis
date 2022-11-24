@@ -13,7 +13,7 @@ export const CompanyItem = ({ company }) => {
 
   return (
     <Grid item xs={12}>
-      <Grid container alignItems={'center'}>
+      <Grid container alignItems={'center'} columnSpacing={1}>
         <Grid item xs={4}>
           <Typography sx={{ pl: 1 }} >{fantasyName}</Typography>
         </Grid>
@@ -39,11 +39,12 @@ export const CompanyItem = ({ company }) => {
                 </IconButton>
               </Tooltip>
             </Grid>
-          </Grid>  
+          </Grid>
         </Grid>
-        <Grid item xs={12} sx={{ mt: 2 }}>
-          <Divider />
-        </Grid>
+      </Grid>
+
+      <Grid item xs={12} sx={{ mt: 2 }}>
+        <Divider />
       </Grid>
     </Grid>
   )

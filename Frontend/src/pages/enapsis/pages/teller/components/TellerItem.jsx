@@ -13,7 +13,7 @@ export const TellerItem = ({ teller }) => {
 
   return (
     <Grid item xs={12}>
-      <Grid container alignItems={'center'}>
+      <Grid container alignItems={'center'} columnSpacing={1}>
         <Grid item xs={1}>
           <Grid container justifyContent={'center'}>
             <Grid item>
@@ -66,7 +66,7 @@ export const TellerItem = ({ teller }) => {
                 </IconButton>
               </Tooltip>
             </Grid>
-          </Grid>  
+          </Grid>
         </Grid>
         <Grid item xs={1}>
           <Grid container justifyContent={'center'}>
@@ -79,9 +79,10 @@ export const TellerItem = ({ teller }) => {
             </Grid>
           </Grid>
         </Grid>
-        <Grid item xs={12} sx={{ mt: 2 }}>
-          <Divider />
-        </Grid>
+      </Grid>
+      
+      <Grid item xs={12} sx={{ mt: 2 }}>
+        <Divider />
       </Grid>
     </Grid>
   )

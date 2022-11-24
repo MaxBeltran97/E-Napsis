@@ -22,7 +22,9 @@ export const useUiStore = () => {
           if(option.url === urlPath) {
             dispatch(onChangeSidebarActiveItem(item))
             dispatch(onChangeSidebarActiveOption(option))
-            dispatch(onOpenSidebarActiveItem())
+            if(isSidebarOpen) {
+              dispatch(onOpenSidebarActiveItem())
+            }
           }
         })
       }else {

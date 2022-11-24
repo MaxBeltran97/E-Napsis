@@ -11,7 +11,7 @@ class Teller(db.Model, Serializer):
     rut = db.Column(db.String(100), unique=True, nullable=False)
     fullName = db.Column(db.String(100), nullable=False)
     lastName = db.Column(db.String(100), nullable=False)
-    motherLastName = db.Column(db.String(100), nullable=False)
+    motherLastName = db.Column(db.String(100))
     nationality = db.Column(db.String(100))
     birthday = db.Column(db.DateTime)
     profession = db.Column(db.String(100), nullable=False)

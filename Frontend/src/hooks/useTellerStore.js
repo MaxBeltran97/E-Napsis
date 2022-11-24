@@ -43,10 +43,10 @@ export const useTellerStore = () => {
   const startChangeTeller = (teller) => {
     teller = {
       ...teller,
-      birthday: !!(teller.birthday) ? teller.birthday : '',
+      birthday: !!(teller.birthday) ? new Date(teller.birthday) : '',
     }
     dispatch(onHandleActiveTeller(teller))
-    navigate(`${TELLERS}${ADD_TELLER}`, {replace: true})
+    navigate(`${TELLERS}${ADD_TELLER}`, { replace: true })
   }
 
   const startResetActiveTeller = () => {
@@ -55,7 +55,7 @@ export const useTellerStore = () => {
 
   const startSavingTeller = async (teller) => {
     dispatch(onHandleLoading(true))
-    
+
     const tellerFiles = teller.tellerFiles
     teller = {
       ...teller,
@@ -67,23 +67,35 @@ export const useTellerStore = () => {
     }
     delete teller.tellerFiles
 
-    if(!!teller._id) {
+    if (!!teller._id) {
       try {
-        const {data} = await enapsisApi.put(`/teller/${teller._id}`, JSON.stringify(teller), { headers: { 'Content-Type': 'application/json' } }) 
-        if(data.ok) {
-          //TODO Guardar los tellerFiles
-          navigate('../', {replace: true})
-        }else {
+        const { data } = await enapsisApi.put(`/teller/${teller._id}`, JSON.stringify(teller), { headers: { 'Content-Type': 'application/json' } })
+        if (data.ok) {
+          navigate('../', { replace: true })
+        } else {
           //TODO Manejar errores del modificar
         }
       } catch (error) {
         console.log(error.response)
       }
-    }else {
+    } else {
       try {
         const { data } = await enapsisApi.post('/teller', JSON.stringify(teller), { headers: { 'Content-Type': 'application/json' } })
         if (data.ok) {
           //TODO Guardar los tellerFiles
+          tellerFiles.map(async (file) => {
+            let formData = new FormData()
+            formData.append('teller_id', data.teller._id)
+            formData.append('name', '')
+            formData.append('uploadFile', file.file)
+
+            const { data: dataFile } = await enapsisApi.post('/teller/uploadfile', formData, { headers: { 'Content-Type': 'multipart/form-data' } })
+            if (dataFile.ok) {
+              //TODO Manejar la subida
+            } else {
+              //TODO Manejar errores del formulario obteniods del backend
+            }
+          })
           navigate('../', { replace: true })
         } else {
           //TODO Manejar errores del formulario obtenidos del backend

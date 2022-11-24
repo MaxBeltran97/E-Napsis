@@ -1,11 +1,12 @@
-import { memo, useState } from 'react'
+import { memo, useState, useEffect } from 'react'
 import { Controller } from 'react-hook-form'
 
 import { TextField } from '@mui/material'
 import { InputForm } from '../InputForm'
 
-export const InputRut = memo(({ control, name, label, required = false, error }) => {
+export const InputRut = memo(({ control, label, required = false, error, dni = false }) => {
   const [active, setActive] = useState(false)
+  const [name, setName] = useState('RUT')
 
   const onFocus = () => {
     setActive(true)
@@ -15,7 +16,19 @@ export const InputRut = memo(({ control, name, label, required = false, error })
     setActive(false)
   }
 
+  useEffect(() => {
+    if(dni) {
+      setName('DNI')
+    }else {
+      setName('RUT')
+    }
+  }, [dni])
+  
+
   const isValidRut = (rut) => {
+    if (dni) {
+      return true
+    }
     if (rut.length === 0 && !required) {
       return true
     }
@@ -37,7 +50,7 @@ export const InputRut = memo(({ control, name, label, required = false, error })
             error={!!error}
             helperText={(!!error) ? error.message : ''}
             label={(required) ? 'Obligatorio*' : ''}
-            placeholder={'12345678-9'}
+            placeholder={(dni) ? '' : '12345678-9'}
             fullWidth
             autoComplete='off'
             size='small'
@@ -47,7 +60,7 @@ export const InputRut = memo(({ control, name, label, required = false, error })
                 m: 0, pl: 1
               }
             }}
-            InputLabelProps={{ shrink: true }}
+            InputLabelProps={{ shrink: (dni) ? undefined : true }}
           />
         )}
 

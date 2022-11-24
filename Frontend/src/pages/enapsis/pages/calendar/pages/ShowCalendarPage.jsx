@@ -18,7 +18,7 @@ export const ShowCalendarPage = () => {
       {/* Filtro */}
       <GridPaper>
         <Grid item xs={12}>
-          <Grid container alignItems={'center'}>
+          <Grid container alignItems={'center'} columnSpacing={1}>
             <Grid item xs={2}>
               <Typography sx={{ textAlign: 'center' }}>Código Interno</Typography>
             </Grid>
@@ -31,9 +31,10 @@ export const ShowCalendarPage = () => {
             <Grid item xs={3}>
               <Typography sx={{ textAlign: 'center' }}>Acciones</Typography>
             </Grid>
-            <Grid item xs={12} sx={{ mt: 1 }}>
-              <Divider />
-            </Grid>
+          </Grid>
+          
+          <Grid item xs={12} sx={{ mt: 1 }}>
+            <Divider />
           </Grid>
         </Grid>
 
