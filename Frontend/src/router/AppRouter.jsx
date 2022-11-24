@@ -4,11 +4,13 @@ import { AUTH, LOGIN } from "@models/publicRoutes"
 
 import { EnapsisRoutes } from "@pages/enapsis/routes"
 import { AuthRoutes } from "@pages/auth/routes"
+import { useAuthStore } from "@hooks/useAuthStore"
 
 export const AppRouter = () => {
 
   // const status = 'not-authenticated'
-  const status = 'authenticated'
+  // const status = 'not-authenticated'
+  const { status } = useAuthStore()
 
   return (
     <Routes>

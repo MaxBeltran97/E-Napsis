@@ -10,15 +10,15 @@ class User(db.Model, Serializer, UserMixin):
     password = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100), unique=True, nullable=False)
     avatar = db.Column(db.String(50))
-    rol = db.Column(db.String(50), db.ForeignKey('user_rol.identifierRol'))
+    role = db.Column(db.String(50), db.ForeignKey('user_role.identifierRole'))
     
 
-    def __init__(self, username, password, email, avatar, rol):
+    def __init__(self, username, password, email, avatar, role):
         self.username = username
         self.password = password
         self.email = email
         self.avatar = avatar
-        self.rol = rol
+        self.role = role
     def serialize(self):
         d = Serializer.serialize(self)
         return d
@@ -26,7 +26,7 @@ class User(db.Model, Serializer, UserMixin):
 
 class UserSchema(ma.Schema):
     class Meta:
-        fields = ('_id', 'username', 'password', 'email', 'avatar', 'rol')
+        fields = ('_id', 'username', 'password', 'email', 'avatar', 'role')
 
 
 users_schema = UserSchema(many=True)

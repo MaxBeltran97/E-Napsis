@@ -7,7 +7,7 @@ from flask_marshmallow import Marshmallow
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import select
 from flask_restful import Api
-from flask_jwt_extended import create_access_token, get_jwt_identity, JWTManager 
+from flask_jwt_extended import create_access_token, get_jwt_identity, JWTManager
 import secrets
 import string
 
@@ -51,7 +51,7 @@ from models.courseTeller import *
 from models.tellerUploadFile import *
 from models.calendarCourseUploadFile import *
 from models.calendarCourseEvaluation import *
-from models.userRol import *
+from models.userRole import *
 
 
 from resources.login import Login
@@ -131,35 +131,32 @@ def add_teller():
         db.session.add(new_teller)
         db.session.commit()
 
-         
-        
-        
         alphabet = string.ascii_letters + string.digits
         password = ''.join(secrets.choice(alphabet) for i in range(10))
         avatar = "a"
         i = 1
-        
+
         usernameGenerated = fullName[0].lower() + lastName.title()
 
         users = User.query.filter_by(username=usernameGenerated)
-        
-        
-        if(users.count() == 1):
+
+        if (users.count() == 1):
             usernameGenerated = fullName[0:3].lower() + lastName.title()
             users = User.query.filter_by(username=usernameGenerated)
-            if(users.count() == 1):
-                while(True):
-                    usernameGenerated = fullName[0:3].lower() + lastName.title() + str(i)
+            if (users.count() == 1):
+                while (True):
+                    usernameGenerated = fullName[0:3].lower(
+                    ) + lastName.title() + str(i)
                     users = User.query.filter_by(username=usernameGenerated)
                     if (users.count() == 0):
                         break
                     i += 1
 
-        new_user = User(usernameGenerated, password, email=email, avatar = avatar, rol = '1KVt92kkGGb5hNjPEYJ9Q')
+        new_user = User(usernameGenerated, password, email=email,
+                        avatar=avatar, role='1KVt92kkGGb5hNjPEYJ9Q')
 
         db.session.add(new_user)
         db.session.commit()
-        
 
         return {
             "ok": True,
@@ -644,6 +641,8 @@ def delete_company(_id):
 # --------------------------------------------COURSES
 
 # Agregar los datos al curso enviado
+
+
 @app.route('/api/course', methods=['POST'])
 def add_courses():
     try:
@@ -726,7 +725,6 @@ def add_courses():
             except Exception as e:
                 print(e)
 
-
         courseSerialized = new_course.serialize()
         CourseActivityContentHoursDB = CourseActivityContentHours.query.filter_by(
             course_id=new_course._id)
@@ -770,6 +768,8 @@ def add_courses():
         db.session.close()
 
 # Agregar los datos a cada curso
+
+
 @app.route('/api/course', methods=['GET'])
 def get_courses():
     try:
@@ -1388,10 +1388,10 @@ def add_user():
         password = request.json['password']
         email = request.json['email']
         avatar = request.json['avatar']
-        rol = request.json['rol']
+        role = request.json['role']
         hashed_password = generate_password_hash(password, method='sha256')
 
-        new_user = User(username, hashed_password, email, avatar, rol)
+        new_user = User(username, hashed_password, email, avatar, role)
 
         db.session.add(new_user)
         db.session.commit()
@@ -1450,15 +1450,15 @@ def update_user(_id):
         username = request.json['username']
         password = request.json['password']
         email = request.json['email']
-        rol = request.json['rol']
+        role = request.json['role']
         avatar = request.json['avatar']
 
         user.username = username
         user.password = password
         user.email = email
-        user.rol = rol
+        user.role = role
         user.avatar = avatar
-        
+
         db.session.commit()
         return {
             "ok": True,
@@ -1492,7 +1492,7 @@ def delete_user(_id):
             "msg": "Error al eliminar el user"
         }, 500
     finally:
-        db.session.close() 
+        db.session.close()
 
 
 # --------------------------------------------LOGIN
@@ -1500,48 +1500,52 @@ def delete_user(_id):
 @app.route('/api/login', methods=["POST"])
 def signup_post():
     try:
-        user_requested = request.json['username']
+        user_requested = request.json['userName']
         password = request.json['password']
         isEmail = False
 
-        #verifica si es username o email
+        # verifica si es username o email
         for i in user_requested:
             if (i == '@'):
                 isEmail = True
-        
+
         if (isEmail == True):
             user = User.query.filter_by(email=user_requested).first()
 
-            #verifica que exista el usuario con esa contraseña
+            # verifica que exista el usuario con esa contraseña
             if user and check_password_hash(user.password, password):
-                    access_token = create_access_token(identity=user_requested)
-                    data = user.serialize()
-                    del data['password']
+                access_token = create_access_token(identity=user_requested)
+                data = user.serialize()
+                del data['password']
 
-                    return{
-                        "ok": True,
-                        "user": data,
-                        "token": access_token,
-
-                    }                   
+                return {
+                    "ok": True,
+                    "user": data,
+                    "token": access_token,
+                }
             else:
-                    return {
-                        "ok": False,
-                        "msg": "Usuario no encontrado"
-                    }
+                return {
+                    "ok": False,
+                    "msg": "Usuario y/o Contraseña Incorrectos"
+                }
         else:
-            #verifica que exista el usuario con esa contraseña
+            # verifica que exista el usuario con esa contraseña
             user = User.query.filter_by(username=user_requested).first()
             if user and check_password_hash(user.password, password):
-                    access_token = create_access_token(identity=user_requested)
-                    data = user.serialize()
-                    del data['password']
-                    
-                    return{
-                        "ok": True,
-                        "username": data,
-                        "token": access_token
-                    }
+                access_token = create_access_token(identity=user_requested)
+                data = user.serialize()
+                del data['password']
+
+                return {
+                    "ok": True,
+                    "user": data,
+                    "token": access_token
+                }
+            else:
+                return {
+                    "ok": False,
+                    "msg": "Usuario y/o Contraseña Incorrectos"
+                }
 
     except Exception as e:
         print(e)
@@ -1551,14 +1555,14 @@ def signup_post():
         }, 500
 
 
-@app.route('/api/userRoles/<_id>', methods=['GET'])
-def get_rol(_id):
+@app.route('/api/user/role/<_id>', methods=['GET'])
+def get_role(_id):
     try:
-        user_rol = UserRol.query.get(_id)
-        data = user_rol.serialize()
+        user_role = UserRole.query.get(_id)
+        data = user_role.serialize()
         return {
             "ok": True,
-            "rol": data.get('name')
+            "role": data.get('name')
         }
     except Exception as e:
         print(e)
@@ -1568,7 +1572,6 @@ def get_rol(_id):
         }, 500
 
 # --------------------------------------------
-
 
 
 # Se carga el host
