@@ -29,12 +29,19 @@ export const useAuthStore = () => {
     if (data.ok) {
       if(data.role === 'admin'){
         return true
-      }else {
-        return false
       }
-    }else {
-      return false
     }
+    return false
+  }
+
+  const startCheckTeller = async() => {
+    const { data } = await enapsisApi.get(`/user/role/${user.role}`)
+    if (data.ok) {
+      if(data.role === 'teller'){
+        return true
+      }
+    }
+    return false
   }
 
   return {
@@ -42,6 +49,7 @@ export const useAuthStore = () => {
     user,
 
     startLogin,
-    startCheckAdmin
+    startCheckAdmin,
+    startCheckTeller
   }
 }
