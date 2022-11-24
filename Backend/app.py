@@ -1516,11 +1516,14 @@ def signup_post():
             #verifica que exista el usuario con esa contraseña
             if user and check_password_hash(user.password, password):
                     access_token = create_access_token(identity=user_requested)
-                    print('funcionando validacion')
+                    data = user.serialize()
+                    del data['password']
+
                     return{
                         "ok": True,
-                        "username": user_requested,
-                        "token": access_token    
+                        "username": data,
+                        "token": access_token,
+
                     }                   
             else:
                     return {
@@ -1532,9 +1535,12 @@ def signup_post():
             user = User.query.filter_by(username=user_requested).first()
             if user and check_password_hash(user.password, password):
                     access_token = create_access_token(identity=user_requested)
+                    data = user.serialize()
+                    del data['password']
+                    
                     return{
                         "ok": True,
-                        "username": user_requested,
+                        "username": data,
                         "token": access_token
                     }
 
