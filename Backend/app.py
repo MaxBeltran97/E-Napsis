@@ -7,9 +7,11 @@ from flask_marshmallow import Marshmallow
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import select
 from flask_restful import Api
-from flask_jwt_extended import create_access_token, get_jwt_identity, JWTManager 
+from flask_jwt_extended import create_access_token, get_jwt_identity, JWTManager, verify_jwt_in_request 
+from datetime import timedelta, datetime
 import secrets
 import string
+
 
 from redis_app import redis
 from database.db import db
@@ -19,7 +21,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from strgen import StringGenerator
 import pandas as pd
 from random import randrange
-from helpers.sesion import Sesion
+
 
 
 from models.teller import Teller as modelTeller
@@ -1504,6 +1506,11 @@ def signup_post():
         password = request.json['password']
         isEmail = False
 
+        # now = datetime.datetime.now()
+        # now = now + timedelta(days=1)
+        now = datetime.now() + timedelta(days=1)
+        print(now)
+
         #verifica si es username o email
         for i in user_requested:
             if (i == '@'):
@@ -1512,9 +1519,12 @@ def signup_post():
         if (isEmail == True):
             user = User.query.filter_by(email=user_requested).first()
 
+            
             #verifica que exista el usuario con esa contraseña
             if user and check_password_hash(user.password, password):
-                    access_token = create_access_token(identity=user_requested)
+                    
+                    access_token = create_access_token(identity=user_requested, expires_delta = now)
+                    
                     data = user.serialize()
                     del data['password']
 
@@ -1533,7 +1543,7 @@ def signup_post():
             #verifica que exista el usuario con esa contraseña
             user = User.query.filter_by(username=user_requested).first()
             if user and check_password_hash(user.password, password):
-                    access_token = create_access_token(identity=user_requested)
+                    access_token = create_access_token(identity=user_requested, expires_delta = now)
                     data = user.serialize()
                     del data['password']
                     
@@ -1551,11 +1561,14 @@ def signup_post():
         }, 500
 
 
-@app.route('/api/userRoles/<_id>', methods=['GET'])
-def get_rol(_id):
+@app.route('/api/userRoles/<rol>', methods=['GET'])
+def get_rol(rol):
     try:
-        user_rol = UserRol.query.get(_id)
+        user_rol = UserRol.query.get(rol)
         data = user_rol.serialize()
+        access_token_valid = verify_jwt_in_request()
+        print(access_token_valid)
+
         return {
             "ok": True,
             "rol": data.get('name')
