@@ -1,21 +1,25 @@
 import sys
 import os
-import click
 import json
 from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
 from flask_marshmallow import Marshmallow
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import select
 from flask_restful import Api
-import marshmallow
-
+from flask_jwt_extended import create_access_token, get_jwt_identity, JWTManager 
+import secrets
+import string
 
 from redis_app import redis
 from database.db import db
 from database.config import app_config, DevelopmentConfig
 from werkzeug.utils import secure_filename
+from werkzeug.security import generate_password_hash, check_password_hash
 from strgen import StringGenerator
 import pandas as pd
+from random import randrange
+from helpers.sesion import Sesion
 
 
 from models.teller import Teller as modelTeller
@@ -38,6 +42,7 @@ from models.calendarCourse import CalendarCourse as modelCalendarCourse
 from models.calendarCourse import calendar_course_schema
 from models.calendarCourse import calendar_course_schemas
 
+from models.user import *
 from models.courseTellerSupport import *
 from models.courseParticipantMaterial import *
 from models.courseEquipment import *
@@ -46,6 +51,7 @@ from models.courseTeller import *
 from models.tellerUploadFile import *
 from models.calendarCourseUploadFile import *
 from models.calendarCourseEvaluation import *
+from models.userRol import *
 
 
 from resources.login import Login
@@ -58,7 +64,9 @@ CORS(app)
 ma = Marshmallow(app)
 app.config["UPLOAD_FOLDER_TELLER"] = "assets/tellerFiles"
 app.config["UPLOAD_FOLDER_CALENDAR"] = "assets/calendarFiles"
-# ALLOWED_EXTENSIONS = set(["pdf", "docx", "png", "jpg"])
+
+ALLOWED_EXTENSIONS = set(["pdf", "docx", "png", "jpg"])
+jwt = JWTManager(app)
 
 # Se establece enviroment como argumento
 enviroment = "development"
@@ -122,6 +130,37 @@ def add_teller():
 
         db.session.add(new_teller)
         db.session.commit()
+
+         
+        
+        
+        alphabet = string.ascii_letters + string.digits
+        password = ''.join(secrets.choice(alphabet) for i in range(10))
+        avatar = "a"
+        i = 1
+        
+        usernameGenerated = fullName[0].lower() + lastName.title()
+
+        users = User.query.filter_by(username=usernameGenerated)
+        
+        
+        if(users.count() == 1):
+            usernameGenerated = fullName[0:3].lower() + lastName.title()
+            users = User.query.filter_by(username=usernameGenerated)
+            if(users.count() == 1):
+                while(True):
+                    usernameGenerated = fullName[0:3].lower() + lastName.title() + str(i)
+                    users = User.query.filter_by(username=usernameGenerated)
+                    if (users.count() == 0):
+                        break
+                    i += 1
+
+        new_user = User(usernameGenerated, password, email=email, avatar = avatar, rol = '1KVt92kkGGb5hNjPEYJ9Q')
+
+        db.session.add(new_user)
+        db.session.commit()
+        
+
         return {
             "ok": True,
             "teller": new_teller.serialize()
@@ -687,8 +726,6 @@ def add_courses():
             except Exception as e:
                 print(e)
 
-        # Heinz
-        # db.session.remove()
 
         courseSerialized = new_course.serialize()
         CourseActivityContentHoursDB = CourseActivityContentHours.query.filter_by(
@@ -780,6 +817,8 @@ def get_courses():
         }, 500
 
 # Agregar los datos al curso enviado
+
+
 @app.route('/api/course/<_id>', methods=['GET'])
 def get_course(_id):
     try:
@@ -826,6 +865,8 @@ def get_course(_id):
 
 # Actualizar las tablas adyacentes eliminando actualizando y agregando
 # Agregar los datos al curso enviado
+
+
 @app.route('/api/course/<_id>', methods=['PUT'])
 def update_course(_id):
     try:
@@ -1069,6 +1110,8 @@ def update_course(_id):
         db.session.close()
 
 # Eliminar las tablas adyacentes al eliminar el curso
+
+
 @app.route('/api/course/<_id>', methods=['DELETE'])
 def delete_course(_id):
     try:
@@ -1336,6 +1379,197 @@ def upload_file_calendar():
         }, 500
 
 
+# --------------------------------------------USUARIO
+
+@app.route('/api/user/', methods=['POST'])
+def add_user():
+    try:
+        username = request.json['username']
+        password = request.json['password']
+        email = request.json['email']
+        avatar = request.json['avatar']
+        rol = request.json['rol']
+        hashed_password = generate_password_hash(password, method='sha256')
+
+        new_user = User(username, hashed_password, email, avatar, rol)
+
+        db.session.add(new_user)
+        db.session.commit()
+        return {
+            "ok": True,
+            "participant": new_user.serialize()
+        }, 201
+    except Exception as e:
+        print(e)
+        return {
+            "ok": False,
+            "msg": "Error al guardar el usuario"
+        }, 500
+    finally:
+        db.session.close()
+
+
+@app.route('/api/user/', methods=['GET'])
+def get_users():
+    try:
+        all_user = User.query.all()
+        result = users_schema.dump(all_user)
+        return {
+            "ok": True,
+            "participants": result
+        }, 200
+    except Exception as e:
+        print(e)
+        return {
+            "ok": False,
+            "msg": "Error al obtener los usuarios"
+        }, 500
+
+
+@app.route('/api/user/<_id>', methods=['GET'])
+def get_user(_id):
+    try:
+        user = User.query.get(_id)
+        return {
+            "ok": True,
+            "participant": user.serialize()
+        }, 200
+    except Exception as e:
+        print(e)
+        return {
+            "ok": False,
+            "msg": "Error al obtener el usuario"
+        }, 500
+
+
+@app.route('/api/user/<_id>', methods=['PUT'])
+def update_user(_id):
+    try:
+        user = User.query.get(_id)
+
+        username = request.json['username']
+        password = request.json['password']
+        email = request.json['email']
+        rol = request.json['rol']
+        avatar = request.json['avatar']
+
+        user.username = username
+        user.password = password
+        user.email = email
+        user.rol = rol
+        user.avatar = avatar
+        
+        db.session.commit()
+        return {
+            "ok": True,
+            "participant": user.serialize()
+        }, 200
+    except Exception as e:
+        print(e)
+        return {
+            "ok": False,
+            "msg": "Error al actualizar el usuario"
+        }, 500
+    finally:
+        db.session.close()
+
+
+@app.route('/api/user/<_id>', methods=['DELETE'])
+def delete_user(_id):
+    try:
+        user = User.query.get(_id)
+
+        db.session.delete(user)
+        db.session.commit()
+        return {
+            "ok": True,
+            "participant": user.serialize()
+        }, 200
+    except Exception as e:
+        print(e)
+        return {
+            "ok": False,
+            "msg": "Error al eliminar el user"
+        }, 500
+    finally:
+        db.session.close() 
+
+
+# --------------------------------------------LOGIN
+
+@app.route('/api/login', methods=["POST"])
+def signup_post():
+    try:
+        user_requested = request.json['username']
+        password = request.json['password']
+        isEmail = False
+
+        #verifica si es username o email
+        for i in user_requested:
+            if (i == '@'):
+                isEmail = True
+        
+        if (isEmail == True):
+            user = User.query.filter_by(email=user_requested).first()
+
+            #verifica que exista el usuario con esa contraseña
+            if user and check_password_hash(user.password, password):
+                    access_token = create_access_token(identity=user_requested)
+                    data = user.serialize()
+                    del data['password']
+
+                    return{
+                        "ok": True,
+                        "user": data,
+                        "token": access_token,
+
+                    }                   
+            else:
+                    return {
+                        "ok": False,
+                        "msg": "Usuario no encontrado"
+                    }
+        else:
+            #verifica que exista el usuario con esa contraseña
+            user = User.query.filter_by(username=user_requested).first()
+            if user and check_password_hash(user.password, password):
+                    access_token = create_access_token(identity=user_requested)
+                    data = user.serialize()
+                    del data['password']
+                    
+                    return{
+                        "ok": True,
+                        "username": data,
+                        "token": access_token
+                    }
+
+    except Exception as e:
+        print(e)
+        return {
+            "ok": False,
+            "msg": "Error en el login"
+        }, 500
+
+
+@app.route('/api/userRoles/<_id>', methods=['GET'])
+def get_rol(_id):
+    try:
+        user_rol = UserRol.query.get(_id)
+        data = user_rol.serialize()
+        return {
+            "ok": True,
+            "rol": data.get('name')
+        }
+    except Exception as e:
+        print(e)
+        return {
+            "ok": False,
+            "msg": "Error al obtener el rol"
+        }, 500
+
 # --------------------------------------------
+
+
+
 # Se carga el host
 SQLAlchemy(app)

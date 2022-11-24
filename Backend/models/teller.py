@@ -2,7 +2,7 @@ from datetime import datetime
 from database.db import db
 from database.db import ma
 from helpers.serializable import Serializer
-from flask_marshmallow import Marshmallow
+
 
 
 class Teller(db.Model, Serializer):

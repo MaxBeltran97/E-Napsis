@@ -17,7 +17,7 @@ class Sesion():
             base = username+password+str(fecha_actual.minute)+str(fecha_actual.second)
             token_id = hashlib.md5(base.encode()).hexdigest()
             data = {"username":username}
-            redis.setex(token_id, 10000, data)
+            a = redis.setex(token_id, 10000, data)
             datos = redis.get(token_id)
             return token_id
         except Exception as e:
