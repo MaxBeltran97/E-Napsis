@@ -1,3 +1,42 @@
+from flask_jwt_extended import create_access_token, get_jwt_identity, JWTManager, verify_jwt_in_request
+from resources.login import Login
+from models.userRole import *
+from models.calendarCourseEvaluation import *
+from models.calendarCourseUploadFile import *
+from models.tellerUploadFile import *
+from models.courseTeller import *
+from models.courseActvityContentHours import *
+from models.courseEquipment import *
+from models.courseParticipantMaterial import *
+from models.courseTellerSupport import *
+from models.user import *
+from models.calendarCourse import calendar_course_schemas
+from models.calendarCourse import calendar_course_schema
+from models.calendarCourse import CalendarCourse as modelCalendarCourse
+from models.course import courses_schema
+from models.course import course_schema
+from models.course import Course as modelCourse
+from models.company import companys_schema
+from models.company import company_schema
+from models.company import Company as modelCompany
+from models.participant import participants_schema
+from models.participant import participant_schema
+from models.participant import Participant as modelParticipant
+from models.teller import tellers_schema
+from models.teller import teller_schema
+from models.teller import Teller as modelTeller
+from random import randrange
+import pandas as pd
+from strgen import StringGenerator
+from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.utils import secure_filename
+from database.config import app_config, DevelopmentConfig
+from database.db import db
+from redis_app import redis
+import string
+import secrets
+from datetime import timedelta, datetime
+from flask_jwt_extended import create_access_token, get_jwt_identity, JWTManager
 import sys
 import os
 import json
@@ -7,54 +46,8 @@ from flask_marshmallow import Marshmallow
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import select
 from flask_restful import Api
-from flask_jwt_extended import create_access_token, get_jwt_identity, JWTManager
-import secrets
-import string
-
-from redis_app import redis
-from database.db import db
-from database.config import app_config, DevelopmentConfig
-from werkzeug.utils import secure_filename
-from werkzeug.security import generate_password_hash, check_password_hash
-from strgen import StringGenerator
-import pandas as pd
-from random import randrange
-from helpers.sesion import Sesion
 
 
-from models.teller import Teller as modelTeller
-from models.teller import teller_schema
-from models.teller import tellers_schema
-
-from models.participant import Participant as modelParticipant
-from models.participant import participant_schema
-from models.participant import participants_schema
-
-from models.company import Company as modelCompany
-from models.company import company_schema
-from models.company import companys_schema
-
-from models.course import Course as modelCourse
-from models.course import course_schema
-from models.course import courses_schema
-
-from models.calendarCourse import CalendarCourse as modelCalendarCourse
-from models.calendarCourse import calendar_course_schema
-from models.calendarCourse import calendar_course_schemas
-
-from models.user import *
-from models.courseTellerSupport import *
-from models.courseParticipantMaterial import *
-from models.courseEquipment import *
-from models.courseActvityContentHours import *
-from models.courseTeller import *
-from models.tellerUploadFile import *
-from models.calendarCourseUploadFile import *
-from models.calendarCourseEvaluation import *
-from models.userRole import *
-
-
-from resources.login import Login
 # from resources.UploadParticipants import UploadParticipants
 
 
@@ -79,7 +72,7 @@ api = Api(app)
 
 # Endpoints y la clase que se encargará de procesar cada solicitud
 
-#api.add_resource(Login, '/login')
+# api.add_resource(Login, '/login')
 
 # api.add_resource(Teller, '/api/teller')
 
@@ -1504,6 +1497,8 @@ def signup_post():
         password = request.json['password']
         isEmail = False
 
+        now = datetime.now() + timedelta(days=1)
+
         # verifica si es username o email
         for i in user_requested:
             if (i == '@'):
@@ -1514,7 +1509,9 @@ def signup_post():
 
             # verifica que exista el usuario con esa contraseña
             if user and check_password_hash(user.password, password):
-                access_token = create_access_token(identity=user_requested)
+                access_token = create_access_token(
+                    identity=user_requested, expires_delta=now)
+
                 data = user.serialize()
                 del data['password']
 
@@ -1532,13 +1529,14 @@ def signup_post():
             # verifica que exista el usuario con esa contraseña
             user = User.query.filter_by(username=user_requested).first()
             if user and check_password_hash(user.password, password):
-                access_token = create_access_token(identity=user_requested)
+                access_token = create_access_token(
+                    identity=user_requested, expires_delta=now)
                 data = user.serialize()
                 del data['password']
 
                 return {
                     "ok": True,
-                    "user": data,
+                    "username": data,
                     "token": access_token
                 }
             else:
@@ -1560,6 +1558,9 @@ def get_role(_id):
     try:
         user_role = UserRole.query.get(_id)
         data = user_role.serialize()
+        access_token_valid = verify_jwt_in_request()
+        print(access_token_valid)
+
         return {
             "ok": True,
             "role": data.get('name')
