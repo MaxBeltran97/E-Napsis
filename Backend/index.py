@@ -15,7 +15,8 @@ with app.app_context():
     #print(bool(UserRol.query.filter_by(name='coordinador').first())) #Verifica si la tabla rol contiene el nombre de coordinador
     
     #insp.has_table("user_rol", schema="napsis") #Verifica si la tabla de roles existe(True)
-    
+
+
     if (insp.has_table("user_rol", schema="napsis") == False):
         db.create_all()
 
@@ -24,10 +25,11 @@ with app.app_context():
         randomID = StringGenerator(
                 "[\l\d]{20}").render_list(1, unique=True)[0]
         newRandomID = "1" + randomID #Se crea el identificador random, ver como hacerlo mas único
-        _id = newRandomID
+        _id = 1
+        identifierRol = newRandomID
         name = "coordinator"
     
-        new_user_rol = UserRol(_id, name)
+        new_user_rol = UserRol(_id, name, identifierRol)
         db.session.add(new_user_rol)
         db.session.commit()
 
@@ -36,10 +38,11 @@ with app.app_context():
         randomID = StringGenerator(
                 "[\l\d]{20}").render_list(1, unique=True)[0]
         newRandomID = "2" + randomID #Se crea el identificador random, ver como hacerlo mas único
-        _id = newRandomID
+        _id = 2
+        identifierRol = newRandomID
         name = "teller"
     
-        new_user_rol = UserRol(_id, name)
+        new_user_rol = UserRol(_id, name, identifierRol)
         db.session.add(new_user_rol)
         db.session.commit()
     
@@ -48,10 +51,11 @@ with app.app_context():
         randomID = StringGenerator(
                 "[\l\d]{20}").render_list(1, unique=True)[0]
         newRandomID = "3" + randomID #Se crea el identificador random, ver como hacerlo mas único
-        _id = newRandomID
+        _id = 3
+        identifierRol = newRandomID
         name = "teller_with_upload"
     
-        new_user_rol = UserRol(_id, name)
+        new_user_rol = UserRol(_id, name, identifierRol)
         db.session.add(new_user_rol)
         db.session.commit()
 

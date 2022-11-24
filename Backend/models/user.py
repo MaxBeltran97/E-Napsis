@@ -3,31 +3,26 @@ from helpers.serializable import Serializer
 from flask_login import UserMixin
 
 
-#username String(50)
-#password
-#email String() unique
-#String Rol foreign key a id futuro
-#id_ String(50)
-
 
 class User(db.Model, Serializer, UserMixin):
     _id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(50), unique=True, nullable=False)
-    password = db.Column(db.String(50), nullable=False)
+    password = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100), unique=True, nullable=False)
-    rol = db.Column(db.Integer, db.ForeignKey('user_rol._id'))
     avatar = db.Column(db.String(50))
+    rol = db.Column(db.String(50), db.ForeignKey('user_rol.identifierRol'))
+    
 
     def __init__(self, username, password, email, avatar, rol):
         self.username = username
         self.password = password
         self.email = email
-        self.rol = rol
         self.avatar = avatar
-
+        self.rol = rol
     def serialize(self):
         d = Serializer.serialize(self)
         return d
+
 
 class UserSchema(ma.Schema):
     class Meta:
