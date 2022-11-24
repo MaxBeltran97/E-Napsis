@@ -1508,7 +1508,7 @@ def signup_post():
         #verifica si es username o email
         for i in user_requested:
             if (i == '@'):
-                isEmail = True        
+                isEmail = True
         
         if (isEmail == True):
             user = User.query.filter_by(email=user_requested).first()
@@ -1521,7 +1521,7 @@ def signup_post():
 
                     return{
                         "ok": True,
-                        "username": data,
+                        "user": data,
                         "token": access_token,
 
                     }                   
