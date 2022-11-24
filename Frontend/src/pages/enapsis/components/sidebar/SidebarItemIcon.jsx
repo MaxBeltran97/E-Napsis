@@ -1,4 +1,4 @@
-import { CalendarMonthOutlined, ContactPageOutlined, HomeOutlined, PeopleAltOutlined, StorageOutlined } from "@mui/icons-material"
+import { AutoStoriesOutlined, CalendarMonthOutlined, ContactPageOutlined, HomeOutlined, PeopleAltOutlined, StorageOutlined } from "@mui/icons-material"
 
 export const SidebarItemIcon = ({idIcon, active}) => {
   switch (idIcon) {
@@ -12,5 +12,7 @@ export const SidebarItemIcon = ({idIcon, active}) => {
       return <StorageOutlined sx={{ color: (active) ? 'text.active' : '' }} />
     case 4:
       return <CalendarMonthOutlined sx={{ color: (active) ? 'text.active' : '' }} />
+    case 5:
+      return <AutoStoriesOutlined sx={{ color: (active) ? 'text.active' : '' }} />
   }
 }

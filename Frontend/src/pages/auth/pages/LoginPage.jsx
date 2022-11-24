@@ -7,7 +7,7 @@ import { ButtonLogin } from "../components/ButtonLogin"
 
 export const LoginPage = () => {
 
-  const { handleSubmit, formState: {errors}, control } = useForm()
+  const { handleSubmit, formState: { errors }, control } = useForm()
 
   const onSubmit = (data) => {
     event.preventDefault()
@@ -20,7 +20,7 @@ export const LoginPage = () => {
       direction='column'
       alignItems={'center'}
       justifyContent={'center'}
-      sx={{ minHeight: '100vh', backgroundColor: 'background.default', padding: 4 }}
+      sx={{ minHeight: '100vh', backgroundColor: 'background.default', padding: { xs: 1, sm: 4 } }}
     >
       <Grid item
         xs={3}
@@ -38,7 +38,7 @@ export const LoginPage = () => {
                     </Icon>
                   </Grid>
                   <Grid item>
-                    <Typography variant="h5" sx={{ textAlign: 'center' }}>E-napsis</Typography>
+                    <Typography variant="h5" sx={{ textAlign: 'center' }}>e-Napsis</Typography>
                     <Typography sx={{ mb: 1, textAlign: 'center' }}>Capacitación</Typography>
                   </Grid>
                 </Grid>
@@ -52,7 +52,7 @@ export const LoginPage = () => {
                     </Icon>
                   </Grid>
                   <Grid item sx={{ pl: 1 }}>
-                    <Typography variant="h5">E-napsis</Typography>
+                    <Typography variant="h5">e-Napsis</Typography>
                     <Typography>Capacitación</Typography>
                   </Grid>
                 </Grid>
@@ -81,7 +81,7 @@ export const LoginPage = () => {
         </Paper>
       </Grid>
       <Grid item xs={3} sx={{ mt: 1 }}>
-        <Typography>Todos los derechos reservados NAPSIS CAPACITACION Spa</Typography>
+        <Typography sx={{ textAlign: 'center' }} >Todos los derechos reservados NAPSIS CAPACITACION Spa</Typography>
       </Grid>
     </Grid>
   )

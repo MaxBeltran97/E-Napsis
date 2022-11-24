@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { 
   ADD_CALENDAR_COURSE, ADD_COMPANY, ADD_COURSES, ADD_PARTICIPANTS, ADD_TELLER, 
-  CALENDAR_COURSE, COMPANIES, COURSES, HOME, IMPORT_PARTICIPANTS, PARTICIPANTS, 
+  CALENDAR_COURSE, CLASS_BOOKS, COMPANIES, COURSES, HOME, IMPORT_PARTICIPANTS, PARTICIPANTS, 
   SHOW_CALENDAR_COURSE, SHOW_COMPANIES, SHOW_COURSES, SHOW_PARTICIPANTS, SHOW_TELLERS, TELLERS 
 } from "@models/privateRoutes";
 
@@ -99,6 +99,11 @@ export const uiSlice = createSlice({
             url: `${CALENDAR_COURSE + SHOW_CALENDAR_COURSE}`
           }
         ]
+      },
+      {
+        name: 'Libro de Clases',
+        idIcon: 5,
+        url: `${CLASS_BOOKS}`
       }
     ]
   },

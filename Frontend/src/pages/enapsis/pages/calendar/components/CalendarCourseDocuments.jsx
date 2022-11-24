@@ -2,7 +2,7 @@ import { ButtonSave } from '@components/button'
 import { GridForm, GridInput } from '@components/grid'
 import { InputFilesView } from '@components/input/specific'
 import { ErrorSharp } from '@mui/icons-material'
-import { Dialog, DialogContent, DialogContentText, DialogTitle, Grid, Typography } from '@mui/material'
+import { Dialog, DialogContent, DialogContentText, DialogTitle, Divider, Grid, Typography } from '@mui/material'
 import React from 'react'
 import { useForm } from 'react-hook-form'
 
@@ -34,9 +34,13 @@ export const CalendarCourseDocuments = ({ calendarCourse, open, handleClose }) =
             </Grid>
 
             <ButtonSave buttonTitle={'Guardar Documentos'} errorTitle={'Error al Guardar'} isLoading={false} errorsForm={false} />
+
+            <Grid item xs={12} sx={{ mt: 3 }}>
+              <Divider />
+            </Grid>
           </Grid>
         </form>
-        <Typography sx={{ fontSize: '20px', pt: 2 }}>Documentos </Typography>
+        <Typography sx={{ fontSize: '20px', mt: 2 }}>Documentos </Typography>
 
         <Grid container columnSpacing={2} rowSpacing={2}>
           <Grid item xs={12}>

@@ -1,5 +1,5 @@
 import { Route, Routes, useLocation } from 'react-router-dom'
-import { CALENDAR_COURSE, COMPANIES, COURSES, PARTICIPANTS, TELLERS } from '@models/privateRoutes'
+import { CALENDAR_COURSE, CLASS_BOOKS, COMPANIES, COURSES, PARTICIPANTS, TELLERS } from '@models/privateRoutes'
 
 import { LayoutApp } from '../layout'
 
@@ -12,7 +12,7 @@ import { TellerRoutes } from '../pages/teller/routes'
 
 import { useUiStore } from '@hooks/useUiStore'
 import { useEffect } from 'react'
-import { useCompanyStore } from '@hooks/useCompanyStore'
+import { ClassBooksRoutes } from '../pages/classBooks/routes'
 
 export const EnapsisRoutes = () => {
   const { pathname } = useLocation()
@@ -47,6 +47,8 @@ export const EnapsisRoutes = () => {
         <Route path={`${COURSES}/*`} element={<CourseRoutes />} />
 
         <Route path={`${CALENDAR_COURSE}/*`} element={<CalendarRoutes />} />
+
+        <Route path={`${CLASS_BOOKS}/*`} element={<ClassBooksRoutes />} />
 
         <Route path='/*' element={<HomeRoutes />} />
       </Routes>

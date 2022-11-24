@@ -14,16 +14,16 @@ export const ParticipantItem = ({ participant }) => {
   const { company_id, rut, fullName, lastName, motherLastName } = participant
   const [companyName, setCompanyName] = useState('')
 
-  const getCompanyName = async() => {
+  const getCompanyName = async () => {
     //TODO Cambiar por getCompanyById para buscar en el store primero
     const { fantasyName } = await startGetCompany(company_id)
     setCompanyName(fantasyName)
   }
 
   useEffect(() => {
-    if(!!company_id) {
+    if (!!company_id) {
       getCompanyName()
-    }else {
+    } else {
       setCompanyName('Particular')
     }
   }, [])
@@ -34,7 +34,7 @@ export const ParticipantItem = ({ participant }) => {
 
   return (
     <Grid item xs={12}>
-      <Grid container alignItems={'center'}>
+      <Grid container alignItems={'center'} columnSpacing={1}>
         <Grid item xs={3}>
           <Typography sx={{ pl: 1 }}>{fullName} {lastName} {motherLastName}</Typography>
         </Grid>
@@ -67,7 +67,7 @@ export const ParticipantItem = ({ participant }) => {
                 </IconButton>
               </Tooltip>
             </Grid>
-          </Grid>  
+          </Grid>
         </Grid>
         <Grid item xs={1}>
           <Grid container justifyContent={'center'}>
@@ -80,9 +80,10 @@ export const ParticipantItem = ({ participant }) => {
             </Grid>
           </Grid>
         </Grid>
-        <Grid item xs={12} sx={{ mt: 2 }}>
-          <Divider />
-        </Grid>
+      </Grid>
+      
+      <Grid item xs={12} sx={{ mt: 2 }}>
+        <Divider />
       </Grid>
     </Grid>
   )

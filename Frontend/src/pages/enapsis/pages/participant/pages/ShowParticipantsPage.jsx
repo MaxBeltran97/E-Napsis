@@ -21,12 +21,12 @@ export const ShowParticipantsPage = () => {
       {/* Filtro */}
       <GridPaper>
         <Grid item xs={12}>
-          <Grid container alignItems={'center'}>
+          <Grid container alignItems={'center'} columnSpacing={1}>
             <Grid item xs={3}>
               <Typography sx={{ textAlign: 'center' }}>Nombre</Typography>
             </Grid>
             <Grid item xs={2}>
-              <Typography sx={{ textAlign: 'center' }}>RUT</Typography>
+              <Typography sx={{ textAlign: 'center' }}>RUT/DNI</Typography>
             </Grid>
             <Grid item xs={3}>
               <Typography sx={{ textAlign: 'center' }}>Empresa</Typography>
@@ -37,9 +37,10 @@ export const ShowParticipantsPage = () => {
             <Grid item xs={1}>
               <Typography sx={{ textAlign: 'center' }}>Clave</Typography>
             </Grid>
-            <Grid item xs={12} sx={{ mt: 1 }}>
-              <Divider />
-            </Grid>
+          </Grid>
+          
+          <Grid item xs={12} sx={{ mt: 1 }}>
+            <Divider />
           </Grid>
         </Grid>
       
