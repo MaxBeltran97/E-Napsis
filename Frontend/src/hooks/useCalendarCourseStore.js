@@ -3,11 +3,13 @@ import { ADD_CALENDAR_COURSE, CALENDAR_COURSE } from "@models/privateRoutes"
 import { onHandleActiveCalendarCourse, onHandleCalendarCourses, onHandleLoading, onResetActiveCalendarCourse } from "@reduxSlices/calendarCourseSlice"
 import { useDispatch, useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
+import { useAuthStore } from "./useAuthStore"
 
 export const useCalendarCourseStore = () => {
 
   const dispatch = useDispatch()
   const navigate = useNavigate()
+  const { user, startCheckRole } = useAuthStore()
   const { isLoading, activeCalendarCourse, calendarCourses } = useSelector(state => state.calendarCourse)
 
   const startGetCalendarCourses = async () => {
@@ -36,6 +38,32 @@ export const useCalendarCourseStore = () => {
       console.log(error.response)
     }
     return null
+  }
+
+  const startGetClassBooks = async() => {
+    dispatch(onHandleLoading(true))
+    try {
+      const roleTeller = await startCheckRole(['teller', 'teller_with_upload'])
+      if(roleTeller) {
+        const { data } = await enapsisApi.get(`/calendar/class_book/${user._id}`)
+        if (data.ok) {
+          dispatch(onHandleCalendarCourses(data.calendarCourses))
+        }
+      } else {
+        const roleAdminCoord = await startCheckRole(['admin', 'coordinator'])
+        if(roleAdminCoord) {
+          const { data } = await enapsisApi.get('/calendar/class_book')
+          if (data.ok) {
+            dispatch(onHandleCalendarCourses(data.calendarCourses))
+          }
+        }
+      }
+    } catch (error) {
+      console.log(error.response)
+    }
+    setTimeout(() => {
+      dispatch(onHandleLoading(false))
+    }, 500)
   }
 
   const startChangeCalendarCourse = (calendarCourse) => {
@@ -114,6 +142,7 @@ export const useCalendarCourseStore = () => {
     //*Metodos
     startGetCalendarCourses,
     startGetCalendarCourse,
+    startGetClassBooks,
     startChangeCalendarCourse,
     startResetActiveCalendarCourse,
     startSavingCalendarCourse

@@ -116,17 +116,19 @@ def add_teller():
         reuf = request.json['reuf']
 
         # TODO: variable para un tipo de rol de Relator
-        # uploadFiles = data['uploadFiles']
+        uploadFiles = request.json['uploadFiles']
 
         new_teller = modelTeller(nationalityType, rut, fullName, lastName, motherLastName, nationality,
-                                 birthday, profession, email, cellPhone, maritalStatus, address, region, commune, situation, reuf)
+                                 birthday, profession, email, cellPhone, maritalStatus, address, region, commune, situation, reuf, None)
 
         db.session.add(new_teller)
         db.session.commit()
 
         alphabet = string.ascii_letters + string.digits
         password = ''.join(secrets.choice(alphabet) for i in range(10))
-        avatar = "a"
+        # --- nuevo cambio
+        hashed_password = generate_password_hash(password, method='sha256')
+        # --- fin nuevo cambio
         i = 1
 
         usernameGenerated = fullName[0].lower() + lastName.title()
@@ -145,15 +147,32 @@ def add_teller():
                         break
                     i += 1
 
-        new_user = User(usernameGenerated, password, email=email,
-                        avatar=avatar, role='1KVt92kkGGb5hNjPEYJ9Q')
+        # --- nuevo cambio
+        if (uploadFiles == True):
+            tellerRole = UserRole.query.filter_by(
+                name='teller_with_upload').first()
+        else:
+            tellerRole = UserRole.query.filter_by(name='teller').first()
+
+        new_user = User(usernameGenerated, hashed_password, email=email,
+                        avatar=None, role=tellerRole.identifierRole)
+
+        print(new_user.username)
+        print(password)
 
         db.session.add(new_user)
         db.session.commit()
 
+        teller = modelTeller.query.get(new_teller._id)
+        teller.user_id = new_user._id
+
+        db.session.commit()
+
+        # --- fin nuevo cambio
+
         return {
             "ok": True,
-            "teller": new_teller.serialize()
+            "teller": teller.serialize()
         }, 201
     except Exception as e:
         print(e)
@@ -1230,6 +1249,73 @@ def get_calendar(_id):
             "msg": "Error al obtener el curso calendarizado"
         }, 500
 
+# --- nuevo cambio
+
+@app.route('/api/calendar/class_book', methods=['GET'])
+def get_class_books():
+    try:
+        data_final = []
+
+        all_calendarCourses = modelCalendarCourse.query.all()
+        result = calendar_course_schemas.dump(all_calendarCourses)
+        for item in result:
+            courseParticipants = modelParticipant.query.filter_by(
+                calendarCourse_id=item.get('_id'))
+
+            if (courseParticipants.count() >= 1):
+                courseEvaluationDB = CalendarCourseEvaluation.query.filter_by(
+                    calendarCourse_id=item.get('_id'))
+                courseEvaluationList = calendarCourseEvaluations_schemas.dump(
+                    courseEvaluationDB)
+                item["evaluationDates"] = courseEvaluationList
+                data_final.append(item)
+
+        return {
+            "ok": True,
+            "calendarCourses": calendar_course_schemas.dump(data_final)
+        }, 200
+    except Exception as e:
+        print(e)
+        return {
+            "ok": False,
+            "msg": "Error al obtener el Libro de Clases"
+        }, 500
+
+
+@app.route('/api/calendar/class_book/<_userTellerId>', methods=['GET'])
+def get_class_books_teller(_userTellerId):
+    try:
+        data_final = []
+
+        teller = modelTeller.query.filter_by(user_id=_userTellerId).first()
+        all_CourseTeller = CourseTeller.query.filter_by(teller_id=teller._id)
+        for courseTeller in all_CourseTeller:
+            all_calendarCourses = modelCalendarCourse.query.filter_by(course_id=courseTeller.course_id)
+            result = calendar_course_schemas.dump(all_calendarCourses)
+            for calendarCourse in result:
+                courseParticipants = modelParticipant.query.filter_by(
+                    calendarCourse_id=calendarCourse.get('_id'))
+
+                if (courseParticipants.count() >= 1):
+                    courseEvaluationDB = CalendarCourseEvaluation.query.filter_by(
+                        calendarCourse_id=calendarCourse.get('_id'))
+                    courseEvaluationList = calendarCourseEvaluations_schemas.dump(
+                        courseEvaluationDB)
+                    calendarCourse["evaluationDates"] = courseEvaluationList
+                    data_final.append(calendarCourse)
+        
+        return {
+            "ok": True,
+            "calendarCourses": calendar_course_schemas.dump(data_final)
+        }, 200
+    except Exception as e:
+        print(e)
+        return {
+            "ok": False,
+            "msg": "Error al obtener el Libro de Clases"
+        }, 500
+# --- fin nuevo cambio
+
 
 @app.route('/api/calendar/<_id>', methods=['PUT'])
 def update_calendar(_id):
@@ -1390,7 +1476,7 @@ def add_user():
         db.session.commit()
         return {
             "ok": True,
-            "participant": new_user.serialize()
+            "user": new_user.serialize()
         }, 201
     except Exception as e:
         print(e)
@@ -1409,7 +1495,7 @@ def get_users():
         result = users_schema.dump(all_user)
         return {
             "ok": True,
-            "participants": result
+            "users": result
         }, 200
     except Exception as e:
         print(e)
@@ -1425,7 +1511,7 @@ def get_user(_id):
         user = User.query.get(_id)
         return {
             "ok": True,
-            "participant": user.serialize()
+            "user": user.serialize()
         }, 200
     except Exception as e:
         print(e)
@@ -1455,7 +1541,7 @@ def update_user(_id):
         db.session.commit()
         return {
             "ok": True,
-            "participant": user.serialize()
+            "user": user.serialize()
         }, 200
     except Exception as e:
         print(e)
@@ -1476,7 +1562,7 @@ def delete_user(_id):
         db.session.commit()
         return {
             "ok": True,
-            "participant": user.serialize()
+            "user": user.serialize()
         }, 200
     except Exception as e:
         print(e)

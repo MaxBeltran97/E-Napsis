@@ -23,8 +23,10 @@ class Teller(db.Model, Serializer):
     commune = db.Column(db.String(100))
     situation = db.Column(db.Boolean)
     reuf = db.Column(db.Boolean)
-
-    def __init__(self, nationalityType, rut, fullName, lastName, motherLastName, nationality, birthday, profession, email, cellPhone, maritalStatus, address, region, commune, situation, reuf):
+    # --- nuevo cambio ---
+    user_id = db.Column(db.Integer, db.ForeignKey('user._id'), nullable=True)
+    # --- fin nuevo cambio ---
+    def __init__(self, nationalityType, rut, fullName, lastName, motherLastName, nationality, birthday, profession, email, cellPhone, maritalStatus, address, region, commune, situation, reuf, user_id):
         self.nationalityType = nationalityType
         self.rut = rut
         self.fullName = fullName
@@ -41,6 +43,7 @@ class Teller(db.Model, Serializer):
         self.commune = commune
         self.situation = situation
         self.reuf = reuf
+        self.user_id = user_id
 
     def serialize(self):
         d = Serializer.serialize(self)
@@ -50,7 +53,7 @@ class Teller(db.Model, Serializer):
 class TellerSchema(ma.Schema):
     class Meta:
         fields = ('_id', 'nationalityType', 'rut', 'fullName', 'lastName', 'motherLastName', 'nationality', 'birthday',
-                  'profession', 'email', 'cellPhone', 'maritalStatus', 'address', 'region', 'commune', 'situation', 'reuf')
+                  'profession', 'email', 'cellPhone', 'maritalStatus', 'address', 'region', 'commune', 'situation', 'reuf', 'user_id')
 
 
 teller_schema = TellerSchema()
