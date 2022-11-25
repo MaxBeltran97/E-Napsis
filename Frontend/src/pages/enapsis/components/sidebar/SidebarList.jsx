@@ -2,6 +2,7 @@ import { List } from "@mui/material"
 
 import { useUiStore } from "@hooks/useUiStore"
 import { SidebarItem } from "./SidebarItem"
+import { useAuthStore } from "@hooks/useAuthStore"
 
 export const SidebarList = () => {
   const { sidebarItems, sidebarActiveItem } = useUiStore()

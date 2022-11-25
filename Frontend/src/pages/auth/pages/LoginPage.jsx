@@ -4,14 +4,16 @@ import { InputUser } from "../components/InputUser"
 import { useForm } from "react-hook-form"
 import { InputPassword } from "../components/InputPassword"
 import { ButtonLogin } from "../components/ButtonLogin"
+import { useAuthStore } from "@hooks/useAuthStore"
 
 export const LoginPage = () => {
 
+  const { status, startLogin } = useAuthStore()
   const { handleSubmit, formState: { errors }, control } = useForm()
 
   const onSubmit = (data) => {
     event.preventDefault()
-    console.log(data)
+    startLogin(data)
   }
 
   return (
@@ -63,18 +65,19 @@ export const LoginPage = () => {
               </Grid>
 
               <Grid item xs={12} sx={{ mb: 3 }}>
-                <InputUser control={control} label={'userName'} error={errors.userName} />
+                <InputUser control={control} label={'username'} error={errors.username} disabled={status === 'checking'} />
               </Grid>
               <Grid item xs={12} sx={{ mb: 3 }}>
-                <InputPassword control={control} label={'password'} error={errors.password} />
+                <InputPassword control={control} label={'password'} error={errors.password} disabled={status === 'checking'} />
                 <Button
                   sx={{ textTransform: 'initial !important' }}
+                  disabled={status === 'checking'}
                 >
                   ¿Has olvidado tu contraseña?
                 </Button>
               </Grid>
               <Grid item xs={12}>
-                <ButtonLogin isLoading={false} />
+                <ButtonLogin loading={status === 'checking'} />
               </Grid>
             </Grid>
           </form>

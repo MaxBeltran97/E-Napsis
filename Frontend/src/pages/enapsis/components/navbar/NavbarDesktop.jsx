@@ -6,23 +6,25 @@ import { SIDEBAR_WIDTH } from '@models/sidebar'
 import { useUiStore } from '@hooks/useUiStore';
 import { useState } from 'react';
 
-import { AccountBoxOutlined, Logout, PersonAdd, Settings } from '@mui/icons-material';
+import { Logout, PersonAdd, Settings } from '@mui/icons-material';
 import MenuIcon from '@mui/icons-material/Menu';
+import { useAuthStore } from '@hooks/useAuthStore';
+import { useEffect } from 'react';
 
 const AppBar = styled(MuiAppBar, { shouldForwardProp: (prop) => prop !== 'open' })(({ theme, open }) => ({
   // marginLeft: `calc(100% - 64px)`,
   width: `calc(100% - 64px)`,
   transition: theme.transitions.create(['margin', 'width'], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
+    easing: theme.transitions.easing.sharp,
+    duration: theme.transitions.duration.leavingScreen,
   }),
   ...(open && {
-      marginLeft: `${SIDEBAR_WIDTH}px`,
-      width: `calc(100% - ${SIDEBAR_WIDTH}px)`,
-      transition: theme.transitions.create(['margin', 'width'], {
-          easing: theme.transitions.easing.sharp,
-          duration: theme.transitions.duration.enteringScreen
-      })
+    marginLeft: `${SIDEBAR_WIDTH}px`,
+    width: `calc(100% - ${SIDEBAR_WIDTH}px)`,
+    transition: theme.transitions.create(['margin', 'width'], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen
+    })
   })
 }))
 
@@ -58,14 +60,26 @@ function stringAvatar(name) {
 
 export const NavbarDesktop = () => {
   const { isSidebarOpen, closeSidebar, openSidebar, closeAllSidebarItems, openSidebarActiveItem } = useUiStore()
+  const { user, startCheckAdmin, startLogout } = useAuthStore()
 
   const [anchorElUser, setAnchorElUser] = useState(null)
+  const [roleAdmin, setRoleAdmin] = useState(false)
+
+  const onCheckUserRole = async () => {
+    const admin = await startCheckAdmin()
+    setRoleAdmin(admin)
+  }
+
+  useEffect(() => {
+    onCheckUserRole()
+  }, [user])
+
 
   const onClickMenu = () => {
-    if(isSidebarOpen) {
+    if (isSidebarOpen) {
       closeSidebar()
       closeAllSidebarItems()
-    }else {
+    } else {
       openSidebar()
       openSidebarActiveItem()
     }
@@ -79,9 +93,13 @@ export const NavbarDesktop = () => {
     setAnchorElUser(null)
   }
 
+  const onClickLogout = () => {
+    startLogout()
+  }
+
   return (
     <AppBar position='fixed' open={isSidebarOpen} sx={{ bgcolor: 'background.main' }}>
-      <Toolbar sx={{ justifyContent:'space-between' }}>
+      <Toolbar sx={{ justifyContent: 'space-between' }}>
         <IconButton onClick={onClickMenu}>
           <MenuIcon />
         </IconButton>
@@ -95,8 +113,8 @@ export const NavbarDesktop = () => {
             sx={{ textTransform: 'initial !important', color: 'text.main' }}
           >
             {/* Cambiar si es un icono */}
-            <Avatar sx={{ width: 32, height: 32 }} {...stringAvatar('maxBeltran')} />
-            <Typography sx={{ pl: 1 }}>maxBeltran</Typography>
+            <Avatar sx={{ width: 32, height: 32 }} {...stringAvatar(`${user.username}`)} />
+            <Typography sx={{ pl: 1 }}>{user.username}</Typography>
           </Button>
 
           <Menu
@@ -144,20 +162,33 @@ export const NavbarDesktop = () => {
             </MenuItem>
             <Divider />
             {/* Admin Role */}
-            <MenuItem>
-              <ListItemIcon >
-                <PersonAdd />
-              </ListItemIcon>
-              Añadir Usuario
-            </MenuItem>
-            <MenuItem>
-              <ListItemIcon >
-                <Settings />
-              </ListItemIcon>
-              Configuración
-            </MenuItem>
+            {
+              (roleAdmin)
+                ? (
+                  <MenuItem>
+                    <ListItemIcon >
+                      <PersonAdd />
+                    </ListItemIcon>
+                    Añadir Usuario
+                  </MenuItem>
+                )
+                : null
+            }
+            {
+              (roleAdmin)
+                ? (
+                  <MenuItem>
+                    <ListItemIcon >
+                      <Settings />
+                    </ListItemIcon>
+                    Configuración
+                  </MenuItem>
+                )
+                : null
+            }
+
             {/* End Admin Role */}
-            <MenuItem>
+            <MenuItem onClick={onClickLogout}>
               <ListItemIcon >
                 <Logout />
               </ListItemIcon>

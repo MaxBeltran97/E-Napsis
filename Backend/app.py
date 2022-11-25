@@ -1,3 +1,42 @@
+from flask_jwt_extended import create_access_token, get_jwt_identity, JWTManager, verify_jwt_in_request
+from resources.login import Login
+from models.userRole import *
+from models.calendarCourseEvaluation import *
+from models.calendarCourseUploadFile import *
+from models.tellerUploadFile import *
+from models.courseTeller import *
+from models.courseActvityContentHours import *
+from models.courseEquipment import *
+from models.courseParticipantMaterial import *
+from models.courseTellerSupport import *
+from models.user import *
+from models.calendarCourse import calendar_course_schemas
+from models.calendarCourse import calendar_course_schema
+from models.calendarCourse import CalendarCourse as modelCalendarCourse
+from models.course import courses_schema
+from models.course import course_schema
+from models.course import Course as modelCourse
+from models.company import companys_schema
+from models.company import company_schema
+from models.company import Company as modelCompany
+from models.participant import participants_schema
+from models.participant import participant_schema
+from models.participant import Participant as modelParticipant
+from models.teller import tellers_schema
+from models.teller import teller_schema
+from models.teller import Teller as modelTeller
+from random import randrange
+import pandas as pd
+from strgen import StringGenerator
+from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.utils import secure_filename
+from database.config import app_config, DevelopmentConfig
+from database.db import db
+from redis_app import redis
+import string
+import secrets
+from datetime import timedelta, datetime
+from flask_jwt_extended import create_access_token, get_jwt_identity, JWTManager
 import sys
 import os
 import json
@@ -7,54 +46,8 @@ from flask_marshmallow import Marshmallow
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import select
 from flask_restful import Api
-from flask_jwt_extended import create_access_token, get_jwt_identity, JWTManager 
-import secrets
-import string
-
-from redis_app import redis
-from database.db import db
-from database.config import app_config, DevelopmentConfig
-from werkzeug.utils import secure_filename
-from werkzeug.security import generate_password_hash, check_password_hash
-from strgen import StringGenerator
-import pandas as pd
-from random import randrange
-from helpers.sesion import Sesion
 
 
-from models.teller import Teller as modelTeller
-from models.teller import teller_schema
-from models.teller import tellers_schema
-
-from models.participant import Participant as modelParticipant
-from models.participant import participant_schema
-from models.participant import participants_schema
-
-from models.company import Company as modelCompany
-from models.company import company_schema
-from models.company import companys_schema
-
-from models.course import Course as modelCourse
-from models.course import course_schema
-from models.course import courses_schema
-
-from models.calendarCourse import CalendarCourse as modelCalendarCourse
-from models.calendarCourse import calendar_course_schema
-from models.calendarCourse import calendar_course_schemas
-
-from models.user import *
-from models.courseTellerSupport import *
-from models.courseParticipantMaterial import *
-from models.courseEquipment import *
-from models.courseActvityContentHours import *
-from models.courseTeller import *
-from models.tellerUploadFile import *
-from models.calendarCourseUploadFile import *
-from models.calendarCourseEvaluation import *
-from models.userRol import *
-
-
-from resources.login import Login
 # from resources.UploadParticipants import UploadParticipants
 
 
@@ -79,7 +72,7 @@ api = Api(app)
 
 # Endpoints y la clase que se encargará de procesar cada solicitud
 
-#api.add_resource(Login, '/login')
+# api.add_resource(Login, '/login')
 
 # api.add_resource(Teller, '/api/teller')
 
@@ -131,35 +124,32 @@ def add_teller():
         db.session.add(new_teller)
         db.session.commit()
 
-         
-        
-        
         alphabet = string.ascii_letters + string.digits
         password = ''.join(secrets.choice(alphabet) for i in range(10))
         avatar = "a"
         i = 1
-        
+
         usernameGenerated = fullName[0].lower() + lastName.title()
 
         users = User.query.filter_by(username=usernameGenerated)
-        
-        
-        if(users.count() == 1):
+
+        if (users.count() == 1):
             usernameGenerated = fullName[0:3].lower() + lastName.title()
             users = User.query.filter_by(username=usernameGenerated)
-            if(users.count() == 1):
-                while(True):
-                    usernameGenerated = fullName[0:3].lower() + lastName.title() + str(i)
+            if (users.count() == 1):
+                while (True):
+                    usernameGenerated = fullName[0:3].lower(
+                    ) + lastName.title() + str(i)
                     users = User.query.filter_by(username=usernameGenerated)
                     if (users.count() == 0):
                         break
                     i += 1
 
-        new_user = User(usernameGenerated, password, email=email, avatar = avatar, rol = '1KVt92kkGGb5hNjPEYJ9Q')
+        new_user = User(usernameGenerated, password, email=email,
+                        avatar=avatar, role='1KVt92kkGGb5hNjPEYJ9Q')
 
         db.session.add(new_user)
         db.session.commit()
-        
 
         return {
             "ok": True,
@@ -644,6 +634,8 @@ def delete_company(_id):
 # --------------------------------------------COURSES
 
 # Agregar los datos al curso enviado
+
+
 @app.route('/api/course', methods=['POST'])
 def add_courses():
     try:
@@ -726,7 +718,6 @@ def add_courses():
             except Exception as e:
                 print(e)
 
-
         courseSerialized = new_course.serialize()
         CourseActivityContentHoursDB = CourseActivityContentHours.query.filter_by(
             course_id=new_course._id)
@@ -770,6 +761,8 @@ def add_courses():
         db.session.close()
 
 # Agregar los datos a cada curso
+
+
 @app.route('/api/course', methods=['GET'])
 def get_courses():
     try:
@@ -1388,10 +1381,10 @@ def add_user():
         password = request.json['password']
         email = request.json['email']
         avatar = request.json['avatar']
-        rol = request.json['rol']
+        role = request.json['role']
         hashed_password = generate_password_hash(password, method='sha256')
 
-        new_user = User(username, hashed_password, email, avatar, rol)
+        new_user = User(username, hashed_password, email, avatar, role)
 
         db.session.add(new_user)
         db.session.commit()
@@ -1450,15 +1443,15 @@ def update_user(_id):
         username = request.json['username']
         password = request.json['password']
         email = request.json['email']
-        rol = request.json['rol']
+        role = request.json['role']
         avatar = request.json['avatar']
 
         user.username = username
         user.password = password
         user.email = email
-        user.rol = rol
+        user.role = role
         user.avatar = avatar
-        
+
         db.session.commit()
         return {
             "ok": True,
@@ -1492,7 +1485,7 @@ def delete_user(_id):
             "msg": "Error al eliminar el user"
         }, 500
     finally:
-        db.session.close() 
+        db.session.close()
 
 
 # --------------------------------------------LOGIN
@@ -1501,47 +1494,62 @@ def delete_user(_id):
 def signup_post():
     try:
         user_requested = request.json['username']
+        print('a')
+        print(user_requested)
         password = request.json['password']
         isEmail = False
 
-        #verifica si es username o email
+        # now = datetime.now() + timedelta(days=1)
+
+        # verifica si es username o email
         for i in user_requested:
             if (i == '@'):
                 isEmail = True
-        
+
         if (isEmail == True):
             user = User.query.filter_by(email=user_requested).first()
 
-            #verifica que exista el usuario con esa contraseña
+            # verifica que exista el usuario con esa contraseña
             if user and check_password_hash(user.password, password):
-                    access_token = create_access_token(identity=user_requested)
-                    data = user.serialize()
-                    del data['password']
+                # access_token = create_access_token(
+                #     identity=user_requested, expires_delta=now)
+                access_token = create_access_token(
+                    identity=user_requested)
 
-                    return{
-                        "ok": True,
-                        "user": data,
-                        "token": access_token,
+                data = user.serialize()
+                del data['password']
 
-                    }                   
+                return {
+                    "ok": True,
+                    "user": data,
+                    "token": access_token,
+                }
             else:
-                    return {
-                        "ok": False,
-                        "msg": "Usuario no encontrado"
-                    }
+                return {
+                    "ok": False,
+                    "msg": "Usuario y/o Contraseña Incorrectos"
+                }
         else:
-            #verifica que exista el usuario con esa contraseña
+            # verifica que exista el usuario con esa contraseña
             user = User.query.filter_by(username=user_requested).first()
             if user and check_password_hash(user.password, password):
-                    access_token = create_access_token(identity=user_requested)
-                    data = user.serialize()
-                    del data['password']
-                    
-                    return{
-                        "ok": True,
-                        "username": data,
-                        "token": access_token
-                    }
+                # access_token = create_access_token(
+                #     identity=user_requested, expires_delta=now)
+                access_token = create_access_token(
+                    identity=user_requested)
+                data = user.serialize()
+                del data['password']
+
+                return {
+                    "ok": True,
+                    "user": data,
+                    "token": access_token
+                }
+            else:
+                return {
+                    "ok": False,
+                    "msg": "Usuario y/o Contraseña Incorrectos"
+                }
 
     except Exception as e:
         print(e)
@@ -1551,14 +1559,17 @@ def signup_post():
         }, 500
 
 
-@app.route('/api/userRoles/<_id>', methods=['GET'])
-def get_rol(_id):
+@app.route('/api/user/role/<_id>', methods=['GET'])
+def get_role(_id):
     try:
-        user_rol = UserRol.query.get(_id)
-        data = user_rol.serialize()
+        user_role = UserRole.query.get(_id)
+        data = user_role.serialize()
+        # access_token_valid = verify_jwt_in_request()
+        # print(access_token_valid)
+
         return {
             "ok": True,
-            "rol": data.get('name')
+            "role": data.get('name')
         }
     except Exception as e:
         print(e)
@@ -1568,7 +1579,6 @@ def get_rol(_id):
         }, 500
 
 # --------------------------------------------
-
 
 
 # Se carga el host

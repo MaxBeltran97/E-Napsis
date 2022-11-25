@@ -2,7 +2,7 @@ import { TextField } from "@mui/material"
 import { memo } from "react"
 import { Controller } from "react-hook-form"
 
-export const InputUser = memo(({ control, label, error}) => {
+export const InputUser = memo(({ control, label, error, disabled = false}) => {
 
   return (
     <Controller
@@ -13,6 +13,7 @@ export const InputUser = memo(({ control, label, error}) => {
       render={({field}) => (
         <TextField 
           {...field}
+          disabled={disabled}
           error={!!error}
           helperText={(!!error) ? error.message : ''}
           label={'Correo electrónico o usuario'}

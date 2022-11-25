@@ -3,7 +3,7 @@ import { IconButton, InputAdornment, OutlinedInput, TextField } from "@mui/mater
 import { memo, useState } from "react"
 import { Controller } from "react-hook-form"
 
-export const InputPassword = memo(({ control, label, error }) => {
+export const InputPassword = memo(({ control, label, error, disabled = false }) => {
   const [showPassword, setShowPassword] = useState(false)
 
   const handleClickShowPassword = () => {
@@ -19,6 +19,7 @@ export const InputPassword = memo(({ control, label, error }) => {
       render={({ field }) => (
         <TextField
           {...field}
+          disabled={disabled}
           type={showPassword ? 'text' : 'password'}
           error={!!error}
           helperText={(!!error) ? error.message : ''}

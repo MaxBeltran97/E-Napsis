@@ -1,10 +1,10 @@
 import { LoadingButton } from "@mui/lab"
 
-export const ButtonLogin = ({ isLoading }) => {
+export const ButtonLogin = ({ loading }) => {
   return (
     <LoadingButton type="submit"
       variant="outlined"
-      loading={isLoading}
+      loading={loading}
       color={'primary'}
       fullWidth
       size="large"
