@@ -14,11 +14,13 @@ export const uiSlice = createSlice({
       {
         name: 'Home',
         idIcon: 0,
-        url: `${HOME}`
+        url: `${HOME}`,
+        rolesAllowed: []
       },
       {
         name: 'Empresas',
         idIcon: 1,
+        rolesAllowed: ['admin', 'coordinator'],
         isItemOpen: false,
         activeOption: {},
         options: [
@@ -35,6 +37,7 @@ export const uiSlice = createSlice({
       {
         name: 'Relatores',
         idIcon: 2,
+        rolesAllowed: ['admin', 'coordinator'],
         isItemOpen: false,
         activeOption: {},
         options: [
@@ -51,6 +54,7 @@ export const uiSlice = createSlice({
       {
         name: 'Participantes',
         idIcon: 2,
+        rolesAllowed: ['admin', 'coordinator'],
         isItemOpen: false,
         activeOption: {},
         options: [
@@ -71,6 +75,7 @@ export const uiSlice = createSlice({
       {
         name: 'Cursos',
         idIcon: 3,
+        rolesAllowed: ['admin', 'coordinator'],
         isItemOpen: false,
         activeOption: {},
         options: [
@@ -87,6 +92,7 @@ export const uiSlice = createSlice({
       {
         name: 'Calendario',
         idIcon: 4,
+        rolesAllowed: ['admin', 'coordinator'],
         isItemOpen: false,
         activeOption: {},
         options: [
@@ -103,7 +109,8 @@ export const uiSlice = createSlice({
       {
         name: 'Libro de Clases',
         idIcon: 5,
-        url: `${CLASS_BOOKS}`
+        url: `${CLASS_BOOKS}`,
+        rolesAllowed: ['admin', 'coordinator', 'teller', 'teller_with_upload'],
       }
     ]
   },

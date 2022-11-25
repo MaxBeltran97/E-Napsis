@@ -60,7 +60,7 @@ function stringAvatar(name) {
 
 export const NavbarDesktop = () => {
   const { isSidebarOpen, closeSidebar, openSidebar, closeAllSidebarItems, openSidebarActiveItem } = useUiStore()
-  const { user, startCheckAdmin } = useAuthStore()
+  const { user, startCheckAdmin, startLogout } = useAuthStore()
 
   const [anchorElUser, setAnchorElUser] = useState(null)
   const [roleAdmin, setRoleAdmin] = useState(false)
@@ -91,6 +91,10 @@ export const NavbarDesktop = () => {
 
   const onHandleCloseUserMenu = () => {
     setAnchorElUser(null)
+  }
+
+  const onClickLogout = () => {
+    startLogout()
   }
 
   return (
@@ -184,7 +188,7 @@ export const NavbarDesktop = () => {
             }
 
             {/* End Admin Role */}
-            <MenuItem>
+            <MenuItem onClick={onClickLogout}>
               <ListItemIcon >
                 <Logout />
               </ListItemIcon>

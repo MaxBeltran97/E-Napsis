@@ -1493,11 +1493,13 @@ def delete_user(_id):
 @app.route('/api/login', methods=["POST"])
 def signup_post():
     try:
-        user_requested = request.json['userName']
+        user_requested = request.json['username']
+        print('a')
+        print(user_requested)
         password = request.json['password']
         isEmail = False
 
-        now = datetime.now() + timedelta(days=1)
+        # now = datetime.now() + timedelta(days=1)
 
         # verifica si es username o email
         for i in user_requested:
@@ -1509,8 +1511,10 @@ def signup_post():
 
             # verifica que exista el usuario con esa contraseña
             if user and check_password_hash(user.password, password):
+                # access_token = create_access_token(
+                #     identity=user_requested, expires_delta=now)
                 access_token = create_access_token(
-                    identity=user_requested, expires_delta=now)
+                    identity=user_requested)
 
                 data = user.serialize()
                 del data['password']
@@ -1529,14 +1533,16 @@ def signup_post():
             # verifica que exista el usuario con esa contraseña
             user = User.query.filter_by(username=user_requested).first()
             if user and check_password_hash(user.password, password):
+                # access_token = create_access_token(
+                #     identity=user_requested, expires_delta=now)
                 access_token = create_access_token(
-                    identity=user_requested, expires_delta=now)
+                    identity=user_requested)
                 data = user.serialize()
                 del data['password']
 
                 return {
                     "ok": True,
-                    "username": data,
+                    "user": data,
                     "token": access_token
                 }
             else:
@@ -1558,8 +1564,8 @@ def get_role(_id):
     try:
         user_role = UserRole.query.get(_id)
         data = user_role.serialize()
-        access_token_valid = verify_jwt_in_request()
-        print(access_token_valid)
+        # access_token_valid = verify_jwt_in_request()
+        # print(access_token_valid)
 
         return {
             "ok": True,

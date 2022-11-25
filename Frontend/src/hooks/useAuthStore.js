@@ -1,7 +1,6 @@
 import enapsisApi from "@api/enapsisApi"
 import { onChecking, onLogin, onLogout } from "@reduxSlices/authSlice"
 import { useDispatch, useSelector } from "react-redux"
-import { useNavigate } from "react-router-dom"
 
 export const useAuthStore = () => {
 
@@ -11,33 +10,61 @@ export const useAuthStore = () => {
 
   const startLogin = async (userLogin) => {
     dispatch(onChecking())
-    console.log(userLogin)
-    const { data } = await enapsisApi.post('/login', JSON.stringify(userLogin), { headers: { 'Content-Type': 'application/json' } })
-    if (data.ok) {
-      console.log(data)
-      localStorage.setItem('token', data.token)
-      dispatch(onLogin(data.user))
-      // navigate('../../', { replace: true })
-    }else {
-      console.log(data)
+
+    try {
+      const { data } = await enapsisApi.post('/login', JSON.stringify(userLogin), { headers: { 'Content-Type': 'application/json' } })
+      if (data.ok) {
+        console.log(data)
+        localStorage.setItem('token', data.token)
+        localStorage.setItem('token-init-date', new Date().setTime())
+        dispatch(onLogin(data.user))
+        // navigate('../../', { replace: true })
+      } else {
+        console.log(data)
+        dispatch(onLogout())
+      }
+    } catch (error) {
+      console.log(error.response)
       dispatch(onLogout())
     }
   }
 
-  const startCheckAdmin = async () => {
+  const startCheckAuthToken = async () => {
+    
+  }
+
+  const startLogout = async () => {
+    localStorage.clear()
+    dispatch(onLogout())
+  }
+
+  const startCheckRole = async (rolesAllowed=[]) => {
+    if(rolesAllowed.length === 0) {
+      return true
+    }
     const { data } = await enapsisApi.get(`/user/role/${user.role}`)
-    if (data.ok) {
-      if(data.role === 'admin'){
+    if(data.ok) {
+      if(rolesAllowed.includes(data.role)) {
         return true
       }
     }
     return false
   }
 
-  const startCheckTeller = async() => {
+  const startCheckAdmin = async () => {
     const { data } = await enapsisApi.get(`/user/role/${user.role}`)
     if (data.ok) {
-      if(data.role === 'teller'){
+      if (data.role === 'admin') {
+        return true
+      }
+    }
+    return false
+  }
+
+  const startCheckTeller = async () => {
+    const { data } = await enapsisApi.get(`/user/role/${user.role}`)
+    if (data.ok) {
+      if (data.role === 'teller') {
         return true
       }
     }
@@ -49,7 +76,9 @@ export const useAuthStore = () => {
     user,
 
     startLogin,
+    startLogout,
     startCheckAdmin,
-    startCheckTeller
+    startCheckTeller,
+    startCheckRole
   }
 }

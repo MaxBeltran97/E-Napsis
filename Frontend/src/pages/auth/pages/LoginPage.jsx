@@ -65,7 +65,7 @@ export const LoginPage = () => {
               </Grid>
 
               <Grid item xs={12} sx={{ mb: 3 }}>
-                <InputUser control={control} label={'userName'} error={errors.userName} disabled={status === 'checking'} />
+                <InputUser control={control} label={'username'} error={errors.username} disabled={status === 'checking'} />
               </Grid>
               <Grid item xs={12} sx={{ mb: 3 }}>
                 <InputPassword control={control} label={'password'} error={errors.password} disabled={status === 'checking'} />
