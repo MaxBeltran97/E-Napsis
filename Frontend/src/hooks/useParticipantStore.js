@@ -102,6 +102,26 @@ export const useParticipantStore = () => {
 
   }
 
+  const startDeleteParticipant = async (participant_id) => {
+    dispatch(onHandleLoading(true))
+
+    try {
+      const { data } = await enapsisApi.delete(`/participant/${participant_id}`)
+      if (data.ok) {
+        const { data } = await enapsisApi.get('/participant')
+        if (data.ok) {
+          dispatch(onHandleParticipants(data.participants))
+        }
+      }
+    } catch (error) {
+      console.log(error)
+    }
+
+    setTimeout(() => {
+      dispatch(onHandleLoading(false))
+    }, 1000)
+  }
+
   return {
     //* Propiedades
     isLoading,
@@ -114,6 +134,7 @@ export const useParticipantStore = () => {
     startChangeParticipant,
     startResetActiveParticipant,
     startSavingParticipant,
-    startSavingParticipantFile
+    startSavingParticipantFile,
+    startDeleteParticipant
   }
 }

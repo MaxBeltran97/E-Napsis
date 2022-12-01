@@ -1,11 +1,37 @@
+import { DialogDelete } from "@components/dialog"
 import { useTellerStore } from "@hooks/useTellerStore"
 import { CloudUploadOutlined, DeleteOutlined, ModeOutlined, RadioButtonChecked, RadioButtonUnchecked, Send } from "@mui/icons-material"
 import { Divider, Grid, IconButton, Tooltip, Typography } from "@mui/material"
+import { useEffect } from "react"
+import { useState } from "react"
 
 export const TellerItem = ({ teller }) => {
 
-  const { startChangeTeller } = useTellerStore()
-  const { situation, fullName, lastName, motherLastName, user } = teller
+  const { startChangeTeller, startDeleteTeller, startGetTellerUsername } = useTellerStore()
+  const { situation, fullName, lastName, motherLastName } = teller
+  const [usernameTeller, setUsernameTeller] = useState('')
+
+  const [openDeleteView, setOpenDeleteView] = useState(false)
+
+  const getUsername = async () => {
+    const { username } = await startGetTellerUsername(teller.user_id)
+    setUsernameTeller(username)
+  }
+
+  useEffect(() => {
+    getUsername()
+  }, [])
+
+  const handleOpenDeleteView = () => {
+    setOpenDeleteView(true)
+  }
+  const handleCloseDeleteView = () => {
+    setOpenDeleteView(false)
+  }
+  const onDeleteTeller = () => {
+    startDeleteTeller(teller._id)
+  }
+
 
   const onChangeTeller = () => {
     startChangeTeller(teller)
@@ -41,7 +67,7 @@ export const TellerItem = ({ teller }) => {
           <Typography>{fullName} {lastName} {motherLastName}</Typography>
         </Grid>
         <Grid item xs={3}>
-          <Typography>{user}</Typography>
+          <Typography sx={{ textAlign: 'center' }} >{usernameTeller}</Typography>
         </Grid>
         <Grid item xs={3}>
           <Grid container justifyContent={'space-evenly'} wrap={'wrap'}>
@@ -61,7 +87,7 @@ export const TellerItem = ({ teller }) => {
             </Grid>
             <Grid item>
               <Tooltip title={'Eliminar'}>
-                <IconButton size="small">
+                <IconButton onClick={handleOpenDeleteView} size="small">
                   <DeleteOutlined color="error" />
                 </IconButton>
               </Tooltip>
@@ -84,6 +110,14 @@ export const TellerItem = ({ teller }) => {
       <Grid item xs={12} sx={{ mt: 2 }}>
         <Divider />
       </Grid>
+
+      <DialogDelete
+        title={`Eliminar el relator ${fullName} ${lastName}`}
+        body={'¿Estás seguro de eliminar este relator? Al eliminarlo, este se eliminará de todos los cursos donde esté asignado.'}
+        open={openDeleteView}
+        handleClose={handleCloseDeleteView}
+        functionDelete={onDeleteTeller}
+      />
     </Grid>
   )
 }

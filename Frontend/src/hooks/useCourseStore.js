@@ -42,7 +42,7 @@ export const useCourseStore = () => {
     course = {
       ...course,
       requestDate: new Date(course.requestDate),
-      minCalification: (!!course.minCalification) ? ('' + course.minCalification).replace('.', ',') : '',
+      minCalification: (!!course.minCalification) ? (('' + course.minCalification).length === 1) ? (`${course.minCalification},0`) : ('' + course.minCalification).replace('.', ',') : '',
       participantsNumber: (!!course.participantsNumber) ? course.participantsNumber : '',
       activitiesContentHours: course.activitiesContentHours.map(item => {
         return item = {
@@ -126,6 +126,26 @@ export const useCourseStore = () => {
     dispatch(onHandleLoading(false))
   }
 
+  const startDeleteCourse = async (course_id) => {
+    dispatch(onHandleLoading(true))
+
+    try {
+      const { data } = await enapsisApi.delete(`/course/${course_id}`)
+      if (data.ok) {
+        const { data } = await enapsisApi.get('/course')
+        if (data.ok) {
+          dispatch(onHandleCourses(data.courses))
+        }
+      }
+    } catch (error) {
+      console.log(error)
+    }
+
+    setTimeout(() => {
+      dispatch(onHandleLoading(false))
+    }, 1000)
+  }
+
   return {
     //* Propiedades
     isLoading,
@@ -137,6 +157,7 @@ export const useCourseStore = () => {
     startGetCourse,
     startChangeCourse,
     startResetActiveCourse,
-    startSavingCourse
+    startSavingCourse,
+    startDeleteCourse
   }
 }

@@ -116,17 +116,19 @@ def add_teller():
         reuf = request.json['reuf']
 
         # TODO: variable para un tipo de rol de Relator
-        # uploadFiles = data['uploadFiles']
+        uploadFiles = request.json['uploadFiles']
 
         new_teller = modelTeller(nationalityType, rut, fullName, lastName, motherLastName, nationality,
-                                 birthday, profession, email, cellPhone, maritalStatus, address, region, commune, situation, reuf)
+                                 birthday, profession, email, cellPhone, maritalStatus, address, region, commune, situation, reuf, None)
 
         db.session.add(new_teller)
         db.session.commit()
 
         alphabet = string.ascii_letters + string.digits
         password = ''.join(secrets.choice(alphabet) for i in range(10))
-        avatar = "a"
+        # --- nuevo cambio
+        hashed_password = generate_password_hash(password, method='sha256')
+        # --- fin nuevo cambio
         i = 1
 
         usernameGenerated = fullName[0].lower() + lastName.title()
@@ -145,15 +147,32 @@ def add_teller():
                         break
                     i += 1
 
-        new_user = User(usernameGenerated, password, email=email,
-                        avatar=avatar, role='1KVt92kkGGb5hNjPEYJ9Q')
+        # --- nuevo cambio
+        if (uploadFiles == True):
+            tellerRole = UserRole.query.filter_by(
+                name='teller_with_upload').first()
+        else:
+            tellerRole = UserRole.query.filter_by(name='teller').first()
+
+        new_user = User(usernameGenerated, hashed_password, email=email,
+                        avatar=None, role=tellerRole.identifierRole)
+
+        print(new_user.username)
+        print(password)
 
         db.session.add(new_user)
         db.session.commit()
 
+        teller = modelTeller.query.get(new_teller._id)
+        teller.user_id = new_user._id
+
+        db.session.commit()
+
+        # --- fin nuevo cambio
+
         return {
             "ok": True,
-            "teller": new_teller.serialize()
+            "teller": teller.serialize()
         }, 201
     except Exception as e:
         print(e)
@@ -252,13 +271,24 @@ def update_teller(_id):
         db.session.close()
 
 
+# --- nuevo cambio ---
 @app.route('/api/teller/<_id>', methods=['DELETE'])
 def delete_teller(_id):
     try:
         teller = modelTeller.query.get(_id)
+        user = User.query.get(teller.user_id)
+        courses_teller = CourseTeller.query.filter_by(teller_id=_id)
 
+        for item in courses_teller:
+            db.session.delete(item)
+            db.session.commit()
+        
         db.session.delete(teller)
         db.session.commit()
+
+        db.session.delete(user)
+        db.session.commit()
+
         return {
             "ok": True,
             "teller": teller.serialize()
@@ -271,7 +301,7 @@ def delete_teller(_id):
         }, 500
     finally:
         db.session.close()
-
+# --- fin nuevo cambio ---
 
 @app.route('/api/teller/uploadfile', methods=['POST'])
 def upload_file_teller():
@@ -611,12 +641,17 @@ def update_company(_id):
     finally:
         db.session.close()
 
-
+# --- nuevo cambio ---
 @app.route('/api/company/<_id>', methods=['DELETE'])
 def delete_company(_id):
     try:
         company = modelCompany.query.get(_id)
+        participants_company = modelParticipant.query.filter_by(company_id = _id)
 
+        for participant in participants_company:
+            db.session.delete(participant)
+            db.session.commit()
+        
         db.session.delete(company)
         db.session.commit()
         return {
@@ -630,6 +665,7 @@ def delete_company(_id):
         }, 500
     finally:
         db.session.close()
+# --- fin nuevo cambio ---
 
 # --------------------------------------------COURSES
 
@@ -1104,12 +1140,46 @@ def update_course(_id):
 
 # Eliminar las tablas adyacentes al eliminar el curso
 
-
+# --- nuevo cambio ---
 @app.route('/api/course/<_id>', methods=['DELETE'])
 def delete_course(_id):
     try:
+        # Curso
         course = modelCourse.query.get(_id)
+        activitiesContentHours = CourseActivityContentHours.query.filter_by(course_id = _id)
+        equipment = CourseEquipment.query.filter_by(course_id = _id)
+        participantMaterial = CourseParticipantMaterial.query.filter_by(course_id = _id)
+        tellers_id = CourseTeller.query.filter_by(course_id = _id)
+        tellerSupport = CourseTellerSupport.query.filter_by(course_id = _id)
+        
+        # Curso calendarizado
+        coursesCalendar = modelCalendarCourse.query.filter_by(course_id = _id)
 
+        for item in coursesCalendar:
+            delete_calendar(item._id)
+
+        # Elimina las tablas externas del curso
+        for item in activitiesContentHours:
+            db.session.delete(item)
+            db.session.commit()
+        
+        for item in equipment:
+            db.session.delete(item)
+            db.session.commit()
+
+        for item in participantMaterial:
+            db.session.delete(item)
+            db.session.commit()
+
+        for item in tellers_id:
+            db.session.delete(item)
+            db.session.commit()
+
+        for item in tellerSupport:
+            db.session.delete(item)
+            db.session.commit()
+
+        # Finalizando elimina el curso
         db.session.delete(course)
         db.session.commit()
         return {
@@ -1124,6 +1194,7 @@ def delete_course(_id):
         }, 500
     finally:
         db.session.close()
+# --- fin nuevo cambio ---
 
 # --------------------------------------------CALENDAR
 
@@ -1230,6 +1301,72 @@ def get_calendar(_id):
             "msg": "Error al obtener el curso calendarizado"
         }, 500
 
+# --- nuevo cambio
+@app.route('/api/calendar/class_book', methods=['GET'])
+def get_class_books():
+    try:
+        data_final = []
+
+        all_calendarCourses = modelCalendarCourse.query.all()
+        result = calendar_course_schemas.dump(all_calendarCourses)
+        for item in result:
+            courseParticipants = modelParticipant.query.filter_by(
+                calendarCourse_id=item.get('_id'))
+
+            if (courseParticipants.count() >= 1):
+                courseEvaluationDB = CalendarCourseEvaluation.query.filter_by(
+                    calendarCourse_id=item.get('_id'))
+                courseEvaluationList = calendarCourseEvaluations_schemas.dump(
+                    courseEvaluationDB)
+                item["evaluationDates"] = courseEvaluationList
+                data_final.append(item)
+
+        return {
+            "ok": True,
+            "calendarCourses": calendar_course_schemas.dump(data_final)
+        }, 200
+    except Exception as e:
+        print(e)
+        return {
+            "ok": False,
+            "msg": "Error al obtener el Libro de Clases"
+        }, 500
+
+
+@app.route('/api/calendar/class_book/<_userTellerId>', methods=['GET'])
+def get_class_books_teller(_userTellerId):
+    try:
+        data_final = []
+
+        teller = modelTeller.query.filter_by(user_id=_userTellerId).first()
+        all_CourseTeller = CourseTeller.query.filter_by(teller_id=teller._id)
+        for courseTeller in all_CourseTeller:
+            all_calendarCourses = modelCalendarCourse.query.filter_by(course_id=courseTeller.course_id)
+            result = calendar_course_schemas.dump(all_calendarCourses)
+            for calendarCourse in result:
+                courseParticipants = modelParticipant.query.filter_by(
+                    calendarCourse_id=calendarCourse.get('_id'))
+
+                if (courseParticipants.count() >= 1):
+                    courseEvaluationDB = CalendarCourseEvaluation.query.filter_by(
+                        calendarCourse_id=calendarCourse.get('_id'))
+                    courseEvaluationList = calendarCourseEvaluations_schemas.dump(
+                        courseEvaluationDB)
+                    calendarCourse["evaluationDates"] = courseEvaluationList
+                    data_final.append(calendarCourse)
+        
+        return {
+            "ok": True,
+            "calendarCourses": calendar_course_schemas.dump(data_final)
+        }, 200
+    except Exception as e:
+        print(e)
+        return {
+            "ok": False,
+            "msg": "Error al obtener el Libro de Clases"
+        }, 500
+# --- fin nuevo cambio
+
 
 @app.route('/api/calendar/<_id>', methods=['PUT'])
 def update_calendar(_id):
@@ -1312,11 +1449,27 @@ def update_calendar(_id):
             "msg": "Error al actualizar el curso calendarizado"
         }, 500
 
-
+# --- nuevo cambio ---
 @app.route('/api/calendar/<_id>', methods=['DELETE'])
 def delete_calendar(_id):
     try:
         calendarCourse = modelCalendarCourse.query.get(_id)
+        evaluations = CalendarCourseEvaluation.query.filter_by(calendarCourse_id = _id)
+        files = CalendarCourseUploadFile.query.filter_by(calendarCourse_id = _id)
+        participants = modelParticipant.query.filter_by(calendarCourse_id = _id)
+
+        for participant in participants:
+            participant.calendarCourse_id = None
+            db.session.commit()
+
+        for evaluation in evaluations:
+            db.session.delete(evaluation)
+            db.session.commit()
+
+        for fileCourse in files:
+            db.session.delete(fileCourse)
+            db.session.commit()
+            # eliminar el archivo que esta guardado en la carpeta
 
         db.session.delete(calendarCourse)
         db.session.commit()
@@ -1330,7 +1483,7 @@ def delete_calendar(_id):
             "ok": False,
             "msg": "Error al eliminar el curso calendarizado"
         }, 500
-
+# --- fin nuevo cambio ---
 
 @app.route('/api/calendar/uploadfile', methods=['POST'])
 def upload_file_calendar():
@@ -1390,7 +1543,7 @@ def add_user():
         db.session.commit()
         return {
             "ok": True,
-            "participant": new_user.serialize()
+            "user": new_user.serialize()
         }, 201
     except Exception as e:
         print(e)
@@ -1409,7 +1562,7 @@ def get_users():
         result = users_schema.dump(all_user)
         return {
             "ok": True,
-            "participants": result
+            "users": result
         }, 200
     except Exception as e:
         print(e)
@@ -1425,7 +1578,7 @@ def get_user(_id):
         user = User.query.get(_id)
         return {
             "ok": True,
-            "participant": user.serialize()
+            "user": user.serialize()
         }, 200
     except Exception as e:
         print(e)
@@ -1455,7 +1608,7 @@ def update_user(_id):
         db.session.commit()
         return {
             "ok": True,
-            "participant": user.serialize()
+            "user": user.serialize()
         }, 200
     except Exception as e:
         print(e)
@@ -1476,7 +1629,7 @@ def delete_user(_id):
         db.session.commit()
         return {
             "ok": True,
-            "participant": user.serialize()
+            "user": user.serialize()
         }, 200
     except Exception as e:
         print(e)

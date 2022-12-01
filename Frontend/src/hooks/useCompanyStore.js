@@ -17,7 +17,7 @@ export const useCompanyStore = () => {
 
     try {
       const { data } = await enapsisApi.get('/company')
-      if(data.ok) {
+      if (data.ok) {
         dispatch(onHandleCompanies(data.companies))
       }
     } catch (error) {
@@ -31,7 +31,7 @@ export const useCompanyStore = () => {
   const startGetCompany = async (company_id) => {
     try {
       const { data } = await enapsisApi.get(`/company/${company_id}`)
-      if(data.ok) {
+      if (data.ok) {
         return data.company
       }
     } catch (error) {
@@ -41,13 +41,13 @@ export const useCompanyStore = () => {
   }
 
   const startChangeCompany = (company) => {
-    company = { 
-      ...company, 
-      cellPhone: !!(company.cellPhone) ? company.cellPhone : '', 
+    company = {
+      ...company,
+      cellPhone: !!(company.cellPhone) ? company.cellPhone : '',
       rut: !!(company.rut) ? company.rut : ''
     }
     dispatch(onHandleActiveCompany(company))
-    navigate(`${COMPANIES}${ADD_COMPANY}`, {replace: true})
+    navigate(`${COMPANIES}${ADD_COMPANY}`, { replace: true })
   }
 
   const startResetActiveCompany = () => {
@@ -58,24 +58,24 @@ export const useCompanyStore = () => {
     dispatch(onHandleLoading(true))
 
     company = { ...company, cellPhone: parseInt(company.cellPhone), rut: parseNull(company.rut) }
-    
-    if(!!company._id) { //Modificar una compañia existente
+
+    if (!!company._id) { //Modificar una compañia existente
       try {
-        const { data } = await enapsisApi.put(`/company/${company._id}`, JSON.stringify(company), { headers: { 'Content-Type': 'application/json' } }) 
-        if(data.ok) {
-          navigate('../', {replace: true})
-        }else {
+        const { data } = await enapsisApi.put(`/company/${company._id}`, JSON.stringify(company), { headers: { 'Content-Type': 'application/json' } })
+        if (data.ok) {
+          navigate('../', { replace: true })
+        } else {
           //TODO Manejar errores del modificar
         }
       } catch (error) {
         console.log(error.response)
       }
-    }else { //Agregar una compañia nueva
+    } else { //Agregar una compañia nueva
       try {
         const { data } = await enapsisApi.post('/company', JSON.stringify(company), { headers: { 'Content-Type': 'application/json' } })
-        if(data.ok) {
-          navigate('../', {replace: true})
-        }else {
+        if (data.ok) {
+          navigate('../', { replace: true })
+        } else {
           //TODO Manejar errores del formulario obtenidos del backend
         }
       } catch (error) {
@@ -88,6 +88,26 @@ export const useCompanyStore = () => {
   // const getCompanyWithId = (company_id) => {
   //   return companies.find( company => company._id === company_id )
   // }
+
+  const startDeleteCompany = async (company_id) => {
+    dispatch(onHandleLoading(true))
+
+    try {
+      const { data } = await enapsisApi.delete(`/company/${company_id}`)
+      if (data.ok) {
+        const { data } = await enapsisApi.get('/company')
+        if (data.ok) {
+          dispatch(onHandleCompanies(data.companies))
+        }
+      }
+    } catch (error) {
+      console.log(error)
+    }
+
+    setTimeout(() => {
+      dispatch(onHandleLoading(false))
+    }, 1000)
+  }
 
   return {
     //* Propiedades
@@ -102,5 +122,6 @@ export const useCompanyStore = () => {
     startResetActiveCompany,
     startSavingCompany,
     // getCompanyWithId
+    startDeleteCompany
   }
 }
