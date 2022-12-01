@@ -6,6 +6,7 @@ import { ParticipantItem } from "../components"
 
 import { useParticipantStore } from "@hooks/useParticipantStore"
 import { useCompanyStore } from "@hooks/useCompanyStore"
+import { SkeletonListItemV2 } from "@components/skeleton"
 
 export const ShowParticipantsPage = () => {
 
@@ -46,7 +47,7 @@ export const ShowParticipantsPage = () => {
       
         {
           isLoading
-          ? <Grid item xs={12}> <Typography sx={{ textAlign: 'center' }}>Cargando...</Typography> </Grid>
+          ? <SkeletonListItemV2 />
           : (
             participants.map((participant) => (
               <ParticipantItem key={participant._id} participant={participant} />

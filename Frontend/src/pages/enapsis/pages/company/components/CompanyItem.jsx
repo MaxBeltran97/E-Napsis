@@ -1,11 +1,26 @@
+import { DialogDelete } from '@components/dialog'
 import { useCompanyStore } from '@hooks/useCompanyStore'
 import { DeleteOutlined, ModeOutlined } from '@mui/icons-material'
 import { Divider, Grid, IconButton, Tooltip, Typography } from '@mui/material'
+import { useState } from 'react'
 
 export const CompanyItem = ({ company }) => {
 
-  const { startChangeCompany } = useCompanyStore()
+  const { startChangeCompany, startDeleteCompany } = useCompanyStore()
   const { fantasyName, rut, contactName } = company
+
+  const [openDeleteView, setOpenDeleteView] = useState(false)
+
+  const handleOpenDeleteView = () => {
+    setOpenDeleteView(true)
+  }
+  const handleCloseDeleteView = () => {
+    setOpenDeleteView(false)
+  }
+  const onDeleteCompany = () => {
+    startDeleteCompany(company._id)
+  }
+
 
   const onChangeCompany = () => {
     startChangeCompany(company)
@@ -34,7 +49,7 @@ export const CompanyItem = ({ company }) => {
             </Grid>
             <Grid item>
               <Tooltip title={'Eliminar'}>
-                <IconButton size="small">
+                <IconButton onClick={handleOpenDeleteView} size="small">
                   <DeleteOutlined color="error" />
                 </IconButton>
               </Tooltip>
@@ -46,6 +61,14 @@ export const CompanyItem = ({ company }) => {
       <Grid item xs={12} sx={{ mt: 2 }}>
         <Divider />
       </Grid>
+
+      <DialogDelete
+        title={`Eliminar la empresa ${fantasyName}`}
+        body={'¿Estás seguro de eliminar esta empresa? Al eliminarla, se eliminarán todos los participantes asociados a ella.'}
+        open={openDeleteView}
+        handleClose={handleCloseDeleteView}
+        functionDelete={onDeleteCompany}
+      />
     </Grid>
   )
 }

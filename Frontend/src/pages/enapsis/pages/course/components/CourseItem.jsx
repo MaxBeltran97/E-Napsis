@@ -1,14 +1,29 @@
 import { radioInstructionModality } from "@assets/radio-data"
+import { DialogDelete } from "@components/dialog"
 import { useCourseStore } from "@hooks/useCourseStore"
 import { DeleteOutlined, ModeOutlined } from "@mui/icons-material"
 import { Divider, Grid, IconButton, Tooltip, Typography } from "@mui/material"
+import { useState } from "react"
 
 export const CourseItem = ({ course }) => {
 
-  const { startChangeCourse } = useCourseStore()
+  const { startChangeCourse, startDeleteCourse } = useCourseStore()
 
   const { activityName, sence, instruction, totalHours, participantValue } = course
   const instructionObj = radioInstructionModality.find( element => element.value === instruction )
+
+  const [openDeleteView, setOpenDeleteView] = useState(false)
+
+  const handleOpenDeleteView = () => {
+    setOpenDeleteView(true)
+  }
+  const handleCloseDeleteView = () => {
+    setOpenDeleteView(false)
+  }
+  const onDeleteCourse = () => {
+    startDeleteCourse(course._id)
+  }
+
 
   const onChangeCourse = () => {
     startChangeCourse(course)
@@ -43,7 +58,7 @@ export const CourseItem = ({ course }) => {
             </Grid>
             <Grid item>
               <Tooltip title={'Eliminar'}>
-                <IconButton size="small">
+                <IconButton onClick={handleOpenDeleteView} size="small">
                   <DeleteOutlined color="error" />
                 </IconButton>
               </Tooltip>
@@ -55,6 +70,14 @@ export const CourseItem = ({ course }) => {
       <Grid item xs={12} sx={{ mt: 2 }}>
         <Divider />
       </Grid>
+
+      <DialogDelete
+        title={`Eliminar el curso ${activityName}`}
+        body={'¿Estás seguro de eliminar este curso? Al eliminarlo, se eliminarán todas las calendarizaciones hechas de él.'}
+        open={openDeleteView}
+        handleClose={handleCloseDeleteView}
+        functionDelete={onDeleteCourse}
+      />
     </Grid>
   )
 }

@@ -1,5 +1,4 @@
 import { GridPaper } from '@components/grid'
-import { useAuthStore } from '@hooks/useAuthStore'
 import { useCalendarCourseStore } from '@hooks/useCalendarCourseStore'
 import { Divider, Grid, Typography } from '@mui/material'
 import React from 'react'

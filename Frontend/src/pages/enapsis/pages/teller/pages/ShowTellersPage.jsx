@@ -5,14 +5,20 @@ import { GridPaper } from "@components/grid"
 import { TellerItem } from "../components"
 
 import { useTellerStore } from "@hooks/useTellerStore"
+import { SkeletonListItem } from "@components/skeleton"
 
 export const ShowTellersPage = () => {
 
-  const { isLoading, tellers, startGetTellers } = useTellerStore()
+  const { isLoading, tellers, startGetTellers, sortedTellersByName } = useTellerStore()
 
   useEffect(() => {
     startGetTellers()
   }, [])
+
+  useEffect(() => {
+    sortedTellersByName()
+  }, [isLoading])
+  
 
   return (
     <>
@@ -45,7 +51,7 @@ export const ShowTellersPage = () => {
 
         {
           isLoading
-            ? <Grid item xs={12}> <Typography sx={{ textAlign: 'center' }}>Cargando...</Typography> </Grid>
+            ? <SkeletonListItem />
             : (
               tellers.map((teller) => (
                 <TellerItem key={teller._id} teller={teller} />

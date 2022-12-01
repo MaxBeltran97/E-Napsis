@@ -5,14 +5,17 @@ import { Divider, Grid, IconButton, Tooltip, Typography } from "@mui/material"
 
 import { useCompanyStore } from "@hooks/useCompanyStore"
 import { useParticipantStore } from "@hooks/useParticipantStore"
+import { DialogDelete } from "@components/dialog"
 
 export const ParticipantItem = ({ participant }) => {
 
   const { startGetCompany } = useCompanyStore()
-  const { startChangeParticipant } = useParticipantStore()
+  const { startChangeParticipant, startDeleteParticipant } = useParticipantStore()
 
   const { company_id, rut, fullName, lastName, motherLastName } = participant
   const [companyName, setCompanyName] = useState('')
+
+  const [openDeleteView, setOpenDeleteView] = useState(false)
 
   const getCompanyName = async () => {
     //TODO Cambiar por getCompanyById para buscar en el store primero
@@ -27,6 +30,17 @@ export const ParticipantItem = ({ participant }) => {
       setCompanyName('Particular')
     }
   }, [])
+
+  const handleOpenDeleteView = () => {
+    setOpenDeleteView(true)
+  }
+  const handleCloseDeleteView = () => {
+    setOpenDeleteView(false)
+  }
+  const onDeleteParticipant = () => {
+    startDeleteParticipant(participant._id)
+  }
+
 
   const onChangeParticipant = () => {
     startChangeParticipant(participant)
@@ -62,7 +76,7 @@ export const ParticipantItem = ({ participant }) => {
             </Grid>
             <Grid item>
               <Tooltip title={'Eliminar'}>
-                <IconButton size="small">
+                <IconButton onClick={handleOpenDeleteView} size="small">
                   <DeleteOutlined color="error" />
                 </IconButton>
               </Tooltip>
@@ -85,6 +99,14 @@ export const ParticipantItem = ({ participant }) => {
       <Grid item xs={12} sx={{ mt: 2 }}>
         <Divider />
       </Grid>
+
+      <DialogDelete
+        title={`Eliminar el participante ${fullName} ${lastName}`}
+        body={'¿Estás seguro de eliminar este participante? Al eliminarlo, este se eliminará de su empresa en caso de estar en una.'}
+        open={openDeleteView}
+        handleClose={handleCloseDeleteView}
+        functionDelete={onDeleteParticipant}
+      />
     </Grid>
   )
 }

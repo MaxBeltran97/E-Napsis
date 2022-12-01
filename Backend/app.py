@@ -271,13 +271,24 @@ def update_teller(_id):
         db.session.close()
 
 
+# --- nuevo cambio ---
 @app.route('/api/teller/<_id>', methods=['DELETE'])
 def delete_teller(_id):
     try:
         teller = modelTeller.query.get(_id)
+        user = User.query.get(teller.user_id)
+        courses_teller = CourseTeller.query.filter_by(teller_id=_id)
 
+        for item in courses_teller:
+            db.session.delete(item)
+            db.session.commit()
+        
         db.session.delete(teller)
         db.session.commit()
+
+        db.session.delete(user)
+        db.session.commit()
+
         return {
             "ok": True,
             "teller": teller.serialize()
@@ -290,7 +301,7 @@ def delete_teller(_id):
         }, 500
     finally:
         db.session.close()
-
+# --- fin nuevo cambio ---
 
 @app.route('/api/teller/uploadfile', methods=['POST'])
 def upload_file_teller():
@@ -630,12 +641,17 @@ def update_company(_id):
     finally:
         db.session.close()
 
-
+# --- nuevo cambio ---
 @app.route('/api/company/<_id>', methods=['DELETE'])
 def delete_company(_id):
     try:
         company = modelCompany.query.get(_id)
+        participants_company = modelParticipant.query.filter_by(company_id = _id)
 
+        for participant in participants_company:
+            db.session.delete(participant)
+            db.session.commit()
+        
         db.session.delete(company)
         db.session.commit()
         return {
@@ -649,6 +665,7 @@ def delete_company(_id):
         }, 500
     finally:
         db.session.close()
+# --- fin nuevo cambio ---
 
 # --------------------------------------------COURSES
 
@@ -1123,12 +1140,46 @@ def update_course(_id):
 
 # Eliminar las tablas adyacentes al eliminar el curso
 
-
+# --- nuevo cambio ---
 @app.route('/api/course/<_id>', methods=['DELETE'])
 def delete_course(_id):
     try:
+        # Curso
         course = modelCourse.query.get(_id)
+        activitiesContentHours = CourseActivityContentHours.query.filter_by(course_id = _id)
+        equipment = CourseEquipment.query.filter_by(course_id = _id)
+        participantMaterial = CourseParticipantMaterial.query.filter_by(course_id = _id)
+        tellers_id = CourseTeller.query.filter_by(course_id = _id)
+        tellerSupport = CourseTellerSupport.query.filter_by(course_id = _id)
+        
+        # Curso calendarizado
+        coursesCalendar = modelCalendarCourse.query.filter_by(course_id = _id)
 
+        for item in coursesCalendar:
+            delete_calendar(item._id)
+
+        # Elimina las tablas externas del curso
+        for item in activitiesContentHours:
+            db.session.delete(item)
+            db.session.commit()
+        
+        for item in equipment:
+            db.session.delete(item)
+            db.session.commit()
+
+        for item in participantMaterial:
+            db.session.delete(item)
+            db.session.commit()
+
+        for item in tellers_id:
+            db.session.delete(item)
+            db.session.commit()
+
+        for item in tellerSupport:
+            db.session.delete(item)
+            db.session.commit()
+
+        # Finalizando elimina el curso
         db.session.delete(course)
         db.session.commit()
         return {
@@ -1143,6 +1194,7 @@ def delete_course(_id):
         }, 500
     finally:
         db.session.close()
+# --- fin nuevo cambio ---
 
 # --------------------------------------------CALENDAR
 
@@ -1250,7 +1302,6 @@ def get_calendar(_id):
         }, 500
 
 # --- nuevo cambio
-
 @app.route('/api/calendar/class_book', methods=['GET'])
 def get_class_books():
     try:
@@ -1398,11 +1449,27 @@ def update_calendar(_id):
             "msg": "Error al actualizar el curso calendarizado"
         }, 500
 
-
+# --- nuevo cambio ---
 @app.route('/api/calendar/<_id>', methods=['DELETE'])
 def delete_calendar(_id):
     try:
         calendarCourse = modelCalendarCourse.query.get(_id)
+        evaluations = CalendarCourseEvaluation.query.filter_by(calendarCourse_id = _id)
+        files = CalendarCourseUploadFile.query.filter_by(calendarCourse_id = _id)
+        participants = modelParticipant.query.filter_by(calendarCourse_id = _id)
+
+        for participant in participants:
+            participant.calendarCourse_id = None
+            db.session.commit()
+
+        for evaluation in evaluations:
+            db.session.delete(evaluation)
+            db.session.commit()
+
+        for fileCourse in files:
+            db.session.delete(fileCourse)
+            db.session.commit()
+            # eliminar el archivo que esta guardado en la carpeta
 
         db.session.delete(calendarCourse)
         db.session.commit()
@@ -1416,7 +1483,7 @@ def delete_calendar(_id):
             "ok": False,
             "msg": "Error al eliminar el curso calendarizado"
         }, 500
-
+# --- fin nuevo cambio ---
 
 @app.route('/api/calendar/uploadfile', methods=['POST'])
 def upload_file_calendar():

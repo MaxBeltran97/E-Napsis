@@ -133,6 +133,26 @@ export const useCalendarCourseStore = () => {
     dispatch(onHandleLoading(false))
   }
 
+  const startDeleteCalendarCourse = async (calendarCourse_id) => {
+    dispatch(onHandleLoading(true))
+
+    try {
+      const { data } = await enapsisApi.delete(`/calendar/${calendarCourse_id}`)
+      if (data.ok) {
+        const { data } = await enapsisApi.get('/calendar')
+        if (data.ok) {
+          dispatch(onHandleCalendarCourses(data.calendarCourses))
+        }
+      }
+    } catch (error) {
+      console.log(error.response)
+    }
+
+    setTimeout(() => {
+      dispatch(onHandleLoading(false))
+    }, 1000)
+  }
+
   return {
     //* Propiedades
     isLoading,
@@ -145,6 +165,7 @@ export const useCalendarCourseStore = () => {
     startGetClassBooks,
     startChangeCalendarCourse,
     startResetActiveCalendarCourse,
-    startSavingCalendarCourse
+    startSavingCalendarCourse,
+    startDeleteCalendarCourse
   }
 }

@@ -1,3 +1,4 @@
+import { DialogDelete } from "@components/dialog"
 import { useCalendarCourseStore } from "@hooks/useCalendarCourseStore"
 import { CloudUploadOutlined, DeleteOutlined, ModeOutlined, Send } from "@mui/icons-material"
 import { Button, Divider, Grid, IconButton, Tooltip, Typography } from "@mui/material"
@@ -6,21 +7,33 @@ import { CalendarCourseDocuments } from "./CalendarCourseDocuments"
 
 export const CalendarCourseItem = ({ calendarCourse }) => {
 
-  const { startChangeCalendarCourse } = useCalendarCourseStore()
-
-  const [openDocuments, setOpenDocuments] = useState(false)
+  const { startChangeCalendarCourse, startDeleteCalendarCourse } = useCalendarCourseStore()
 
   const { internalCode, internalName, startDate, endDate } = calendarCourse
   const startDateFormat = new Date(startDate).toLocaleDateString('es-es')
   const endDateFormat = new Date(endDate).toLocaleDateString('es-es')
+  
+  const [openDocuments, setOpenDocuments] = useState(false)
 
   const handleOpenDocuments = () => {
     setOpenDocuments(true)
   }
-
   const handleCloseDocuments = () => {
     setOpenDocuments(false)
   }
+
+  const [openDeleteView, setOpenDeleteView] = useState(false)
+
+  const handleOpenDeleteView = () => {
+    setOpenDeleteView(true)
+  }
+  const handleCloseDeleteView = () => {
+    setOpenDeleteView(false)
+  }
+  const onDeleteCalendarCourse = () => {
+    startDeleteCalendarCourse(calendarCourse._id)
+  }
+
 
   const onChangeCalendarCourse = () => {
     startChangeCalendarCourse(calendarCourse)
@@ -45,7 +58,8 @@ export const CalendarCourseItem = ({ calendarCourse }) => {
             <Grid container justifyContent={'space-evenly'} wrap={'wrap'}>
               <Grid item>
                 <Tooltip title={'Documentos Internos'}>
-                  <IconButton onClick={handleOpenDocuments} size="small">
+                  {/* <IconButton onClick={handleOpenDocuments} size="small"> */}
+                  <IconButton size="small">
                     <CloudUploadOutlined />
                   </IconButton>
                 </Tooltip>
@@ -66,7 +80,7 @@ export const CalendarCourseItem = ({ calendarCourse }) => {
               </Grid>
               <Grid item>
                 <Tooltip title={'Eliminar'}>
-                  <IconButton size="small">
+                  <IconButton onClick={handleOpenDeleteView} size="small">
                     <DeleteOutlined color="error" />
                   </IconButton>
                 </Tooltip>
@@ -81,6 +95,14 @@ export const CalendarCourseItem = ({ calendarCourse }) => {
       </Grid>
 
       <CalendarCourseDocuments calendarCourse={calendarCourse} open={openDocuments} handleClose={handleCloseDocuments} />
+      
+      <DialogDelete
+        title={`Eliminar el curso calendarizado ${internalName}`}
+        body={'¿Estás seguro de eliminar este curso calendarizado? Al eliminarlo, desvinculará todos los participantes asociados a él.'}
+        open={openDeleteView}
+        handleClose={handleCloseDeleteView}
+        functionDelete={onDeleteCalendarCourse}
+      />
     </>
   )
 }

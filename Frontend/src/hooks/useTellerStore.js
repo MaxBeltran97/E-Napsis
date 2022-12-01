@@ -40,6 +40,17 @@ export const useTellerStore = () => {
     return null
   }
 
+  const startGetTellerUsername = async (user_id) => {
+    try {
+      const { data } = await enapsisApi.get(`/user/${user_id}`)
+      if (data.ok) {
+        return data.user
+      }
+    } catch (error) {
+      console.log(error.response)
+    }
+  }
+
   const startChangeTeller = (teller) => {
     teller = {
       ...teller,
@@ -107,6 +118,42 @@ export const useTellerStore = () => {
     dispatch(onHandleLoading(false))
   }
 
+  const startDeleteTeller = async (teller_id) => {
+    dispatch(onHandleLoading(true))
+
+    try {
+      const { data } = await enapsisApi.delete(`/teller/${teller_id}`)
+      if (data.ok) {
+        const { data } = await enapsisApi.get('/teller')
+        if (data.ok) {
+          dispatch(onHandleTellers(data.tellers))
+        }
+      }
+    } catch (error) {
+      console.log(error.response)
+    }
+
+    setTimeout(() => {
+      dispatch(onHandleLoading(false))
+    }, 1000)
+  }
+
+  const sortedTellersByName = () => {
+    const sorted = [...tellers].sort((a, b) => {
+      const nameA = `${a.fullName} ${a.lastName} ${a.motherLastName}`.toUpperCase()
+      const nameB = `${b.fullName} ${b.lastName} ${b.motherLastName}`.toUpperCase()
+      if (nameA > nameB) {
+        return 1
+      }
+      if (nameA < nameB) {
+        return -1
+      }
+      return 0
+    })
+
+    dispatch(onHandleTellers(sorted))
+  }
+
   return {
     //* Propiedades
     isLoading,
@@ -116,8 +163,13 @@ export const useTellerStore = () => {
     //* Metodos
     startGetTellers,
     startGetTeller,
+    startGetTellerUsername,
     startChangeTeller,
     startResetActiveTeller,
-    startSavingTeller
+    startSavingTeller,
+    startDeleteTeller,
+
+    //* Metodos para ordenar
+    sortedTellersByName
   }
 }
