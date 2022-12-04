@@ -32,14 +32,11 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 from database.config import app_config, DevelopmentConfig
 from database.db import db
-from redis_app import redis
 import string
 import secrets
 from datetime import timedelta, datetime
 from flask_jwt_extended import create_access_token, get_jwt_identity, JWTManager
-import sys
 import os
-import json
 from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
 from flask_marshmallow import Marshmallow
@@ -68,21 +65,6 @@ enviroment = "development"
 # Se setean variables de configuración según ambient(env)
 app.config.from_object(app_config[enviroment])
 api = Api(app)
-
-
-# Endpoints y la clase que se encargará de procesar cada solicitud
-
-# api.add_resource(Login, '/login')
-
-# api.add_resource(Teller, '/api/teller')
-
-# api.add_resource(Company, '/api/company')
-
-# api.add_resource(Participant, '/api/participant')
-
-# api.add_resource(Course, '/api/course')
-
-# api.add_resource(UploadParticipants, '/api/UploadParticipants')
 
 
 # Se carga raiz
@@ -1652,7 +1634,7 @@ def signup_post():
         password = request.json['password']
         isEmail = False
 
-        # now = datetime.now() + timedelta(days=1)
+        #now = datetime.now() + timedelta(days=1)
 
         # verifica si es username o email
         for i in user_requested:
