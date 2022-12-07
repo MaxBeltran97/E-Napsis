@@ -47,14 +47,14 @@ export const TellerItem = ({ teller }) => {
                 (situation === true)
                   ? (
                     <Tooltip title={'Estado Activo'}>
-                      <IconButton size="small">
+                      <IconButton>
                         <RadioButtonChecked fontSize="small" color="success" />
                       </IconButton>
                     </Tooltip>
                   )
                   : (
                     <Tooltip title={'Estado No Activo'}>
-                      <IconButton size="small">
+                      <IconButton>
                         <RadioButtonUnchecked fontSize="small" color="error" />
                       </IconButton>
                     </Tooltip>
@@ -73,21 +73,21 @@ export const TellerItem = ({ teller }) => {
           <Grid container justifyContent={'space-evenly'} wrap={'wrap'}>
             <Grid item>
               <Tooltip title={'Subir Documentos'}>
-                <IconButton size="small">
+                <IconButton>
                   <CloudUploadOutlined />
                 </IconButton>
               </Tooltip>
             </Grid>
             <Grid item>
               <Tooltip title={'Modificar'}>
-                <IconButton onClick={onChangeTeller} size="small">
-                  <ModeOutlined />
+                <IconButton onClick={onChangeTeller}>
+                  <ModeOutlined  />
                 </IconButton>
               </Tooltip>
             </Grid>
             <Grid item>
               <Tooltip title={'Eliminar'}>
-                <IconButton onClick={handleOpenDeleteView} size="small">
+                <IconButton onClick={handleOpenDeleteView}>
                   <DeleteOutlined color="error" />
                 </IconButton>
               </Tooltip>
@@ -98,7 +98,7 @@ export const TellerItem = ({ teller }) => {
           <Grid container justifyContent={'center'}>
             <Grid item>
               <Tooltip title={'Enviar Clave'}>
-                <IconButton size="small">
+                <IconButton>
                   <Send fontSize="small" sx={{ transform: 'rotate(-45deg)' }} />
                 </IconButton>
               </Tooltip>

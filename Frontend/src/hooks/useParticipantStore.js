@@ -5,11 +5,13 @@ import enapsisApi from "@api/enapsisApi"
 import { onHandleActiveParticipant, onHandleLoading, onHandleParticipants, onResetActiveParticipant } from "@reduxSlices/participantSlice"
 import { parseNull } from "@helpers/parseNull"
 import { ADD_PARTICIPANTS, PARTICIPANTS } from "@models/privateRoutes"
+import { useCompanyStore } from "./useCompanyStore"
 
 export const useParticipantStore = () => {
 
   const dispatch = useDispatch()
   const navigate = useNavigate()
+  const { startGetCompany } = useCompanyStore()
   const { isLoading, activeParticipant, participants } = useSelector(state => state.participant)
 
   const startGetParticipants = async () => {
@@ -122,6 +124,77 @@ export const useParticipantStore = () => {
     }, 1000)
   }
 
+  const sortedParticipantsByName = (acending = true) => {
+    const sorted = [...participants].sort((a, b) => {
+      const nameA = `${a.fullName} ${a.lastName} ${a.motherLastName}`.toUpperCase()
+      const nameB = `${b.fullName} ${b.lastName} ${b.motherLastName}`.toUpperCase()
+
+      if (nameA > nameB) {
+        return acending ? 1 : -1
+      }
+      if (nameA < nameB) {
+        return acending ? -1 : 1
+      }
+      return 0
+    })
+
+    dispatch(onHandleParticipants(sorted))
+  }
+
+  const sortedParticipantsByRUT = (acending = true) => {
+    const sorted = [...participants].sort((a, b) => {
+      const rutA = `${a.rut}`.toUpperCase()
+      const rutB = `${b.rut}`.toUpperCase()
+
+      if (rutA > rutB) {
+        return acending ? 1 : -1
+      }
+      if (rutA < rutB) {
+        return acending ? -1 : 1
+      }
+      return 0
+    })
+
+    dispatch(onHandleParticipants(sorted))
+  }
+
+  const sortedParticipantsByCompany = async (acending = true) => {
+
+    const comparableArray = await Promise.all(participants.map(async x => [(x.company_id !== null) ? await startGetCompany(x.company_id) : null, x]))
+    comparableArray.sort((a, b) => {
+      // En caso de que las compañias sean las mismas o sean nulas ordena por nombre
+      if ((a[0]?._id === b[0]?._id) || (a[0] === null && b[0] === null)) {
+        const nameA = `${a[1].fullName} ${a[1].lastName} ${a[1].motherLastName}`.toUpperCase()
+        const nameB = `${b[1].fullName} ${b[1].lastName} ${b[1].motherLastName}`.toUpperCase()
+
+        if (nameA > nameB) {
+          return 1
+        }
+        if (nameA < nameB) {
+          return -1
+        }
+        return 0
+      }
+
+      if (a[0] === null && b[0] !== null) {
+        return acending ? 1 : -1
+      }
+      if (a[0] !== null && b[0] === null) {
+        return acending ? -1 : 1
+      }
+
+      if (a[0].fantasyName.toUpperCase() > b[0].fantasyName.toUpperCase()) {
+        return acending ? 1 : -1
+      }
+      if (a[0].fantasyName.toUpperCase() < b[0].fantasyName.toUpperCase()) {
+        return acending ? -1 : 1
+      }
+    })
+    const sorted = comparableArray.map(x => x[1])
+
+    dispatch(onHandleParticipants(sorted))
+  }
+
   return {
     //* Propiedades
     isLoading,
@@ -135,6 +208,11 @@ export const useParticipantStore = () => {
     startResetActiveParticipant,
     startSavingParticipant,
     startSavingParticipantFile,
-    startDeleteParticipant
+    startDeleteParticipant,
+
+    //* Metodos para ordenar
+    sortedParticipantsByName,
+    sortedParticipantsByRUT,
+    sortedParticipantsByCompany
   }
 }

@@ -1,24 +1,41 @@
 import { useEffect } from "react"
 
-import { Divider, Grid, Typography } from "@mui/material"
+import { Button, Divider, Grid, Typography } from "@mui/material"
 import { GridPaper } from "@components/grid"
 import { TellerItem } from "../components"
 
 import { useTellerStore } from "@hooks/useTellerStore"
-import { SkeletonListItem } from "@components/skeleton"
+import { SkeletonListItemV2 } from "@components/skeleton"
+import { useState } from "react"
+import { ExpandLess, ExpandMore } from "@mui/icons-material"
 
 export const ShowTellersPage = () => {
 
-  const { isLoading, tellers, startGetTellers, sortedTellersByName } = useTellerStore()
+  const { isLoading, tellers, startGetTellers, sortedTellersByName, sortedTellersByStatus } = useTellerStore()
+
+  const [acending, setAcending] = useState(true)
+  const [legendActive, setLegendActive] = useState('name') //status - name - user?
 
   useEffect(() => {
     startGetTellers()
   }, [])
 
   useEffect(() => {
-    sortedTellersByName()
-  }, [isLoading])
-  
+    if (legendActive === 'name') {
+      sortedTellersByName(acending)
+    } else if (legendActive === 'status') {
+      sortedTellersByStatus(acending)
+    }
+  }, [isLoading ,legendActive, acending])
+
+  const onClickLegend = (e, legend) => {
+    if(legend === legendActive) {
+      setAcending(!acending)
+    }else {
+      setLegendActive(legend)
+      setAcending(true)
+    }
+  }
 
   return (
     <>
@@ -28,19 +45,45 @@ export const ShowTellersPage = () => {
         <Grid item xs={12}>
           <Grid container alignItems={'center'} columnSpacing={1}>
             <Grid item xs={1}>
-              <Typography sx={{ textAlign: 'center' }}>Estado</Typography>
+              {/* <Typography sx={{ textAlign: 'center' }}>Estado</Typography> */}
+              <Button onClick={e => onClickLegend(e, 'status')}
+                fullWidth 
+                endIcon={ (legendActive == 'status') ? acending ? <ExpandMore /> : <ExpandLess /> : null}
+                sx={{
+                  textTransform: 'initial !important',
+                  fontSize: 16,
+                  color: (legendActive == 'status') ? 'text.active' : 'text.main',
+                  fontWeight: 'regular',
+                  ".MuiButton-endIcon": { marginLeft: 0 }
+                }}
+              >
+                Estado
+              </Button>
             </Grid>
             <Grid item xs={4}>
-              <Typography sx={{ textAlign: 'center' }}>Nombre</Typography>
+              {/* <Typography sx={{ textAlign: 'center' }}>Nombre</Typography> */}
+              <Button onClick={e => onClickLegend(e, 'name')}
+                fullWidth 
+                endIcon={ (legendActive == 'name') ? acending ? <ExpandMore /> : <ExpandLess /> : null}
+                sx={{
+                  textTransform: 'initial !important',
+                  fontSize: 16,
+                  color: (legendActive == 'name') ? 'text.active' : 'text.main',
+                  fontWeight: 'regular',
+                  ".MuiButton-endIcon": { marginLeft: 0 }
+                }}
+              >
+                Nombre
+              </Button>
             </Grid>
             <Grid item xs={3}>
-              <Typography sx={{ textAlign: 'center' }}>Usuario</Typography>
+              <Typography sx={{ textAlign: 'center', userSelect: 'none' }}>Usuario</Typography>
             </Grid>
             <Grid item xs={3}>
-              <Typography sx={{ textAlign: 'center' }}>Acciones</Typography>
+              <Typography sx={{ textAlign: 'center', userSelect: 'none' }}>Acciones</Typography>
             </Grid>
             <Grid item xs={1}>
-              <Typography sx={{ textAlign: 'center' }}>Clave</Typography>
+              <Typography sx={{ textAlign: 'center', userSelect: 'none' }}>Clave</Typography>
             </Grid>
           </Grid>
 
@@ -51,7 +94,7 @@ export const ShowTellersPage = () => {
 
         {
           isLoading
-            ? <SkeletonListItem />
+            ? <SkeletonListItemV2 />
             : (
               tellers.map((teller) => (
                 <TellerItem key={teller._id} teller={teller} />

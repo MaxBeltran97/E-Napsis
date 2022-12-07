@@ -62,21 +62,21 @@ export const ParticipantItem = ({ participant }) => {
           <Grid container justifyContent={'space-evenly'} wrap={'wrap'}>
             <Grid item>
               <Tooltip title={'Historial de Participante'}>
-                <IconButton size="small">
+                <IconButton>
                   <HistoryEdu />
                 </IconButton>
               </Tooltip>
             </Grid>
             <Grid item>
               <Tooltip title={'Modificar'}>
-                <IconButton onClick={onChangeParticipant} size="small">
+                <IconButton onClick={onChangeParticipant}>
                   <ModeOutlined />
                 </IconButton>
               </Tooltip>
             </Grid>
             <Grid item>
               <Tooltip title={'Eliminar'}>
-                <IconButton onClick={handleOpenDeleteView} size="small">
+                <IconButton onClick={handleOpenDeleteView}>
                   <DeleteOutlined color="error" />
                 </IconButton>
               </Tooltip>
@@ -87,7 +87,7 @@ export const ParticipantItem = ({ participant }) => {
           <Grid container justifyContent={'center'}>
             <Grid item>
               <Tooltip title={'Enviar Clave'}>
-                <IconButton size="small">
+                <IconButton>
                   <Send fontSize="small" sx={{ transform: 'rotate(-45deg)' }} />
                 </IconButton>
               </Tooltip>

@@ -138,14 +138,41 @@ export const useTellerStore = () => {
     }, 1000)
   }
 
-  const sortedTellersByName = () => {
+  const sortedTellersByName = (acending = true) => {
     const sorted = [...tellers].sort((a, b) => {
       const nameA = `${a.fullName} ${a.lastName} ${a.motherLastName}`.toUpperCase()
       const nameB = `${b.fullName} ${b.lastName} ${b.motherLastName}`.toUpperCase()
-      if (nameA > nameB) {
+
+      if(nameA > nameB) {
+        return acending ? 1 : -1
+      }
+      if(nameA < nameB) {
+        return acending ? -1 : 1
+      }
+      return 0
+    })
+
+    dispatch(onHandleTellers(sorted))
+  }
+
+  const sortedTellersByStatus = (acending = true) => {
+    const sorted = [...tellers].sort((a, b) => {
+
+      if (a.situation === true && b.situation === false) {
+        return acending ? -1 : 1
+      }
+      if (a.situation === false && b.situation === true) {
+        return acending ? 1 : -1
+      }
+
+      // En caso de ser iguales ordena por nombre
+      const nameA = `${a.fullName} ${a.lastName} ${a.motherLastName}`.toUpperCase()
+      const nameB = `${b.fullName} ${b.lastName} ${b.motherLastName}`.toUpperCase()
+
+      if(nameA > nameB) {
         return 1
       }
-      if (nameA < nameB) {
+      if(nameA < nameB) {
         return -1
       }
       return 0
@@ -170,6 +197,7 @@ export const useTellerStore = () => {
     startDeleteTeller,
 
     //* Metodos para ordenar
-    sortedTellersByName
+    sortedTellersByName,
+    sortedTellersByStatus,
   }
 }
