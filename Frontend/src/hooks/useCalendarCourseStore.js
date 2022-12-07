@@ -153,6 +153,67 @@ export const useCalendarCourseStore = () => {
     }, 1000)
   }
 
+  const sortedCalendarCoursesByName = (acending = true) => {
+    const sorted = [...calendarCourses].sort((a, b) => {
+      const nameA = `${a.internalName}`.toUpperCase()
+      const nameB = `${b.internalName}`.toUpperCase()
+
+      if(nameA > nameB) {
+        return acending ? 1 : -1
+      }
+      if(nameA < nameB) {
+        return acending ? -1 : 1
+      }
+      return 0
+    })
+
+    dispatch(onHandleCalendarCourses(sorted))
+  }
+
+  const sortedCalendarCoursesByCode = (acending = true) => {
+    const sorted = [...calendarCourses].sort((a, b) => {
+      const codeA = `${a.internalCode}`.toUpperCase()
+      const codeB = `${b.internalCode}`.toUpperCase()
+
+      if(codeA > codeB) {
+        return acending ? 1 : -1
+      }
+      if(codeA < codeB) {
+        return acending ? -1 : 1
+      }
+      return 0
+    })
+
+    dispatch(onHandleCalendarCourses(sorted))
+  }
+
+  const sortedCalendarCoursesByDate = (acending = true) => {
+    const sorted = [...calendarCourses].sort((a, b) => {
+      const dateA = new Date(a.startDate)
+      const dateB = new Date(b.startDate)
+
+      if(dateA > dateB) {
+        return acending ? 1 : -1
+      }
+      if(dateA < dateB) {
+        return acending ? -1 : 1
+      }
+      
+      const nameA = `${a.internalName}`.toUpperCase()
+      const nameB = `${b.internalName}`.toUpperCase()
+
+      if(nameA > nameB) {
+        return acending ? 1 : -1
+      }
+      if(nameA < nameB) {
+        return acending ? -1 : 1
+      }
+      return 0
+    })
+
+    dispatch(onHandleCalendarCourses(sorted))
+  }
+
   return {
     //* Propiedades
     isLoading,
@@ -166,6 +227,11 @@ export const useCalendarCourseStore = () => {
     startChangeCalendarCourse,
     startResetActiveCalendarCourse,
     startSavingCalendarCourse,
-    startDeleteCalendarCourse
+    startDeleteCalendarCourse,
+
+    //* Metodos para ordenar
+    sortedCalendarCoursesByName,
+    sortedCalendarCoursesByCode,
+    sortedCalendarCoursesByDate
   }
 }

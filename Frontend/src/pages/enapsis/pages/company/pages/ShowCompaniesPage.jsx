@@ -1,17 +1,39 @@
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 
 import { useCompanyStore } from "@hooks/useCompanyStore"
-import { Divider, Grid, Typography } from "@mui/material"
+import { Button, Divider, Grid, Typography } from "@mui/material"
 import { GridPaper } from "@components/grid"
 import { CompanyItem } from "../components"
+import { SkeletonListItemV2 } from "@components/skeleton"
+import { ExpandLess, ExpandMore } from "@mui/icons-material"
 
 export const ShowCompaniesPage = () => {
 
-  const { isLoading, companies, startGetCompanies } = useCompanyStore()
+  const { isLoading, companies, startGetCompanies, sortedCompaniesByName, sortedCompaniesByRUT } = useCompanyStore()
+
+  const [acending, setAcending] = useState(true)
+  const [legendActive, setLegendActive] = useState('name') //name - rut
 
   useEffect(() => {
     startGetCompanies()
   }, [])
+
+  useEffect(() => {
+    if (legendActive === 'name') {
+      sortedCompaniesByName(acending)
+    } else if (legendActive === 'rut') {
+      sortedCompaniesByRUT(acending)
+    }
+  }, [isLoading ,legendActive, acending])
+
+  const onClickLegend = (e, legend) => {
+    if(legend === legendActive) {
+      setAcending(!acending)
+    }else {
+      setLegendActive(legend)
+      setAcending(true)
+    }
+  }
 
   return (
     <>
@@ -21,16 +43,42 @@ export const ShowCompaniesPage = () => {
         <Grid item xs={12}>
           <Grid container alignItems={'center'} columnSpacing={1}>
             <Grid item xs={4}>
-              <Typography sx={{ textAlign: 'center' }} >Nombre</Typography>
+              {/* <Typography sx={{ textAlign: 'center' }} >Nombre</Typography> */}
+              <Button onClick={e => onClickLegend(e, 'name')}
+                fullWidth 
+                endIcon={ (legendActive == 'name') ? acending ? <ExpandMore /> : <ExpandLess /> : null}
+                sx={{
+                  textTransform: 'initial !important',
+                  fontSize: 16,
+                  color: (legendActive == 'name') ? 'text.active' : 'text.main',
+                  fontWeight: 'regular',
+                  ".MuiButton-endIcon": { marginLeft: 0 }
+                }}
+              >
+                Nombre
+              </Button>
+            </Grid>
+            <Grid item xs={3}>
+              {/* <Typography sx={{ textAlign: 'center' }} >RUT</Typography> */}
+              <Button onClick={e => onClickLegend(e, 'rut')}
+                fullWidth 
+                endIcon={ (legendActive == 'rut') ? acending ? <ExpandMore /> : <ExpandLess /> : null}
+                sx={{
+                  textTransform: 'initial !important',
+                  fontSize: 16,
+                  color: (legendActive == 'rut') ? 'text.active' : 'text.main',
+                  fontWeight: 'regular',
+                  ".MuiButton-endIcon": { marginLeft: 0 }
+                }}
+              >
+                RUT
+              </Button>
+            </Grid>
+            <Grid item xs={3}>
+              <Typography sx={{ textAlign: 'center', userSelect: 'none' }} >Ejecutivo</Typography>
             </Grid>
             <Grid item xs={2}>
-              <Typography sx={{ textAlign: 'center' }} >RUT</Typography>
-            </Grid>
-            <Grid item xs={3}>
-              <Typography sx={{ textAlign: 'center' }} >Ejecutivo</Typography>
-            </Grid>
-            <Grid item xs={3}>
-              <Typography sx={{ textAlign: 'center' }}>Acciones</Typography>
+              <Typography sx={{ textAlign: 'center', userSelect: 'none' }}>Acciones</Typography>
             </Grid>
           </Grid>
 
@@ -41,7 +89,7 @@ export const ShowCompaniesPage = () => {
 
         {
           isLoading
-            ? <Grid item xs={12}> <Typography sx={{ textAlign: 'center' }}>Cargando...</Typography> </Grid>
+            ? <SkeletonListItemV2 />
             : (
               companies.map((company) => (
                 <CompanyItem key={company._id} company={company} />

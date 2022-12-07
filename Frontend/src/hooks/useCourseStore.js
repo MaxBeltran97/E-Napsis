@@ -146,6 +146,155 @@ export const useCourseStore = () => {
     }, 1000)
   }
 
+  const sortedCoursesByName = (acending = true) => {
+    const sorted = [...courses].sort((a, b) => {
+      const nameA = `${a.activityName}`.toUpperCase()
+      const nameB = `${b.activityName}`.toUpperCase()
+
+      if (nameA > nameB) {
+        return acending ? 1 : -1
+      }
+      if (nameA < nameB) {
+        return acending ? -1 : 1
+      }
+      return 0
+    })
+
+    dispatch(onHandleCourses(sorted))
+  }
+
+  const sortedCoursesByCode = (acending = true) => {
+    const sorted = [...courses].sort((a, b) => {
+      const codeA = `${a.sence}`.toUpperCase()
+      const codeB = `${b.sence}`.toUpperCase()
+
+      if (codeA > codeB) {
+        return acending ? 1 : -1
+      }
+      if (codeA < codeB) {
+        return acending ? -1 : 1
+      }
+      return 0
+    })
+
+    dispatch(onHandleCourses(sorted))
+  }
+
+  const sortedCoursesByModality = (acending = true) => {
+    const sorted = [...courses].sort((a, b) => {
+
+      if (a.instruction === b.instruction) {
+        const nameA = `${a.activityName}`.toUpperCase()
+        const nameB = `${b.activityName}`.toUpperCase()
+
+        if (nameA > nameB) {
+          return acending ? 1 : -1
+        }
+        if (nameA < nameB) {
+          return acending ? -1 : 1
+        }
+        return 0
+      }
+
+      if (a.instruction === 'presencial') {
+        if (b.instruction === 'e_learningSinc') {
+          return acending ? -1 : 1
+        }
+        if (b.instruction === 'e_learningAsinc') {
+          return acending ? -1 : 1
+        }
+        if (b.instruction === 'distancia') {
+          return acending ? -1 : 1
+        }
+      }
+      if (a.instruction === 'e_learningSinc') {
+        if (b.instruction === 'presencial') {
+          return acending ? 1 : -1
+        }
+        if (b.instruction === 'e_learningAsinc') {
+          return acending ? -1 : 1
+        }
+        if (b.instruction === 'distancia') {
+          return acending ? -1 : 1
+        }
+      }
+      if (a.instruction === 'e_learningAsinc') {
+        if (b.instruction === 'presencial') {
+          return acending ? -1 : 1
+        }
+        if (b.instruction === 'e_learningSinc') {
+          return acending ? -1 : 1
+        }
+        if (b.instruction === 'distancia') {
+          return acending ? -1 : 1
+        }
+      }
+      if (a.instruction === 'distancia') {
+        if (b.instruction === 'presencial') {
+          return acending ? 1 : -1
+        }
+        if (b.instruction === 'e_learningSinc') {
+          return acending ? 1 : -1
+        }
+        if (b.instruction === 'e_learningAsinc') {
+          return acending ? 1 : -1
+        }
+      }
+    })
+
+    dispatch(onHandleCourses(sorted))
+  }
+
+  const sortedCoursesByHours = (acending = true) => {
+    const sorted = [...courses].sort((a, b) => {
+
+      if (a.totalHours > b.totalHours) {
+        return acending ? 1 : -1
+      }
+      if (a.totalHours < b.totalHours) {
+        return acending ? -1 : 1
+      }
+
+      const nameA = `${a.activityName}`.toUpperCase()
+      const nameB = `${b.activityName}`.toUpperCase()
+
+      if (nameA > nameB) {
+        return acending ? 1 : -1
+      }
+      if (nameA < nameB) {
+        return acending ? -1 : 1
+      }
+      return 0
+    })
+
+    dispatch(onHandleCourses(sorted))
+  }
+
+  const sortedCoursesByValue = (acending = true) => {
+    const sorted = [...courses].sort((a, b) => {
+
+      if (a.participantValue > b.participantValue) {
+        return acending ? 1 : -1
+      }
+      if (a.participantValue < b.participantValue) {
+        return acending ? -1 : 1
+      }
+
+      const nameA = `${a.activityName}`.toUpperCase()
+      const nameB = `${b.activityName}`.toUpperCase()
+
+      if (nameA > nameB) {
+        return acending ? 1 : -1
+      }
+      if (nameA < nameB) {
+        return acending ? -1 : 1
+      }
+      return 0
+    })
+
+    dispatch(onHandleCourses(sorted))
+  }
+
   return {
     //* Propiedades
     isLoading,
@@ -158,6 +307,13 @@ export const useCourseStore = () => {
     startChangeCourse,
     startResetActiveCourse,
     startSavingCourse,
-    startDeleteCourse
+    startDeleteCourse,
+
+    //* Metodos para ordenar
+    sortedCoursesByName,
+    sortedCoursesByCode,
+    sortedCoursesByModality,
+    sortedCoursesByHours,
+    sortedCoursesByValue
   }
 }

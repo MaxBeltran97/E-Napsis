@@ -2,7 +2,7 @@ import { useEffect } from "react"
 
 import { Button, Divider, Grid, Typography } from "@mui/material"
 import { GridPaper } from "@components/grid"
-import { TellerItem } from "../components"
+import { TellerCard, TellerItem } from "../components"
 
 import { useTellerStore } from "@hooks/useTellerStore"
 import { SkeletonListItemV2 } from "@components/skeleton"
@@ -26,12 +26,12 @@ export const ShowTellersPage = () => {
     } else if (legendActive === 'status') {
       sortedTellersByStatus(acending)
     }
-  }, [isLoading ,legendActive, acending])
+  }, [isLoading, legendActive, acending])
 
   const onClickLegend = (e, legend) => {
-    if(legend === legendActive) {
+    if (legend === legendActive) {
       setAcending(!acending)
-    }else {
+    } else {
       setLegendActive(legend)
       setAcending(true)
     }
@@ -42,13 +42,13 @@ export const ShowTellersPage = () => {
       <Typography variant="h5" sx={{ mt: 1, ml: 2 }}>Relatores</Typography>
       {/* Filtro */}
       <GridPaper>
-        <Grid item xs={12}>
+        <Grid item xs={12} >
           <Grid container alignItems={'center'} columnSpacing={1}>
             <Grid item xs={1}>
               {/* <Typography sx={{ textAlign: 'center' }}>Estado</Typography> */}
               <Button onClick={e => onClickLegend(e, 'status')}
-                fullWidth 
-                endIcon={ (legendActive == 'status') ? acending ? <ExpandMore /> : <ExpandLess /> : null}
+                fullWidth
+                endIcon={(legendActive == 'status') ? acending ? <ExpandMore /> : <ExpandLess /> : null}
                 sx={{
                   textTransform: 'initial !important',
                   fontSize: 16,
@@ -63,8 +63,8 @@ export const ShowTellersPage = () => {
             <Grid item xs={4}>
               {/* <Typography sx={{ textAlign: 'center' }}>Nombre</Typography> */}
               <Button onClick={e => onClickLegend(e, 'name')}
-                fullWidth 
-                endIcon={ (legendActive == 'name') ? acending ? <ExpandMore /> : <ExpandLess /> : null}
+                fullWidth
+                endIcon={(legendActive == 'name') ? acending ? <ExpandMore /> : <ExpandLess /> : null}
                 sx={{
                   textTransform: 'initial !important',
                   fontSize: 16,
@@ -102,6 +102,19 @@ export const ShowTellersPage = () => {
             )
         }
       </GridPaper>
+      <Grid container spacing={1} sx={{ mt: 1 }}>
+        {
+          isLoading
+            ? <SkeletonListItemV2 />
+            : (
+              tellers.map((teller) => (
+                <Grid item xs={12} md={6} lg={4} xl={3} key={teller._id}>
+                  <TellerCard teller={teller} />
+                </Grid>
+              ))
+            )
+        }
+      </Grid>
     </>
   )
 }

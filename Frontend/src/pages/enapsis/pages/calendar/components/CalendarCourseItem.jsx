@@ -44,7 +44,7 @@ export const CalendarCourseItem = ({ calendarCourse }) => {
       <Grid item xs={12}>
         <Grid container alignItems={'center'} columnSpacing={1}>
           <Grid item xs={2}>
-            <Typography sx={{ pl: 1 }}>{internalCode}</Typography>
+            <Typography sx={{ textAlign: 'center' }}>{internalCode}</Typography>
           </Grid>
           <Grid item xs={5}>
             <Typography>{internalName}</Typography>
@@ -59,28 +59,28 @@ export const CalendarCourseItem = ({ calendarCourse }) => {
               <Grid item>
                 <Tooltip title={'Documentos Internos'}>
                   {/* <IconButton onClick={handleOpenDocuments} size="small"> */}
-                  <IconButton size="small">
+                  <IconButton>
                     <CloudUploadOutlined />
                   </IconButton>
                 </Tooltip>
               </Grid>
               <Grid item>
                 <Tooltip title={'Enviar Clave a Participantes'}>
-                  <IconButton size="small">
+                  <IconButton>
                     <Send fontSize="small" sx={{ transform: 'rotate(-45deg)' }} />
                   </IconButton>
                 </Tooltip>
               </Grid>
               <Grid item>
                 <Tooltip title={'Modificar'}>
-                  <IconButton onClick={onChangeCalendarCourse} size="small">
+                  <IconButton onClick={onChangeCalendarCourse}>
                     <ModeOutlined />
                   </IconButton>
                 </Tooltip>
               </Grid>
               <Grid item>
                 <Tooltip title={'Eliminar'}>
-                  <IconButton onClick={handleOpenDeleteView} size="small">
+                  <IconButton onClick={handleOpenDeleteView}>
                     <DeleteOutlined color="error" />
                   </IconButton>
                 </Tooltip>

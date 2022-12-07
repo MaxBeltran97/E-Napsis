@@ -32,24 +32,24 @@ export const CompanyItem = ({ company }) => {
         <Grid item xs={4}>
           <Typography sx={{ pl: 1 }} >{fantasyName}</Typography>
         </Grid>
-        <Grid item xs={2}>
+        <Grid item xs={3}>
           <Typography sx={{ textAlign: 'center' }}>{rut}</Typography>
         </Grid>
         <Grid item xs={3}>
           <Typography>{contactName}</Typography>
         </Grid>
-        <Grid item xs={3}>
+        <Grid item xs={2}>
           <Grid container justifyContent={'space-evenly'} wrap={'wrap'}>
             <Grid item>
               <Tooltip title={'Modificar'}>
-                <IconButton onClick={onChangeCompany} size="small">
+                <IconButton onClick={onChangeCompany}>
                   <ModeOutlined />
                 </IconButton>
               </Tooltip>
             </Grid>
             <Grid item>
               <Tooltip title={'Eliminar'}>
-                <IconButton onClick={handleOpenDeleteView} size="small">
+                <IconButton onClick={handleOpenDeleteView}>
                   <DeleteOutlined color="error" />
                 </IconButton>
               </Tooltip>

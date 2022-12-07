@@ -1,6 +1,10 @@
 import { CloudUploadOutlined, ImportContacts, MenuBook, ModeOutlined } from '@mui/icons-material'
-import { Button, Divider, Grid, Typography } from '@mui/material'
+import { Button, Divider, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from '@mui/material'
 import React from 'react'
+
+function createData(rowName, value) {
+  return { rowName, value }
+}
 
 export const ClassBookItem = ({ calendarCourse }) => {
 
@@ -8,75 +12,42 @@ export const ClassBookItem = ({ calendarCourse }) => {
   const startDateFormat = new Date(startDate).toLocaleDateString('es-es')
   const endDateFormat = new Date(endDate).toLocaleDateString('es-es')
 
+  const rows = [
+    createData('Código Interno', internalCode),
+    createData('Fecha de Inicio', startDateFormat),
+    createData('Fecha de Termino', endDateFormat),
+    createData('Nombre Interno', internalName),
+  ]
+
   return (
     <>
       <Grid item xs={12}>
         <Grid container columnSpacing={1}>
           <Grid item xs={4}>
-            <Typography sx={{ pl: 1 }} >{internalName}</Typography>
-            <Grid item xs={11} sx={{ pl: 1 }}>
-              <Grid container direction={'column'}>
-
-                <Grid item xs={12} sx={{ mt: 1 }}>
-                  <Divider />
-                </Grid>
-                <Grid item xs={12} sx={{ pl: 1, display: 'flex', alignItems: 'center' }}>
-                  <Grid container>
-                    <Grid item xs={4} sx={{ display: 'flex', alignItems: 'center' }}>
-                      <Typography>Código Interno:</Typography>
-                    </Grid>
-                    <Grid item xs={8} sx={{ display: 'flex', alignItems: 'center' }}>
-                      <Typography>{internalCode}</Typography>
-                    </Grid>
-                  </Grid>
-                </Grid>
-
-                <Grid item xs={12}>
-                  <Divider />
-                </Grid>
-                <Grid item xs={12} sx={{ pl: 1, display: 'flex', alignItems: 'center' }}>
-                  <Grid container>
-                    <Grid item xs={4} sx={{ display: 'flex', alignItems: 'center' }}>
-                      <Typography>Fecha de Inicio:</Typography>
-                    </Grid>
-                    <Grid item xs={8} sx={{ display: 'flex', alignItems: 'center' }}>
-                      <Typography>{startDateFormat}</Typography>
-                    </Grid>
-                  </Grid>
-                </Grid>
-
-                <Grid item xs={12}>
-                  <Divider />
-                </Grid>
-                <Grid item xs={12} sx={{ pl: 1, display: 'flex', alignItems: 'center' }}>
-                  <Grid container>
-                    <Grid item xs={4} sx={{ display: 'flex', alignItems: 'center' }}>
-                      <Typography>Fecha de Termino:</Typography>
-                    </Grid>
-                    <Grid item xs={8} sx={{ display: 'flex', alignItems: 'center' }}>
-                      <Typography>{endDateFormat}</Typography>
-                    </Grid>
-                  </Grid>
-                </Grid>
-
-                <Grid item xs={12}>
-                  <Divider />
-                </Grid>
-                <Grid item xs={12} sx={{ pl: 1, display: 'flex', alignItems: 'center' }}>
-                  <Grid container>
-                    <Grid item xs={4} sx={{ display: 'flex', alignItems: 'center' }}>
-                      <Typography>Nombre Interno:</Typography>
-                    </Grid>
-                    <Grid item xs={8} sx={{ display: 'flex', alignItems: 'center' }}>
-                      <Typography>{internalName}</Typography>
-                    </Grid>
-                  </Grid>
-                </Grid>
-                <Grid item xs={12}>
-                  <Divider />
-                </Grid>
-
-              </Grid>
+            <Typography sx={{ pl: 1, fontSize: 18 }} >{internalName}</Typography>
+            <Grid item xs={12} sx={{ mt: 1.5, pl: 1, pr: 1 }}>
+              <TableContainer 
+                sx={{ 
+                  border: '1px solid rgba(224, 224, 224, 1)', borderRadius: 1.5,
+                }}
+              >
+                <Table>
+                  <TableBody>
+                    {rows.map((row) => (
+                      <TableRow key={row.rowName}
+                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                      >
+                        <TableCell align='left' width={'35%'} sx={{ p: 1.5 }}>
+                          {row.rowName}
+                        </TableCell>
+                        <TableCell align='left' width={'65%'} sx={{ p: 1.5 }}>
+                          {row.value}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
             </Grid>
           </Grid>
 

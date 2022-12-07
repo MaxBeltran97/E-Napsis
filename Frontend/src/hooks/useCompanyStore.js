@@ -109,6 +109,59 @@ export const useCompanyStore = () => {
     }, 1000)
   }
 
+  const sortedCompaniesByName = (acending = true) => {
+    const sorted = [...companies].sort((a, b) => {
+      const nameA = `${a.fantasyName}`.toUpperCase()
+      const nameB = `${b.fantasyName}`.toUpperCase()
+
+      if (nameA > nameB) {
+        return acending ? 1 : -1
+      }
+      if (nameA < nameB) {
+        return acending ? -1 : 1
+      }
+      return 0
+    })
+
+    dispatch(onHandleCompanies(sorted))
+  }
+
+  const sortedCompaniesByRUT = (acending = true) => {
+    const sorted = [...companies].sort((a, b) => {
+      if (a.rut === null && b.rut === null) {
+        const nameA = `${a.fantasyName}`.toUpperCase()
+        const nameB = `${b.fantasyName}`.toUpperCase()
+
+        if (nameA > nameB) {
+          return acending ? 1 : -1
+        }
+        if (nameA < nameB) {
+          return acending ? -1 : 1
+        }
+        return 0
+      }
+
+      if (a.rut === null && b.rut !== null) {
+        return acending ? 1 : -1
+      }
+      if (a.rut !== null && b.rut === null) {
+        return acending ? -1 : 1
+      }
+
+      const rutA = `${a.rut}`.toUpperCase()
+      const rutB = `${a.rut}`.toUpperCase()
+
+      if (rutA > rutB) {
+        return acending ? 1 : -1
+      }
+      if (rutA < rutB) {
+        return acending ? -1 : 1
+      }
+    })
+
+    dispatch(onHandleCompanies(sorted))
+  }
+
   return {
     //* Propiedades
     isLoading,
@@ -122,6 +175,10 @@ export const useCompanyStore = () => {
     startResetActiveCompany,
     startSavingCompany,
     // getCompanyWithId
-    startDeleteCompany
+    startDeleteCompany,
+
+    //* Metodos para ordenar
+    sortedCompaniesByName,
+    sortedCompaniesByRUT
   }
 }

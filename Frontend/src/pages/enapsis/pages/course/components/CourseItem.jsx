@@ -51,14 +51,14 @@ export const CourseItem = ({ course }) => {
           <Grid container justifyContent={'space-evenly'} wrap={'wrap'}>
             <Grid item>
               <Tooltip title={'Modificar'}>
-                <IconButton onClick={onChangeCourse} size="small">
+                <IconButton onClick={onChangeCourse}>
                   <ModeOutlined />
                 </IconButton>
               </Tooltip>
             </Grid>
             <Grid item>
               <Tooltip title={'Eliminar'}>
-                <IconButton onClick={handleOpenDeleteView} size="small">
+                <IconButton onClick={handleOpenDeleteView}>
                   <DeleteOutlined color="error" />
                 </IconButton>
               </Tooltip>
