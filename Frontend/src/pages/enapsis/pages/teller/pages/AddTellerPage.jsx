@@ -21,6 +21,7 @@ export const AddTellerPage = () => {
   const [formTitle, setFormTitle] = useState('Registro de Relator')
   const [buttonTitle, setButtonTitle] = useState('Guardar Relator')
   const [uploadFiles, setUploadFiles] = useState(true)
+  const [errorsForm, setErrorsForm] = useState(false)
 
   useEffect(() => {
     if(Object.entries(activeTeller).length !== 0) {
@@ -30,6 +31,14 @@ export const AddTellerPage = () => {
     }
     startResetActiveTeller()
   }, [])
+
+  useEffect(() => {
+    if(Object.values(errors).length === 0) {
+      setErrorsForm(false)
+    } else {
+      setErrorsForm(true)
+    }
+  }, [Object.values(errors).length])
 
   return (
     <GridForm handleSubmit={handleSubmit} formTitle={formTitle} functionFromData={startSavingTeller}>
@@ -76,7 +85,7 @@ export const AddTellerPage = () => {
         : null
       }
 
-      <ButtonSave buttonTitle={buttonTitle} errorTitle={'Error al Guardar'} isLoading={isLoading} errorsForm={false} />
+      <ButtonSave buttonTitle={buttonTitle} errorTitle={'Error al Guardar'} isLoading={isLoading} errorsForm={errorsForm} />
     </GridForm>
   )
 }

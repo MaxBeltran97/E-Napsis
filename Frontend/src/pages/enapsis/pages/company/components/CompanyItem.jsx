@@ -1,8 +1,9 @@
 import { DialogDelete } from '@components/dialog'
 import { useCompanyStore } from '@hooks/useCompanyStore'
-import { DeleteOutlined, ModeOutlined } from '@mui/icons-material'
+import { DeleteOutlined, ModeOutlined, Visibility } from '@mui/icons-material'
 import { Divider, Grid, IconButton, Tooltip, Typography } from '@mui/material'
 import { useState } from 'react'
+import { CompanyView } from '.'
 
 export const CompanyItem = ({ company }) => {
 
@@ -10,6 +11,7 @@ export const CompanyItem = ({ company }) => {
   const { fantasyName, rut, contactName } = company
 
   const [openDeleteView, setOpenDeleteView] = useState(false)
+  const [openViewView, setOpenViewView] = useState(false)
 
   const handleOpenDeleteView = () => {
     setOpenDeleteView(true)
@@ -21,9 +23,15 @@ export const CompanyItem = ({ company }) => {
     startDeleteCompany(company._id)
   }
 
-
   const onChangeCompany = () => {
     startChangeCompany(company)
+  }
+
+  const handleOpenViewView = () => {
+    setOpenViewView(true)
+  }
+  const handleCloseViewView = () => {
+    setOpenViewView(false)
   }
 
   return (
@@ -40,6 +48,13 @@ export const CompanyItem = ({ company }) => {
         </Grid>
         <Grid item xs={2}>
           <Grid container justifyContent={'space-evenly'} wrap={'wrap'}>
+            <Grid item>
+              <Tooltip title={'Ver Datos'}>
+                <IconButton onClick={handleOpenViewView}>
+                  <Visibility />
+                </IconButton>
+              </Tooltip>
+            </Grid>
             <Grid item>
               <Tooltip title={'Modificar'}>
                 <IconButton onClick={onChangeCompany}>
@@ -69,6 +84,7 @@ export const CompanyItem = ({ company }) => {
         handleClose={handleCloseDeleteView}
         functionDelete={onDeleteCompany}
       />
+      <CompanyView company={company} open={openViewView} handleClose={handleCloseViewView} />
     </Grid>
   )
 }

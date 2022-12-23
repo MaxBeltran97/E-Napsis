@@ -23,7 +23,8 @@ export const AddCoursePage = () => {
   const requestDate = useWatch({ control, name: 'requestDate' })
 
   const [formTitle, setFormTitle] = useState('Registro de Curso')
-  const [buttonTitle, setButtonTitle] = useState('Cuardar Curso')
+  const [buttonTitle, setButtonTitle] = useState('Guardar Curso')
+  const [errorsForm, setErrorsForm] = useState(false)
   const [requestMinDate, setRequestMinDate] = useState(new Date())
 
   useEffect(() => {
@@ -38,6 +39,14 @@ export const AddCoursePage = () => {
   useEffect(() => {
     startGetTellers()
   }, [])
+
+  useEffect(() => {
+    if(Object.values(errors).length === 0) {
+      setErrorsForm(false)
+    } else {
+      setErrorsForm(true)
+    }
+  }, [Object.values(errors).length])
 
   return (
     <GridForm handleSubmit={handleSubmit} formTitle={formTitle} functionFromData={startSavingCourse}>
@@ -75,7 +84,7 @@ export const AddCoursePage = () => {
         </GridInput>
       </Grid>
 
-      <ButtonSave buttonTitle={buttonTitle} errorTitle={'Error al Guardar'} isLoading={isLoading} errorsForm={false} />
+      <ButtonSave buttonTitle={buttonTitle} errorTitle={'Error al Guardar'} isLoading={isLoading} errorsForm={errorsForm} />
     </GridForm>
   )
 }

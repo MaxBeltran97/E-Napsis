@@ -4,7 +4,7 @@ import { useCalendarCourseStore } from "@hooks/useCalendarCourseStore"
 import { ExpandLess, ExpandMore } from "@mui/icons-material"
 import { Button, Divider, Grid, Typography } from "@mui/material"
 import { useEffect, useState } from "react"
-import { CalendarCourseItem } from "../components"
+import { CalendarCourseFilter, CalendarCourseItem } from "../components"
 
 export const ShowCalendarPage = () => {
 
@@ -40,6 +40,8 @@ export const ShowCalendarPage = () => {
     <>
       <Typography variant="h5" sx={{ mt: 1, ml: 2 }}>Cursos Calendarizados</Typography>
       {/* Filtro */}
+      <CalendarCourseFilter title={'Buscar por:'} />
+
       <GridPaper>
         <Grid item xs={12}>
           <Grid container alignItems={'center'} columnSpacing={1}>

@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux"
 
-import { onChangeSidebarActiveItem, onChangeSidebarActiveOption, onCloseAllSidebarItems, onCloseSidebar, onOpenSidebar, onOpenSidebarActiveItem, onOpenSidebarItem } from "@reduxSlices/uiSlice"
+import { onChangeSidebarActiveItem, onChangeSidebarActiveOption, onChangeSidebarActiveSubOption, onCloseAllSidebarItems, onCloseAllSidebarOptions, onCloseSidebar, onOpenSidebar, onOpenSidebarActiveItem, onOpenSidebarActiveOption, onOpenSidebarItem, onOpenSidebarOption } from "@reduxSlices/uiSlice"
 
 export const useUiStore = () => {
 
@@ -55,6 +55,23 @@ export const useUiStore = () => {
     dispatch(onChangeSidebarActiveOption(option))
   }
 
+  const openSidebarActiveOption = () => {
+    dispatch(onOpenSidebarActiveOption())
+  }
+
+  const openSidebarOption = (option) => {
+    console.log({option})
+    dispatch(onOpenSidebarOption(option))
+  }
+
+  const closeAllSidebarOptions = () => {
+    dispatch(onCloseAllSidebarOptions())
+  }
+
+  const changeSidebarActiveSubOption = (subOption) => {
+    dispatch(onChangeSidebarActiveSubOption(subOption))
+  }
+
   return {
     //* Propiedades
     isSidebarOpen,
@@ -69,6 +86,10 @@ export const useUiStore = () => {
     openSidebarActiveItem,
     openSidebarItem,
     closeAllSidebarItems,
-    changeSidebarActiveOption
+    changeSidebarActiveOption,
+    openSidebarActiveOption,
+    openSidebarOption,
+    closeAllSidebarOptions,
+    changeSidebarActiveSubOption
   }
 }

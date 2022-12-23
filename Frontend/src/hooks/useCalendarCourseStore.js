@@ -4,12 +4,14 @@ import { onHandleActiveCalendarCourse, onHandleCalendarCourses, onHandleLoading,
 import { useDispatch, useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
 import { useAuthStore } from "./useAuthStore"
+import { useCourseStore } from "./useCourseStore"
 
 export const useCalendarCourseStore = () => {
 
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const { user, startCheckRole } = useAuthStore()
+  const { startGetCourse } = useCourseStore()
   const { isLoading, activeCalendarCourse, calendarCourses } = useSelector(state => state.calendarCourse)
 
   const startGetCalendarCourses = async () => {
@@ -23,9 +25,8 @@ export const useCalendarCourseStore = () => {
     } catch (error) {
       console.log(error.response)
     }
-    setTimeout(() => {
-      dispatch(onHandleLoading(false))
-    }, 500)
+    
+    dispatch(onHandleLoading(false))
   }
 
   const startGetCalendarCourse = async (calendarCourse_id) => {
@@ -61,9 +62,8 @@ export const useCalendarCourseStore = () => {
     } catch (error) {
       console.log(error.response)
     }
-    setTimeout(() => {
-      dispatch(onHandleLoading(false))
-    }, 500)
+
+    dispatch(onHandleLoading(false))
   }
 
   const startChangeCalendarCourse = (calendarCourse) => {
@@ -148,9 +148,7 @@ export const useCalendarCourseStore = () => {
       console.log(error.response)
     }
 
-    setTimeout(() => {
-      dispatch(onHandleLoading(false))
-    }, 1000)
+    dispatch(onHandleLoading(false))
   }
 
   const sortedCalendarCoursesByName = (acending = true) => {
@@ -214,6 +212,59 @@ export const useCalendarCourseStore = () => {
     dispatch(onHandleCalendarCourses(sorted))
   }
 
+  const filterCalendarCourses = async (filters) => {
+    dispatch(onHandleLoading(true))
+
+    const { data } = await enapsisApi.get('/calendar')
+    const calendarAwait = data.calendarCourses
+
+    const name = filters.name.toUpperCase().trim()
+    const code = filters.internalCode.toUpperCase().trim()
+    
+    const filterdeArray = await Promise.all(calendarAwait.map(async x => [(await startGetCourse(x.course_id)).tellers_id, x]))
+    let filtered = filterdeArray.filter((x) => {
+      const nameCalendarCourse = x[1].internalName.toUpperCase()
+      const codeCalendarCourse = x[1].internalCode.toUpperCase()
+      const isTeller = x[0]?.filter((c) => {
+        return c.teller_id === filters.teller_id
+      })
+
+      if( name === '' && code === '' && filters.teller_id === undefined) {
+        return true
+      }
+      if(name !== '' && code !== '' && filters.teller_id !== undefined) {
+        return (nameCalendarCourse.includes(name) && codeCalendarCourse.includes(code) && isTeller.length >= 1)
+      }
+
+      if(name !== '' && code === '' && filters.teller_id === undefined) {
+        return nameCalendarCourse.includes(name)
+      }
+      if(name !== '' && code !== '' && filters.teller_id === undefined) {
+        return (nameCalendarCourse.includes(name) && codeCalendarCourse.includes(code))
+      }
+      if(name !== '' && code === '' && filters.teller_id !== undefined) {
+        return (nameCalendarCourse.includes(name) && isTeller.length >= 1)
+      }
+
+      if(name === '' && code !== '' && filters.teller_id === undefined) {
+        return codeCalendarCourse.includes(code)
+      }
+      if(name === '' && code !== '' && filters.teller_id !== undefined) {
+        return (codeCalendarCourse.includes(code) && isTeller.length >= 1)
+      }
+
+      
+      if(name === '' && code === '' && filters.teller_id !== undefined) {        
+        return isTeller.length >= 1
+      }
+    })
+
+    filtered = filtered.map(x => x[1])
+
+    dispatch(onHandleCalendarCourses(filtered))
+    dispatch(onHandleLoading(false))
+  }
+
   return {
     //* Propiedades
     isLoading,
@@ -232,6 +283,9 @@ export const useCalendarCourseStore = () => {
     //* Metodos para ordenar
     sortedCalendarCoursesByName,
     sortedCalendarCoursesByCode,
-    sortedCalendarCoursesByDate
+    sortedCalendarCoursesByDate,
+
+    //* Filter
+    filterCalendarCourses
   }
 }

@@ -3,7 +3,7 @@ import { useEffect, useState } from "react"
 import { useCompanyStore } from "@hooks/useCompanyStore"
 import { Button, Divider, Grid, Typography } from "@mui/material"
 import { GridPaper } from "@components/grid"
-import { CompanyItem } from "../components"
+import { CompanyFilter, CompanyItem } from "../components"
 import { SkeletonListItemV2 } from "@components/skeleton"
 import { ExpandLess, ExpandMore } from "@mui/icons-material"
 
@@ -39,6 +39,9 @@ export const ShowCompaniesPage = () => {
     <>
       <Typography variant="h5" sx={{ mt: 1, ml: 2 }}>Empresas</Typography>
       {/* Filtro */}
+      <CompanyFilter title={'Buscar por:'} />
+
+
       <GridPaper>
         <Grid item xs={12}>
           <Grid container alignItems={'center'} columnSpacing={1}>

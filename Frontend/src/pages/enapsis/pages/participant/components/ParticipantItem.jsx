@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react"
 
-import { DeleteOutlined, HistoryEdu, ModeOutlined, Send } from "@mui/icons-material"
+import { DeleteOutlined, HistoryEdu, ModeOutlined, Send, Visibility } from "@mui/icons-material"
 import { Divider, Grid, IconButton, Tooltip, Typography } from "@mui/material"
 
 import { useCompanyStore } from "@hooks/useCompanyStore"
 import { useParticipantStore } from "@hooks/useParticipantStore"
 import { DialogDelete } from "@components/dialog"
+import { ParticipantView } from "."
 
 export const ParticipantItem = ({ participant }) => {
 
@@ -16,6 +17,7 @@ export const ParticipantItem = ({ participant }) => {
   const [companyName, setCompanyName] = useState('')
 
   const [openDeleteView, setOpenDeleteView] = useState(false)
+  const [openViewView, setOpenViewView] = useState(false)
 
   const getCompanyName = async () => {
     //TODO Cambiar por getCompanyById para buscar en el store primero
@@ -41,9 +43,15 @@ export const ParticipantItem = ({ participant }) => {
     startDeleteParticipant(participant._id)
   }
 
-
   const onChangeParticipant = () => {
     startChangeParticipant(participant)
+  }
+
+  const handleOpenViewView = () => {
+    setOpenViewView(true)
+  }
+  const handleCloseViewView = () => {
+    setOpenViewView(false)
   }
 
   return (
@@ -64,6 +72,13 @@ export const ParticipantItem = ({ participant }) => {
               <Tooltip title={'Historial de Participante'}>
                 <IconButton>
                   <HistoryEdu />
+                </IconButton>
+              </Tooltip>
+            </Grid>
+            <Grid item>
+              <Tooltip title={'Ver Datos'}>
+                <IconButton onClick={handleOpenViewView}>
+                  <Visibility />
                 </IconButton>
               </Tooltip>
             </Grid>
@@ -107,6 +122,7 @@ export const ParticipantItem = ({ participant }) => {
         handleClose={handleCloseDeleteView}
         functionDelete={onDeleteParticipant}
       />
+      <ParticipantView participant={participant} open={openViewView} handleClose={handleCloseViewView} />
     </Grid>
   )
 }

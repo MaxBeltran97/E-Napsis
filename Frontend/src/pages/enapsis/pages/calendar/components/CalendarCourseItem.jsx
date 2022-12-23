@@ -1,8 +1,9 @@
 import { DialogDelete } from "@components/dialog"
 import { useCalendarCourseStore } from "@hooks/useCalendarCourseStore"
-import { CloudUploadOutlined, DeleteOutlined, ModeOutlined, Send } from "@mui/icons-material"
+import { CloudUploadOutlined, DeleteOutlined, ModeOutlined, Send, Visibility } from "@mui/icons-material"
 import { Button, Divider, Grid, IconButton, Tooltip, Typography } from "@mui/material"
 import { useState } from "react"
+import { CalendarCourseView } from "."
 import { CalendarCourseDocuments } from "./CalendarCourseDocuments"
 
 export const CalendarCourseItem = ({ calendarCourse }) => {
@@ -12,7 +13,7 @@ export const CalendarCourseItem = ({ calendarCourse }) => {
   const { internalCode, internalName, startDate, endDate } = calendarCourse
   const startDateFormat = new Date(startDate).toLocaleDateString('es-es')
   const endDateFormat = new Date(endDate).toLocaleDateString('es-es')
-  
+
   const [openDocuments, setOpenDocuments] = useState(false)
 
   const handleOpenDocuments = () => {
@@ -23,6 +24,7 @@ export const CalendarCourseItem = ({ calendarCourse }) => {
   }
 
   const [openDeleteView, setOpenDeleteView] = useState(false)
+  const [openViewView, setOpenViewView] = useState(false)
 
   const handleOpenDeleteView = () => {
     setOpenDeleteView(true)
@@ -34,9 +36,15 @@ export const CalendarCourseItem = ({ calendarCourse }) => {
     startDeleteCalendarCourse(calendarCourse._id)
   }
 
-
   const onChangeCalendarCourse = () => {
     startChangeCalendarCourse(calendarCourse)
+  }
+
+  const handleOpenViewView = () => {
+    setOpenViewView(true)
+  }
+  const handleCloseViewView = () => {
+    setOpenViewView(false)
   }
 
   return (
@@ -49,7 +57,7 @@ export const CalendarCourseItem = ({ calendarCourse }) => {
           <Grid item xs={5}>
             <Typography>{internalName}</Typography>
           </Grid>
-          <Grid item xs={2} sx={{ display: 'flex', justifyContent: 'center'}}>
+          <Grid item xs={2} sx={{ display: 'flex', justifyContent: 'center' }}>
             <Button variant="outlined" size="small">
               {startDateFormat} - {endDateFormat}
             </Button>
@@ -72,6 +80,13 @@ export const CalendarCourseItem = ({ calendarCourse }) => {
                 </Tooltip>
               </Grid>
               <Grid item>
+                <Tooltip title={'Ver Datos'}>
+                  <IconButton onClick={handleOpenViewView}>
+                    <Visibility />
+                  </IconButton>
+                </Tooltip>
+              </Grid>
+              <Grid item>
                 <Tooltip title={'Modificar'}>
                   <IconButton onClick={onChangeCalendarCourse}>
                     <ModeOutlined />
@@ -85,17 +100,17 @@ export const CalendarCourseItem = ({ calendarCourse }) => {
                   </IconButton>
                 </Tooltip>
               </Grid>
-            </Grid>  
+            </Grid>
           </Grid>
         </Grid>
-        
+
         <Grid item xs={12} sx={{ mt: 2 }}>
           <Divider />
         </Grid>
       </Grid>
 
       <CalendarCourseDocuments calendarCourse={calendarCourse} open={openDocuments} handleClose={handleCloseDocuments} />
-      
+
       <DialogDelete
         title={`Eliminar el curso calendarizado ${internalName}`}
         body={'¿Estás seguro de eliminar este curso calendarizado? Al eliminarlo, desvinculará todos los participantes asociados a él.'}
@@ -103,6 +118,7 @@ export const CalendarCourseItem = ({ calendarCourse }) => {
         handleClose={handleCloseDeleteView}
         functionDelete={onDeleteCalendarCourse}
       />
+      <CalendarCourseView calendarCourse={calendarCourse} open={openViewView} handleClose={handleCloseViewView} />
     </>
   )
 }

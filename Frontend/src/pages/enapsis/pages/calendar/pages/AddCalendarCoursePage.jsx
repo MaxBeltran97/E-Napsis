@@ -12,6 +12,7 @@ import { useCalendarCourseStore } from "@hooks/useCalendarCourseStore"
 import { useCourseStore } from "@hooks/useCourseStore"
 import { getCoursesWithAutocomplete } from "@pages/enapsis/helpers"
 import { useEffect, useState } from "react"
+import { radioInstructionModality } from "@assets/radio-data"
 
 export const AddCalendarCoursePage = () => {
   const { courses, startGetCourses, startGetCourse } = useCourseStore()
@@ -24,15 +25,17 @@ export const AddCalendarCoursePage = () => {
   
   const [formTitle, setFormTitle] = useState('Calendarizar Curso')
   const [buttonTitle, setButtonTitle] = useState('Calendarizar Curso')
+  const [errorsForm, setErrorsForm] = useState(false)
   const [startMinDate, setStartMinDate] = useState(new Date())
 
   const updateData = async() => {
     const { sence, instruction, totalHours, participantValue } = await startGetCourse(courseId)
+    const instructionObj = radioInstructionModality.find(element => element.value === instruction)
 
     setValue('sence', sence, { shouldValidate: true })
+    setValue('instruction', instructionObj.name, { shouldValidate: true })
 
     if(Object.entries(activeCalendarCourse).length === 0) {
-      setValue('instruction', instruction, { shouldValidate: true })
       setValue('courseTotalHours', totalHours, { shouldValidate: true })
       setValue('participantValue', participantValue, { shouldValidate: true })
     }
@@ -57,6 +60,14 @@ export const AddCalendarCoursePage = () => {
     startGetCourses()
   }, [])
 
+  useEffect(() => {
+    if(Object.values(errors).length === 0) {
+      setErrorsForm(false)
+    } else {
+      setErrorsForm(true)
+    }
+  }, [Object.values(errors).length])
+
   return (
     <GridForm handleSubmit={handleSubmit} formTitle={formTitle} functionFromData={startSavingCalendarCourse}>
       <Grid item xs={12}>
@@ -69,7 +80,7 @@ export const AddCalendarCoursePage = () => {
               <InputAutocomplete control={control} name={'Seleccionar Curso'} label={'course_id'} required={true} error={errors.course_id} items={getCoursesWithAutocomplete(courses)} />
               {/* disabled */}
               <InputText control={control} name={'Codigo Sence'} label={'sence'} required={true} error={errors.sence} disabled={true} withSize={3.5} />
-              <InputText control={control} name={'Modalidad de Instrucción'} label={'instruction'} required={true} error={errors.instruction} disabled={true} withSize={3.5} />
+              <InputText control={control} name={'Modalidad de Instrucción'} label={'instruction'} required={true} error={errors.instruction} disabled={true} />
               {/* disabled end */}
               <InputNumber control={control} name={'Horas Totales'} label={'courseTotalHours'} required={true} error={errors.courseTotalHours} withSize={3.5} />
               <InputText control={control} name={'Lugar de Ejecución'} label={'ejecutionPlace'} required={true} error={errors.ejecutionPlace} />
@@ -100,7 +111,7 @@ export const AddCalendarCoursePage = () => {
         </GridInput>
       </Grid>
 
-      <ButtonSave buttonTitle={buttonTitle} errorTitle={'Error al Calendarizar'} isLoading={isLoading} errorsForm={false} />
+      <ButtonSave buttonTitle={buttonTitle} errorTitle={'Error al Calendarizar'} isLoading={isLoading} errorsForm={errorsForm} />
     </GridForm>
   )
 }

@@ -111,6 +111,54 @@ export const uiSlice = createSlice({
         idIcon: 5,
         url: `${CLASS_BOOKS}`,
         rolesAllowed: ['admin', 'coordinator', 'teller', 'teller_with_upload'],
+      },
+      {
+        name: 'Configuración',
+        idIcon: 6,
+        rolesAllowed: ['admin', 'coordinator'],
+        isItemOpen: false,
+        activeOption: {},
+        options: [
+          {
+            name: 'Privilegios',
+            url: ''
+          },
+          {
+            name: 'Feriados',
+            url: ''
+          },
+          {
+            name: 'Check-List',
+            url: ''
+          },
+          {
+            name: 'Datos de Empresa',
+            isOptionOpen: false,
+            activeSubOption: {},
+            subOptions: [
+              {
+                name: 'Configurar',
+                url: ''
+              },
+              {
+                name: 'Template Email',
+                url: ''
+              },
+              {
+                name: 'Template Contrato',
+                url: ''
+              },
+              {
+                name: 'Avisos Automaticos',
+                url: ''
+              },
+              {
+                name: 'Personalizar Acceso',
+                url: ''
+              }
+            ]
+          }
+        ]
       }
     ]
   },
@@ -148,7 +196,43 @@ export const uiSlice = createSlice({
 
     onChangeSidebarActiveOption: (state, {payload}) => {
       state.sidebarActiveItem.activeOption = payload
-    }
+    },
+    onOpenSidebarActiveOption: (state) => {
+      state.sidebarActiveItem.activeOption.isOptionOpen = true
+    },
+
+    onOpenSidebarOption: (state, {payload}) => {
+      console.log('entre')
+      state.sidebarItems = state.sidebarItems.map((item) => {
+        item.options = item.options?.map((option) => {
+          if(option.name === payload.name ) {
+            console.log('entre a la opcion')
+            option.isOptionOpen = true
+            console.log(option)
+          }
+          return option
+        })
+        return item
+      })
+    },
+
+    onCloseAllSidebarOptions: (state) => {
+      state.sidebarItems = state.sidebarItems.map((item) => {
+        item.options = item.options?.map((option) => {
+          option.isOptionOpen = false
+          return option
+        })
+        return item
+      })
+      state.sidebarActiveItem.options = state.sidebarActiveItem.options?.map((option) => {
+        option.isOptionOpen = false
+        return option
+      })
+    },
+
+    onChangeSidebarActiveSubOption: (state, {payload}) => {
+      state.sidebarActiveItem.activeOption.activeSubOption = payload
+    },
   }
 })
 
@@ -162,5 +246,11 @@ export const {
   onOpenSidebarItem,
   onCloseAllSidebarItems,
 
-  onChangeSidebarActiveOption
+  onChangeSidebarActiveOption,
+  onOpenSidebarActiveOption,
+
+  onOpenSidebarOption,
+  onCloseAllSidebarOptions,
+
+  onChangeSidebarActiveSubOption
 } = uiSlice.actions

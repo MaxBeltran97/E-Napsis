@@ -10,7 +10,7 @@ export const InputRadio = memo(({ control, name, label, items = [], defaultPos =
       <Controller 
         control={control}
         name={label}
-        defaultValue={items[defaultPos].value}
+        defaultValue={items[defaultPos]?.value}
 
         render={({field}) => (
           <RadioGroup {...field} row sx={{ ml: 1 }}>
