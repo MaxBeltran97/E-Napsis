@@ -146,7 +146,7 @@ export const useCompanyStore = () => {
       }
 
       const rutA = `${a.rut}`.toUpperCase()
-      const rutB = `${a.rut}`.toUpperCase()
+      const rutB = `${b.rut}`.toUpperCase()
 
       if (rutA > rutB) {
         return acending ? 1 : -1

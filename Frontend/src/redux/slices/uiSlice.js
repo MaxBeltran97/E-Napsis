@@ -1,8 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
 import {
   ADD_CALENDAR_COURSE, ADD_COMPANY, ADD_COURSES, ADD_PARTICIPANTS, ADD_TELLER,
-  CALENDAR_COURSE, CLASS_BOOKS, COMPANIES, COURSES, HOME, IMPORT_PARTICIPANTS, PARTICIPANTS,
-  SHOW_CALENDAR_COURSE, SHOW_COMPANIES, SHOW_COURSES, SHOW_PARTICIPANTS, SHOW_TELLERS, TELLERS
+  AUTOMATIC_NOTICES,
+  CALENDAR_COURSE, CHECKLIST, CLASS_BOOKS, COMPANIES, COURSES, DATA_COMPANY, HOLIDAYS, HOME, IMPORT_PARTICIPANTS, PARTICIPANTS,
+  PRIVILEGES,
+  SETTINGS,
+  SHOW_CALENDAR_COURSE, SHOW_COMPANIES, SHOW_COURSES, SHOW_PARTICIPANTS, SHOW_TELLERS, TELLERS, TEMPLATE_CONTRACT, TEMPLATE_EMAILS
 } from "@models/privateRoutes";
 
 export const uiSlice = createSlice({
@@ -121,35 +124,31 @@ export const uiSlice = createSlice({
         options: [
           {
             name: 'Privilegios',
-            url: ''
+            url: `${SETTINGS + PRIVILEGES}`
           },
           {
             name: 'Feriados',
-            url: ''
+            url: `${SETTINGS + HOLIDAYS}`
           },
           {
             name: 'Check-List',
-            url: ''
+            url: `${SETTINGS + CHECKLIST}`
           },
           {
-            name: 'Configurar Empresa',
-            url: ''
+            name: 'Datos Empresa',
+            url: `${SETTINGS + DATA_COMPANY}`
           },
           {
             name: 'Template Email',
-            url: ''
+            url: `${SETTINGS + TEMPLATE_EMAILS}`
           },
           {
             name: 'Template Contrato',
-            url: ''
+            url: `${SETTINGS + TEMPLATE_CONTRACT}`
           },
           {
             name: 'Avisos Automaticos',
-            url: ''
-          },
-          {
-            name: 'Personalizar Acceso',
-            url: ''
+            url: `${SETTINGS + AUTOMATIC_NOTICES}`
           }
         ]
       }
@@ -163,16 +162,16 @@ export const uiSlice = createSlice({
       state.isSidebarOpen = false
     },
 
-    onChangeSidebarActiveItem: (state, { payload }) => {
+    onChangeSidebarActiveItem: (state, {payload}) => {
       state.sidebarActiveItem = payload
     },
     onOpenSidebarActiveItem: (state) => {
       state.sidebarActiveItem.isItemOpen = true
     },
 
-    onOpenSidebarItem: (state, { payload }) => {
+    onOpenSidebarItem: (state, {payload}) => {
       state.sidebarItems = state.sidebarItems.map((item) => {
-        if (item.name === payload.name) {
+        if(item.name === payload.name) {
           item.isItemOpen = true
         }
         return item
@@ -187,45 +186,9 @@ export const uiSlice = createSlice({
       state.sidebarActiveItem.isItemOpen = false
     },
 
-    onChangeSidebarActiveOption: (state, { payload }) => {
+    onChangeSidebarActiveOption: (state, {payload}) => {
       state.sidebarActiveItem.activeOption = payload
-    },
-    onOpenSidebarActiveOption: (state) => {
-      state.sidebarActiveItem.activeOption.isOptionOpen = true
-    },
-
-    onOpenSidebarOption: (state, { payload }) => {
-      console.log('entre')
-      state.sidebarItems = state.sidebarItems.map((item) => {
-        item.options = item.options?.map((option) => {
-          if (option.name === payload.name) {
-            console.log('entre a la opcion')
-            option.isOptionOpen = true
-            console.log(option)
-          }
-          return option
-        })
-        return item
-      })
-    },
-
-    onCloseAllSidebarOptions: (state) => {
-      state.sidebarItems = state.sidebarItems.map((item) => {
-        item.options = item.options?.map((option) => {
-          option.isOptionOpen = false
-          return option
-        })
-        return item
-      })
-      state.sidebarActiveItem.options = state.sidebarActiveItem.options?.map((option) => {
-        option.isOptionOpen = false
-        return option
-      })
-    },
-
-    onChangeSidebarActiveSubOption: (state, { payload }) => {
-      state.sidebarActiveItem.activeOption.activeSubOption = payload
-    },
+    }
   }
 })
 
@@ -239,11 +202,5 @@ export const {
   onOpenSidebarItem,
   onCloseAllSidebarItems,
 
-  onChangeSidebarActiveOption,
-  onOpenSidebarActiveOption,
-
-  onOpenSidebarOption,
-  onCloseAllSidebarOptions,
-
-  onChangeSidebarActiveSubOption
+  onChangeSidebarActiveOption
 } = uiSlice.actions
