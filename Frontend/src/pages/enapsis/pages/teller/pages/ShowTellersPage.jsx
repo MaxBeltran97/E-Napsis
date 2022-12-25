@@ -2,12 +2,13 @@ import { useEffect } from "react"
 
 import { Button, Divider, Grid, Typography } from "@mui/material"
 import { GridPaper } from "@components/grid"
-import { TellerCard, TellerItem } from "../components"
+import { TellerCard, TellerFilter, TellerItem } from "../components"
 
 import { useTellerStore } from "@hooks/useTellerStore"
 import { SkeletonListItemV2 } from "@components/skeleton"
 import { useState } from "react"
 import { ExpandLess, ExpandMore } from "@mui/icons-material"
+import { Filter } from "@components/accordion"
 
 export const ShowTellersPage = () => {
 
@@ -41,6 +42,9 @@ export const ShowTellersPage = () => {
     <>
       <Typography variant="h5" sx={{ mt: 1, ml: 2 }}>Relatores</Typography>
       {/* Filtro */}
+      <TellerFilter title={'Buscar por:'} />
+
+      {/* TellerList */}
       <GridPaper>
         <Grid item xs={12} >
           <Grid container alignItems={'center'} columnSpacing={1}>
@@ -102,7 +106,7 @@ export const ShowTellersPage = () => {
             )
         }
       </GridPaper>
-      <Grid container spacing={1} sx={{ mt: 1 }}>
+      {/* <Grid container spacing={1} sx={{ mt: 1 }}>
         {
           isLoading
             ? <SkeletonListItemV2 />
@@ -114,7 +118,7 @@ export const ShowTellersPage = () => {
               ))
             )
         }
-      </Grid>
+      </Grid> */}
     </>
   )
 }

@@ -15,6 +15,7 @@ export const AddCompanyPage = () => {
   const { handleSubmit, getValues, setValue, formState: { errors }, control } = useForm({defaultValues: activeCompany})
   const [formTitle, setFormTitle] = useState('Registro de Empresa')
   const [buttonTitle, setButtonTitle] = useState('Guardar Empresa')
+  const [errorsForm, setErrorsForm] = useState(false)
 
   useEffect(() => {
     if(Object.entries(activeCompany).length !== 0) {
@@ -23,6 +24,14 @@ export const AddCompanyPage = () => {
     }
     startResetActiveCompany()
   }, [])
+
+  useEffect(() => {
+    if(Object.values(errors).length === 0) {
+      setErrorsForm(false)
+    } else {
+      setErrorsForm(true)
+    }
+  }, [Object.values(errors).length])
 
   return (
     <GridForm handleSubmit={handleSubmit} formTitle={formTitle} functionFromData={startSavingCompany}>
@@ -48,7 +57,7 @@ export const AddCompanyPage = () => {
         </GridInput>
       </Grid>
 
-      <ButtonSave buttonTitle={buttonTitle} errorTitle={'Error al Guardar'} isLoading={isLoading} errorsForm={false} />
+      <ButtonSave buttonTitle={buttonTitle} errorTitle={'Error al Guardar'} isLoading={isLoading} errorsForm={errorsForm} />
     </GridForm>
   )
 }

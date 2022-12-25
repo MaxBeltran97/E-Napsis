@@ -23,9 +23,8 @@ export const useCompanyStore = () => {
     } catch (error) {
       console.log(error.response)
     }
-    setTimeout(() => {
-      dispatch(onHandleLoading(false))
-    }, 500)
+
+    dispatch(onHandleLoading(false))
   }
 
   const startGetCompany = async (company_id) => {
@@ -104,9 +103,7 @@ export const useCompanyStore = () => {
       console.log(error)
     }
 
-    setTimeout(() => {
-      dispatch(onHandleLoading(false))
-    }, 1000)
+    dispatch(onHandleLoading(false))
   }
 
   const sortedCompaniesByName = (acending = true) => {
@@ -149,7 +146,7 @@ export const useCompanyStore = () => {
       }
 
       const rutA = `${a.rut}`.toUpperCase()
-      const rutB = `${a.rut}`.toUpperCase()
+      const rutB = `${b.rut}`.toUpperCase()
 
       if (rutA > rutB) {
         return acending ? 1 : -1
@@ -160,6 +157,53 @@ export const useCompanyStore = () => {
     })
 
     dispatch(onHandleCompanies(sorted))
+  }
+
+  const filterCompanies = async (filters) => {
+    dispatch(onHandleLoading(true))
+
+    //obtener companies
+    const { data } = await enapsisApi.get('/company')
+    const companiesAwait = data.companies
+
+    const name = filters.name.toUpperCase().trim()
+    const rut = filters.rut.toUpperCase().trim()
+
+    const filtered = companiesAwait.filter((x) => {
+      const nameCompany = `${x.fantasyName}`.toUpperCase()
+      const rutCompany = (x.rut === null) ? '' : x.rut.toUpperCase()
+
+      if( name === '' && rut === '' && filters.region === '' ) {
+        return true
+      }
+      if ( name !== '' && rut !== '' && filters.region !== '') {
+        return (nameCompany.includes(name) && rutCompany.includes(rut) && x.region === filters.region)
+      }
+
+      if( name !== '' && rut === '' && filters.region === '' ) {
+        return nameCompany.includes(name)
+      }
+      if( name !== '' && rut !== '' && filters.region === '' ) {
+        return (nameCompany.includes(name) && rutCompany.includes(rut))
+      }
+      if( name !== '' && rut === '' && filters.region !== '' ) {
+        return (nameCompany.includes(name) && x.region === filters.region)
+      }
+
+      if( name === '' && rut !== '' && filters.region === '' ) {
+        return rutCompany.includes(rut)
+      }
+      if( name === '' && rut !== '' && filters.region !== '' ) {
+        return (rutCompany.includes(rut) && x.region === filters.region)
+      }
+
+      if( name === '' && rut === '' && filters.region !== '' ) {
+        return x.region === filters.region
+      }
+    })
+
+    dispatch(onHandleCompanies(filtered))
+    dispatch(onHandleLoading(false))
   }
 
   return {
@@ -179,6 +223,9 @@ export const useCompanyStore = () => {
 
     //* Metodos para ordenar
     sortedCompaniesByName,
-    sortedCompaniesByRUT
+    sortedCompaniesByRUT,
+
+    //* Filtro
+    filterCompanies
   }
 }

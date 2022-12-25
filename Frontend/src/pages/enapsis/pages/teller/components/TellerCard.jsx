@@ -84,14 +84,14 @@ export const TellerCard = ({ teller }) => {
         action={
           <Tooltip title={'Enviar Clave'}>
             <IconButton>
-              <Send forntSize='small' sx={{ transform: 'rotate(-45deg)' }} />
+              <Send sx={{ transform: 'rotate(-45deg)' }} />
             </IconButton>
           </Tooltip>
         }
         title={`${fullName} ${lastName} ${motherLastName}`}
         subheader={`RUT/DNI: ${rut}`}
         sx={{
-          '.MuiCardHeader-title': { 
+          '.MuiCardHeader-title': {
             fontSize: 16
           }
         }}
@@ -100,41 +100,31 @@ export const TellerCard = ({ teller }) => {
         <TableContainer sx={{ overflowX: 'hidden' }}>
           <Table>
             <TableBody>
-              {rows.map((row) => (
-                <TableRow key={row.rowName}
-                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                >
-                  <TableCell align='left' width={'20%'} sx={{ p: 1, border: 0, fontSize: 15 }}>
-                    {row.rowName}
-                  </TableCell>
-                  <TableCell align='left' width={'80%'} sx={{ p: 1, border: 0, fontSize: 15}}>
-                    {row.value}
-                  </TableCell>
-                </TableRow>
-              ))}
+              {
+                rows.map((row) => (
+                  <TableRow key={row.rowName}
+                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                  >
+                    <TableCell align='left' width={'20%'} sx={{ p: 1, border: 0, fontSize: 15 }}>
+                      {row.rowName}
+                    </TableCell>
+                    <TableCell align='left' width={'80%'} sx={{ p: 1, border: 0, fontSize: 15 }}>
+                      {row.value}
+                    </TableCell>
+                  </TableRow>
+                ))
+              }
             </TableBody>
           </Table>
         </TableContainer>
-        {/* <Grid container rowSpacing={0.5} direction={'column'}>
-          <Grid item>
-            <Typography variant='body1'>
-              Usuario: {usernameTeller}
-            </Typography>
-          </Grid>
-          <Grid item>
-            <Typography variant='body1'>
-              Email: {email}
-            </Typography>
-          </Grid>
-        </Grid> */}
       </CardContent>
       <CardActions disableSpacing sx={{ justifyContent: 'space-evenly' }}>
         <Tooltip title={(situation) ? 'Estado Activo' : 'Estado No Activo'}>
           <IconButton>
             {
               (situation)
-              ? <RadioButtonChecked color='success' />
-              : <RadioButtonUnchecked color='error' />
+                ? <RadioButtonChecked color='success' />
+                : <RadioButtonUnchecked color='error' />
             }
           </IconButton>
         </Tooltip>
@@ -150,7 +140,7 @@ export const TellerCard = ({ teller }) => {
         </Tooltip>
         <Tooltip title={'Eliminar'}>
           <IconButton>
-            <DeleteOutlined color='error'/>
+            <DeleteOutlined color='error' />
           </IconButton>
         </Tooltip>
       </CardActions>

@@ -23,9 +23,8 @@ export const useTellerStore = () => {
     } catch (error) {
       console.log(error.response)
     }
-    setTimeout(() => {
-      dispatch(onHandleLoading(false))
-    }, 500)
+
+    dispatch(onHandleLoading(false))
   }
 
   const startGetTeller = async (teller_id) => {
@@ -133,9 +132,7 @@ export const useTellerStore = () => {
       console.log(error.response)
     }
 
-    setTimeout(() => {
-      dispatch(onHandleLoading(false))
-    }, 1000)
+    dispatch(onHandleLoading(false))
   }
 
   const sortedTellersByName = (acending = true) => {
@@ -181,6 +178,56 @@ export const useTellerStore = () => {
     dispatch(onHandleTellers(sorted))
   }
 
+  const filterTellers = async (filters) => {
+    dispatch(onHandleLoading(true))
+    
+    const { data } = await enapsisApi.get('/teller')
+    const tellersAwait = data.tellers
+
+    const nameUser = filters.name_user.toUpperCase().trim()
+    const rut = filters.rut.toUpperCase().trim()
+
+    const filteredArray = await Promise.all(tellersAwait.map(async x => [(await startGetTellerUsername(x.user_id)).username, x])) 
+    let filtered = filteredArray.filter((x) => {
+      const nameTeller = `${x[1].fullName} ${x[1].lastName} ${x[1].motherLastName}`.toUpperCase()
+      const userTeller = x[0].toUpperCase()
+      const rutTeller = x[1].rut.toUpperCase()
+
+      if( nameUser === '' && rut === '' && filters.situation === 'no-aplica' ) {
+        return true
+      }
+      if( nameUser !== '' && rut !== '' && filters.situation !== 'no-aplica' ) {
+        return ((nameTeller.includes(filters.name_user.toUpperCase()) || userTeller.includes(filters.name_user.toUpperCase())) && (rutTeller.includes(rut)) && ((filters.situation === 'true') ? (x[1].situation === true) : (x[1].situation === false)))
+      }
+
+      if( nameUser !== '' && rut === '' && filters.situation === 'no-aplica' ) {
+        return (nameTeller.includes(filters.name_user.toUpperCase()) || userTeller.includes(filters.name_user.toUpperCase()))
+      }
+      if( nameUser !== '' && rut !== '' && filters.situation === 'no-aplica' ) {
+        return ((nameTeller.includes(filters.name_user.toUpperCase()) || userTeller.includes(filters.name_user.toUpperCase())) && rutTeller.includes(rut))
+      }
+      if( nameUser !== '' && rut === '' && filters.situation !== 'no-aplica' ) {
+        return ((nameTeller.includes(filters.name_user.toUpperCase()) || userTeller.includes(filters.name_user.toUpperCase())) && ((filters.situation === 'true') ? (x[1].situation === true) : (x[1].situation === false)))
+      }
+
+      if( nameUser === '' && rut !== '' && filters.situation === 'no-aplica' ) {
+        return rutTeller.includes(rut)
+      }
+      if( nameUser === '' && rut !== '' && filters.situation !== 'no-aplica' ) {
+        return (rutTeller.includes(rut) && ((filters.situation === 'true') ? (x[1].situation === true) : (x[1].situation === false)))
+      }
+
+      if( nameUser === '' && rut === '' && filters.situation !== 'no-aplica' ) {
+        return (filters.situation === 'true') ? (x[1].situation === true) : (x[1].situation === false)
+      }
+    })
+
+    filtered = filtered.map(x => x[1])
+
+    dispatch(onHandleTellers(filtered))
+    dispatch(onHandleLoading(false))
+  }
+
   return {
     //* Propiedades
     isLoading,
@@ -199,5 +246,8 @@ export const useTellerStore = () => {
     //* Metodos para ordenar
     sortedTellersByName,
     sortedTellersByStatus,
+
+    //* Filtro
+    filterTellers
   }
 }
