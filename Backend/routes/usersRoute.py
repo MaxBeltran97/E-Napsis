@@ -3,6 +3,10 @@ from flask import request
 from models.user import *
 from models.userRole import *
 from werkzeug.security import generate_password_hash, check_password_hash
+from database.config import Config
+from email.message import EmailMessage
+import ssl
+import smtplib
 
 
 
@@ -22,6 +26,32 @@ def add_user():
         hashed_password = generate_password_hash(password, method='sha256')
 
         new_user = User(username, hashed_password, email, avatar, role)
+
+        emailEmisor = Config.EMAIL
+        emailContrasena = Config.EMAIL_PASSWORD
+        emailReceptor = email
+        user = username
+        print(user)
+        
+        asunto = 'Clave de Acceso Napsis'
+        cuerpo = f'''Estimado(a) {user}:
+
+        le hacemos entrega de su usuario y clave para el acceso a Napsis.   
+            Usuario: {user}    Clave: {password}'''
+        
+        em = EmailMessage()
+        em['From'] = emailEmisor
+        em['To'] = emailReceptor
+        em['Subject'] = asunto
+        em.set_content(cuerpo)
+
+        contexto = ssl.create_default_context()
+
+        with smtplib.SMTP_SSL('smtp.gmail.com', 465, context=contexto) as smtp:
+            smtp.login(emailEmisor, emailContrasena)
+            smtp.sendmail(emailEmisor, emailReceptor, em.as_string())
+
+
 
         db.session.add(new_user)
         db.session.commit()

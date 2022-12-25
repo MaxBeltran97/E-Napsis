@@ -2,6 +2,8 @@ class Config(object):
     SECRET_KEY = 'f0faa2bed03b28e48544762d760aa169'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     DEBUG = False
+    EMAIL = 'napsis.capacitaciones01@gmail.com'
+    EMAIL_PASSWORD = 'rwfgpenmpmsfxnqm'
 
 class DevelopmentConfig(Config):
     """

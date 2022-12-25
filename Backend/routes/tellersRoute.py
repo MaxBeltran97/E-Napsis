@@ -8,7 +8,11 @@ from models.userRole import *
 from models.user import *
 from models.courseTeller import *
 from models.tellerUploadFile import *
+from database.config import Config
 from strgen import StringGenerator
+from email.message import EmailMessage
+import ssl
+import smtplib
 import string
 import secrets
 import os
@@ -48,6 +52,8 @@ def add_teller():
 
         alphabet = string.ascii_letters + string.digits
         password = ''.join(secrets.choice(alphabet) for i in range(10))
+
+
         # --- nuevo cambio
         hashed_password = generate_password_hash(password, method='sha256')
         # --- fin nuevo cambio
@@ -69,7 +75,6 @@ def add_teller():
                         break
                     i += 1
 
-        # --- nuevo cambio
         if (uploadFiles == True):
             tellerRole = UserRole.query.filter_by(
                 name='teller_with_upload').first()
@@ -81,6 +86,33 @@ def add_teller():
 
         print(new_user.username)
         print(password)
+
+        #Se envía un correo electrónico con los datos de ingreso al relator creado
+
+        emailEmisor = Config.EMAIL
+        emailContrasena = Config.EMAIL_PASSWORD
+        emailReceptor = email
+        user = usernameGenerated
+        print(user)
+        
+        asunto = 'Clave de Acceso Napsis'
+        cuerpo = f'''Estimado(a) {fullName}:
+
+        le hacemos entrega de su usuario y clave para el acceso a Napsis.   
+            Usuario: {user}    Clave: {password}'''
+        
+        em = EmailMessage()
+        em['From'] = emailEmisor
+        em['To'] = emailReceptor
+        em['Subject'] = asunto
+        em.set_content(cuerpo)
+
+        contexto = ssl.create_default_context()
+
+        with smtplib.SMTP_SSL('smtp.gmail.com', 465, context=contexto) as smtp:
+            smtp.login(emailEmisor, emailContrasena)
+            smtp.sendmail(emailEmisor, emailReceptor, em.as_string())
+
 
         db.session.add(new_user)
         db.session.commit()
