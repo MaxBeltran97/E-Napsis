@@ -152,9 +152,24 @@ export const uiSlice = createSlice({
           }
         ]
       }
+    ],
+    isHolidaysLoading: false,
+    activeHoliday: {},
+    holidays: [
+      {
+        _id: 1,
+        name: '',
+        day: new Date()
+      },
+      {
+        _id: 2,
+        name: 'Mi cumple',
+        day: new Date(2001, 0, 26)
+      }
     ]
   },
   reducers: {
+    /** Sidebar */
     onOpenSidebar: (state) => {
       state.isSidebarOpen = true
     },
@@ -188,11 +203,27 @@ export const uiSlice = createSlice({
 
     onChangeSidebarActiveOption: (state, {payload}) => {
       state.sidebarActiveItem.activeOption = payload
+    },
+    /** Fin Sidebar */
+    /** Holidays */
+    onHandleHolidayLoading: (state, {payload}) => {
+      state.isHolidaysLoading = payload
+    },
+    onHandleHolidays: (state, {payload}) => {
+      state.holidays = payload
+    },
+    onHandleActiveHoliday: (state, {payload}) => {
+      state.activeHoliday = payload
+    },
+    onResetActiveHoliday: (state) => {
+      state.activeHoliday = {}
     }
+    /** Fin Holidays */
   }
 })
 
 export const {
+  /** Sidebar */
   onOpenSidebar,
   onCloseSidebar,
 
@@ -202,5 +233,11 @@ export const {
   onOpenSidebarItem,
   onCloseAllSidebarItems,
 
-  onChangeSidebarActiveOption
+  onChangeSidebarActiveOption,
+  /** Holiday */
+  onHandleHolidayLoading,
+  onHandleHolidays,
+  onHandleActiveHoliday,
+  onResetActiveHoliday
+
 } = uiSlice.actions

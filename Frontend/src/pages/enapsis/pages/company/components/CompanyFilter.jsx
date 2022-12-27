@@ -24,7 +24,7 @@ export const CompanyFilter = ({ title }) => {
           <Grid container columnSpacing={2} rowSpacing={2}>
             <Grid item xs={12} lg={6}>
               <InputText control={control} name={'Nombre Empresa'} label={'name'} />
-              <InputRut control={control} label={'rut'} dni={true} />
+              <InputRut control={control} label={'rut'} dni={true} filter={true} filterName={'RUT'} />
             </Grid>
 
             <Grid item xs={12} lg={6}>

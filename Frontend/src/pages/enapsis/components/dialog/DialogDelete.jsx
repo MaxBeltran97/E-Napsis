@@ -16,8 +16,8 @@ export const DialogDelete = ({title, body, open, handleClose, functionDelete}) =
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose} >Cancelar</Button>
-        <Button onClick={functionDelete} color={'error'} >Eliminar</Button>
+        <Button onClick={functionDelete} variant={'outlined'} color={'error'} >Eliminar</Button>
+        <Button onClick={handleClose} variant={'outlined'} color={'buttonTernary'} >Cancelar</Button>
       </DialogActions>
     </Dialog>
   )

@@ -4,7 +4,7 @@ import { Controller } from 'react-hook-form'
 import { TextField } from '@mui/material'
 import { InputForm } from '../InputForm'
 
-export const InputRut = memo(({ control, label, required = false, error, dni = false, filter = false }) => {
+export const InputRut = memo(({ control, label, required = false, error, dni = false, filter = false, filterName = "" }) => {
   const [active, setActive] = useState(false)
   const [name, setName] = useState('RUT')
 
@@ -18,7 +18,11 @@ export const InputRut = memo(({ control, label, required = false, error, dni = f
 
   useEffect(() => {
     if(filter) {
-      setName('RUT / DNI')
+      if(filterName !== "") {
+        setName(filterName)
+      }else {
+        setName('RUT / DNI')
+      }
     } else {
       if(dni) {
         setName('DNI')

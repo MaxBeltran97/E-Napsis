@@ -3,7 +3,7 @@ import { useForm, useWatch } from "react-hook-form"
 import { Grid } from "@mui/material"
 import { GridForm, GridInput } from "@components/grid"
 import { InputCondition } from "@components/input/InputCondition"
-import { InputAutocomplete, InputAutocompleteAsync, InputRadio, InputText } from "@components/input/generic"
+import { InputAutocomplete, InputRadio, InputText } from "@components/input/generic"
 import { InputEmail, InputRut } from "@components/input/specific"
 import { ButtonSave } from "@components/button"
 
