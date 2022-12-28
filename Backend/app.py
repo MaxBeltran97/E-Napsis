@@ -9,6 +9,7 @@ from routes.coursesRoute import courses
 from routes.calendarsRoute import calendars
 from routes.usersRoute import users
 from routes.loginRoute import login
+from routes.holidaysRoute import holidays
 
 from database.config import app_config
 from database.db import db
@@ -57,6 +58,8 @@ app.register_blueprint(calendars)
 app.register_blueprint(users)
 
 app.register_blueprint(login)
+
+app.register_blueprint(holidays)
 
 
 # Se carga el host
