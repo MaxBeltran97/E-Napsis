@@ -2,9 +2,10 @@ import { createSlice } from "@reduxjs/toolkit";
 import {
   ADD_CALENDAR_COURSE, ADD_COMPANY, ADD_COURSES, ADD_PARTICIPANTS, ADD_TELLER,
   AUTOMATIC_NOTICES,
-  CALENDAR_COURSE, CHECKLIST, CLASS_BOOKS, COMPANIES, COURSES, DATA_COMPANY, HOLIDAYS, HOME, IMPORT_PARTICIPANTS, PARTICIPANTS,
+  CALENDAR_COURSE, CHECKLIST, CLASS_BOOKS, COMPANIES, COURSES, HOLIDAYS, HOME, IMPORT_PARTICIPANTS, PARTICIPANTS,
   PRIVILEGES,
   SETTINGS,
+  SETTINGS_COMPANY,
   SHOW_CALENDAR_COURSE, SHOW_COMPANIES, SHOW_COURSES, SHOW_PARTICIPANTS, SHOW_TELLERS, TELLERS, TEMPLATE_CONTRACT, TEMPLATE_EMAILS
 } from "@models/privateRoutes";
 
@@ -135,8 +136,8 @@ export const uiSlice = createSlice({
             url: `${SETTINGS + CHECKLIST}`
           },
           {
-            name: 'Datos Empresa',
-            url: `${SETTINGS + DATA_COMPANY}`
+            name: 'Configurar Empresa',
+            url: `${SETTINGS + SETTINGS_COMPANY}`
           },
           {
             name: 'Template Email',
