@@ -3,9 +3,7 @@ from flask import request
 from models.holiday import *
 
 
-
 holidays = flask.Blueprint('holiday', __name__)
-
 
 
 @holidays.route('/api/calendar/holiday', methods=['POST'])

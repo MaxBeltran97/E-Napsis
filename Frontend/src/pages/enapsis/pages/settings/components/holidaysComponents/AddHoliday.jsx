@@ -1,7 +1,7 @@
 import { ButtonSave } from '@components/button'
 import { GridInput, GridPaper } from '@components/grid'
 import { InputDate, InputText } from '@components/input/generic'
-import { useUiStore } from '@hooks/useUiStore'
+import { useSettingStore } from '@hooks/useSettingStore'
 import { Grid } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
@@ -9,16 +9,16 @@ import { ButtonsChangeHoliday } from '.'
 
 export const AddHoliday = () => {
 
-  const { activeHoliday, startSavingHoliday } = useUiStore()
+  const { activeHoliday, startSavingHoliday } = useSettingStore()
 
   const { handleSubmit, setValue, clearErrors, formState: { errors }, control } = useForm({defaultValues: {
     _id: null,
     name: '',
-    day: null
+    date: null
   }})
   useWatch({ control, name: '_id' })
   useWatch({ control, name: 'name' })
-  useWatch({ control, name: 'day' })
+  useWatch({ control, name: 'date' })
 
   const [isModifying, setIsModifying] = useState(false)
   const [formTitle, setFormTitle] = useState('Registrar Feriado')
@@ -28,7 +28,7 @@ export const AddHoliday = () => {
       clearErrors()
       setValue('_id', activeHoliday._id)
       setValue('name', activeHoliday.name)
-      setValue('day', activeHoliday.day)
+      setValue('date', activeHoliday.date)
 
       setFormTitle('Modificar Feriado')
       setIsModifying(true)
@@ -39,7 +39,7 @@ export const AddHoliday = () => {
     clearErrors()
     setValue('_id', null)
     setValue('name', '')
-    setValue('day', null)
+    setValue('date', null)
 
     setFormTitle('Registrar Feriado')
     setIsModifying(false)
@@ -48,6 +48,7 @@ export const AddHoliday = () => {
   const onSubmit = (data) => {
     event.preventDefault()
     startSavingHoliday(data)
+    onResetForm()
   }
 
   return (
@@ -57,10 +58,10 @@ export const AddHoliday = () => {
           <GridInput title={formTitle}>
             <Grid container columnSpacing={4} rowSpacing={0}>
               <Grid item xs={12} lg={6}>
-                <InputText control={control} name={'Nombre'} label={'name'} />
+                <InputDate control={control} name={'Fecha'} label={'date'} required={true} error={errors.date} />
               </Grid>
               <Grid item xs={12} lg={6}>
-                <InputDate control={control} name={'Fecha'} label={'day'} required={true} error={errors.day} />
+                <InputText control={control} name={'Nombre'} label={'name'} />
               </Grid>
             </Grid>
           </GridInput>

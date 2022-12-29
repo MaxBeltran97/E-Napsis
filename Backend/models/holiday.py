@@ -20,7 +20,7 @@ class Holiday(db.Model, Serializer):
 
 class HolidaySchema(ma.Schema):
     class Meta:
-        fields = ('name', 'date')
+        fields = ('_id', 'name', 'date')
 
 holiday_schema = HolidaySchema()
 holidays_schema = HolidaySchema(many=True)

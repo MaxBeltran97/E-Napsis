@@ -1,13 +1,13 @@
 import { GridPaper } from "@components/grid"
 import { SkeletonListItemV2 } from "@components/skeleton"
-import { useUiStore } from "@hooks/useUiStore"
+import { useSettingStore } from "@hooks/useSettingStore"
 import { Divider, Grid, Typography } from "@mui/material"
 import { useEffect } from "react"
 import { AddHoliday, HolidayItem } from "../components/holidaysComponents"
 
 export const HolidaysPage = () => {
 
-  const { isHolidaysLoading, holidays, startGetHolidays } = useUiStore()
+  const { isHolidaysLoading, holidays, startGetHolidays } = useSettingStore()
 
   useEffect(() => {
     startGetHolidays()
