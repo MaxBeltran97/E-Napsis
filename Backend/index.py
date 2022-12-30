@@ -59,6 +59,22 @@ with app.app_context():
         db.session.add(new_user_rol)
         db.session.commit()
 
+    if(bool(UserRole.query.filter_by(name='admin').first()) == False):
+
+        #Se crea la tabla con los roles
+        randomID = StringGenerator(
+                "[\l\d]{20}").render_list(1, unique=True)[0]
+        newRandomID = "4" + randomID #Se crea el identificador random, ver como hacerlo mas único
+        _id = 4
+        identifierRol = newRandomID
+        name = "admin"
+    
+        new_user_rol = UserRole(_id, name, identifierRol)
+        db.session.add(new_user_rol)
+        db.session.commit()        
+
+
+
     db.create_all()    
 
 if __name__ == '__main__':

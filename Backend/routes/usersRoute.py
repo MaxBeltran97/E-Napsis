@@ -113,8 +113,11 @@ def update_user(_id):
         role = request.json['role']
         avatar = request.json['avatar']
 
+
+        hashed_password = generate_password_hash(password, method='sha256')
+        
         user.username = username
-        user.password = password
+        user.password = hashed_password
         user.email = email
         user.role = role
         user.avatar = avatar

@@ -108,46 +108,6 @@ def get_role(_id):
         }, 500
 
 
-@login.route('/api/mailSending/<_id>', methods=['GET'])
-def send_mail(_id):
-    try:
-        user = User.query.get(_id)
-        data = user.serialize()
-        emailReceptor = data.get('email')
-        emailEmisor = Config.EMAIL
-        emailContrasena = Config.EMAIL_PASSWORD
-        user = data.get('username')
-        password = 'contraseña no hasheada'
-        
-        
-        asunto = 'Clave de Acceso Napsis'
-        cuerpo = f'''Estimado(a) {user}:
-
-        le hacemos entrega de su usuario y clave para el acceso a Napsis.   
-            Usuario: {user}    Clave: {password}'''
-        
-        em = EmailMessage()
-        em['From'] = emailEmisor
-        em['To'] = emailReceptor
-        em['Subject'] = asunto
-        em.set_content(cuerpo)
-
-        contexto = ssl.create_default_context()
-
-        with smtplib.SMTP_SSL('smtp.gmail.com', 465, context=contexto) as smtp:
-            smtp.login(emailEmisor, emailContrasena)
-            smtp.sendmail(emailEmisor, emailReceptor, em.as_string())
-        
-        return {
-            "ok": True,
-        }
-    except Exception as e:
-        print(e)
-        return {
-            "ok": False,
-            "msg": "Error al mandar el correo"
-        }, 500
-
 
 @login.route('/api/login/refresh', methods=["POST"])
 @jwt_required(refresh=True)
@@ -162,30 +122,3 @@ def refresh_users_token():
 
 
 
-
-
-
-
-
-
-
-
-
-# @login.route('/api/login/test', methods=['GET'])
-# @jwt_required()
-# def test():
-    
-#     try:
-#         access_token_valid = get_jwt_identity()
-#         print(access_token_valid)
-
-#         return {
-#             "ok": True,
-#             "msg": "Good"
-#         }
-#     except Exception as e:
-#         print(e)
-#         return {
-#             "ok": False,
-#             "msg": "Error en el test"
-#         }, 500

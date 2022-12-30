@@ -297,3 +297,58 @@ def upload_file_teller():
             "ok": False,
             "msg": "Error al subir un archivo"
         }, 500
+
+
+@tellers.route('/api/teller/password/<_id>', methods=['POST'])
+def forget_password(_id):
+    try:
+
+        user = User.query.get(_id)
+        data = user.serialize()
+
+        alphabet = string.ascii_letters + string.digits
+        password = ''.join(secrets.choice(alphabet) for i in range(10))
+        hashed_password = generate_password_hash(password, method='sha256')
+
+        user.password = hashed_password
+
+        db.session.commit()
+        #Se envía un correo electrónico con los nuevos datos de contraseña
+
+        emailEmisor = Config.EMAIL
+        emailContrasena = Config.EMAIL_PASSWORD
+        emailReceptor = data.get('email')
+        user = data.get('username')
+        print(user)
+        
+        asunto = 'Clave de Acceso Napsis'
+        cuerpo = f'''Estimado(a):
+
+        le hacemos entrega de su usuario y clave para el acceso a Napsis.   
+            Usuario: {user}    Clave: {password}'''
+        
+        em = EmailMessage()
+        em['From'] = emailEmisor
+        em['To'] = emailReceptor
+        em['Subject'] = asunto
+        em.set_content(cuerpo)
+
+        contexto = ssl.create_default_context()
+
+        with smtplib.SMTP_SSL('smtp.gmail.com', 465, context=contexto) as smtp:
+            smtp.login(emailEmisor, emailContrasena)
+            smtp.sendmail(emailEmisor, emailReceptor, em.as_string())
+
+
+
+
+        return {
+            "ok": True,
+            "msg": 'Contraseña restablecida'
+        }, 200
+    except Exception as e:
+        print(e)
+        return {
+            "ok": False,
+            "msg": "Error al obtener el relator"
+        }, 500
