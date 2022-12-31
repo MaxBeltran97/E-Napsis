@@ -18,7 +18,6 @@ login = flask.Blueprint('login', __name__)
 #jwt = JWTManager(login)
 
 
-
 @login.route('/api/login', methods=["POST"])
 def signup_post():
     try:
@@ -106,7 +105,6 @@ def get_role(_id):
             "ok": False,
             "msg": "Error al obtener el rol"
         }, 500
-
 
 
 @login.route('/api/login/refresh', methods=["POST"])
