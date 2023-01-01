@@ -4,4 +4,6 @@ export * from './HolidaysPage';
 export * from './PrivilegesPage';
 export * from './SettingsCompanyPage';
 export * from './TemplateContractsPage';
-export * from './TemplateEmailsPage';
+export * from './templateEmails/components/EmailItem';
+export * from './templateEmails/pages';
+export * from './templateEmails/routes';

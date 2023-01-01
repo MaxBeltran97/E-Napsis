@@ -3,7 +3,7 @@ import { SkeletonListItemV2 } from "@components/skeleton"
 import { useSettingStore } from "@hooks/useSettingStore"
 import { Divider, Grid, Typography } from "@mui/material"
 import { useEffect } from "react"
-import { EmailItem } from "../components/emailsComponents"
+import { EmailItem } from "../.."
 
 export const TemplateEmailsPage = () => {
 
@@ -15,9 +15,9 @@ export const TemplateEmailsPage = () => {
 
   return (
     <>
-      <Typography variant="h5" sx={{ mt: 1, ml: 2 }}>Template // Correos</Typography>
+      <Typography variant="h5" sx={{ mt: 1, ml: 2 }}>Gestión de Correos</Typography>
     
-      <GridPaper>
+      <GridPaper rowSpacing={1}>
         <Grid item xs={12} >
           <Grid container alignItems={'center'} columnSpacing={1}>
             <Grid item xs={11}>

@@ -27,7 +27,7 @@ export const ClassBooksPage = () => {
 
   return (
     <>
-      <Typography variant='h5' sx={{ mt: 1, ml: 1 }}>Libro de Clases</Typography>
+      <Typography variant='h5' sx={{ mt: 1, ml: 2 }}>Libro de Clases</Typography>
       {/* Filtro */}
       <GridPaper>
         <Grid item xs={12}>

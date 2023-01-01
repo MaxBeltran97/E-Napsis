@@ -18,7 +18,7 @@ export const HolidaysPage = () => {
       <Typography variant="h5" sx={{ mt: 1, ml: 2 }}>Gestión de Feriados</Typography>
       <AddHoliday />
 
-      <GridPaper>
+      <GridPaper rowSpacing={1}>
         <Grid item xs={12}>
           <Grid container alignItems={'center'} columnSpacing={1}>
             <Grid item xs={2}>
