@@ -19,6 +19,7 @@ class User(db.Model, Serializer, UserMixin):
         self.email = email
         self.avatar = avatar
         self.role = role
+    
     def serialize(self):
         d = Serializer.serialize(self)
         return d
