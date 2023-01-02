@@ -3,10 +3,6 @@ from flask import request
 from models.templatesEmail import *
 
 
-
-
-
-
 templatesEmail = flask.Blueprint('templates', __name__)
 
 

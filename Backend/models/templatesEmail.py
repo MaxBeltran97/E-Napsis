@@ -5,8 +5,8 @@ from helpers.serializable import Serializer
 class TemplatesEmail(db.Model, Serializer):
     _id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False)
-    subject = db.Column(db.String(50), nullable=False)
-    content = db.Column(db.String(50))
+    subject = db.Column(db.String(100), nullable=False)
+    content = db.Column(db.String(500))
     
 
     def __init__(self,_id, title, subject, content):
