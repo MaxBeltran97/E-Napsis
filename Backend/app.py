@@ -11,6 +11,7 @@ from routes.usersRoute import users
 from routes.loginRoute import login
 from routes.holidaysRoute import holidays
 from routes.templatesEmailRoute import templatesEmail
+from routes.privilegeRoute import privilege
 
 from database.config import app_config
 from database.db import db
@@ -63,6 +64,8 @@ app.register_blueprint(login)
 app.register_blueprint(holidays)
 
 app.register_blueprint(templatesEmail)
+
+app.register_blueprint(privilege)
 
 
 # Se carga el host
