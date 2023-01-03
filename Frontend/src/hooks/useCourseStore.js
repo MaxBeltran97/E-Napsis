@@ -21,9 +21,8 @@ export const useCourseStore = () => {
     } catch (error) {
       console.log(error.response)
     }
-    setTimeout(() => {
-      dispatch(onHandleLoading(false))
-    }, 500)
+
+    dispatch(onHandleLoading(false))
   }
 
   const startGetCourse = async (course_id) => {
@@ -141,9 +140,7 @@ export const useCourseStore = () => {
       console.log(error)
     }
 
-    setTimeout(() => {
-      dispatch(onHandleLoading(false))
-    }, 1000)
+    dispatch(onHandleLoading(false))
   }
 
   const sortedCoursesByName = (acending = true) => {
@@ -295,6 +292,77 @@ export const useCourseStore = () => {
     dispatch(onHandleCourses(sorted))
   }
 
+  const filterCourses = async (filters) => {
+    dispatch(onHandleLoading(true))
+
+    const { data } = await enapsisApi.get('/course')
+    const coursesAwait = data.courses
+
+    const name = filters.name.toUpperCase().trim()
+    const sence = filters.sence.toUpperCase().trim()
+
+    const filtered = coursesAwait.filter((x) => {
+      const nameCourse = x.activityName.toUpperCase()
+      const senceCourse = x.sence.toUpperCase()
+
+      if( name === '' && sence === '' && filters.activityType === 'no-aplica' && filters.instruction === '' ) {
+        return true
+      }
+      if( name !== '' && sence !== '' && filters.activityType !== 'no-aplica' && filters.instruction !== '' ) {
+        
+      }
+
+      if( name !== '' && sence === '' && filters.activityType === 'no-aplica' && filters.instruction === '' ) {
+        return nameCourse.includes(name)
+      }
+      if( name !== '' && sence !== '' && filters.activityType === 'no-aplica' && filters.instruction === '' ) {
+        return (nameCourse.includes(name) && senceCourse.includes(sence))
+      }
+      if( name !== '' && sence === '' && filters.activityType !== 'no-aplica' && filters.instruction === '' ) {
+        return (nameCourse.includes(name) && x.activityType === filters.activityType)
+      }
+      if( name !== '' && sence === '' && filters.activityType === 'no-aplica' && filters.instruction !== '' ) {
+        return (nameCourse.includes(name) && x.instruction === filters.instruction)
+      }
+      if( name !== '' && sence !== '' && filters.activityType !== 'no-aplica' && filters.instruction === '' ) {
+        return (nameCourse.includes(name) && senceCourse.includes(sence) && x.activityType === filters.activityType)
+      }
+      if( name !== '' && sence !== '' && filters.activityType === 'no-aplica' && filters.instruction !== '' ) {
+        return (nameCourse.includes(name) && senceCourse.includes(sence) && x.instruction === filters.instruction)
+      }
+      if( name !== '' && sence === '' && filters.activityType !== 'no-aplica' && filters.instruction !== '' ) {
+        return (nameCourse.includes(name) && x.activityType === filters.activityType && x.instruction === filters.instruction)
+      }
+
+      if( name === '' && sence !== '' && filters.activityType === 'no-aplica' && filters.instruction === '' ) {
+        return senceCourse.includes(sence)
+      }
+      if( name === '' && sence !== '' && filters.activityType !== 'no-aplica' && filters.instruction === '' ) {
+        return (senceCourse.includes(sence) && x.activityType === filters.activityType)
+      }
+      if( name === '' && sence !== '' && filters.activityType === 'no-aplica' && filters.instruction !== '' ) {
+        return (senceCourse.includes(sence) && x.instruction === filters.instruction)
+      }
+      if( name === '' && sence !== '' && filters.activityType !== 'no-aplica' && filters.instruction !== '' ) {
+        return (senceCourse.includes(sence) && x.activityType === filters.activityType && x.instruction === filters.instruction)
+      }
+
+      if( name === '' && sence === '' && filters.activityType !== 'no-aplica' && filters.instruction === '' ) {
+        return x.activityType === filters.activityType
+      }
+      if( name === '' && sence === '' && filters.activityType !== 'no-aplica' && filters.instruction !== '' ) {
+        return (x.activityType === filters.activityType && x.instruction === filters.instruction)
+      }
+
+      if( name === '' && sence === '' && filters.activityType === 'no-aplica' && filters.instruction !== '' ) {
+        return x.instruction === filters.instruction
+      }
+    })
+
+    dispatch(onHandleCourses(filtered))
+    dispatch(onHandleLoading(false))
+  }
+
   return {
     //* Propiedades
     isLoading,
@@ -314,6 +382,9 @@ export const useCourseStore = () => {
     sortedCoursesByCode,
     sortedCoursesByModality,
     sortedCoursesByHours,
-    sortedCoursesByValue
+    sortedCoursesByValue,
+
+    //* Filters
+    filterCourses
   }
 }

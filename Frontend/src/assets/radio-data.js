@@ -20,6 +20,21 @@ export const radioBooleanActive = [
   }
 ]
 
+export const radioBooleanActiveFilter = [
+  {
+    'value': true,
+    'name': 'Activo'
+  },
+  {
+    'value': false,
+    'name': 'No Activo'
+  },
+  {
+    'value': 'no-aplica',
+    'name': 'No Aplica'
+  }
+]
+
 export const radioNationalityType = [
   {
     'value': 'chileno',
@@ -84,5 +99,20 @@ export const radioActivityType = [
   {
     'value': 'seminario',
     'name': 'Seminario'
+  }
+]
+
+export const radioActivityTypeFilter = [
+  {
+    'value': 'curso',
+    'name': 'Curso'
+  },
+  {
+    'value': 'seminario',
+    'name': 'Seminario'
+  },
+  {
+    'value': 'no-aplica',
+    'name': 'No Aplica'
   }
 ]

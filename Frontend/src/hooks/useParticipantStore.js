@@ -25,9 +25,8 @@ export const useParticipantStore = () => {
     } catch (error) {
       console.log(error.response)
     }
-    setTimeout(() => {
-      dispatch(onHandleLoading(false))
-    }, 500)
+
+    dispatch(onHandleLoading(false))
   }
 
   const startGetParticipant = async (participant_id) => {
@@ -119,9 +118,7 @@ export const useParticipantStore = () => {
       console.log(error)
     }
 
-    setTimeout(() => {
-      dispatch(onHandleLoading(false))
-    }, 1000)
+    dispatch(onHandleLoading(false))    
   }
 
   const sortedParticipantsByName = (acending = true) => {
@@ -195,6 +192,59 @@ export const useParticipantStore = () => {
     dispatch(onHandleParticipants(sorted))
   }
 
+  const filterParticipants = async (filters) => {
+    dispatch(onHandleLoading(true))
+
+    const { data } = await enapsisApi.get('/participant')
+    const participantAwait = data.participants
+
+    const fullName = filters.name.toUpperCase().trim()
+    const rut = filters.rut.toUpperCase().trim()
+
+    const filtered = participantAwait.filter((x) => {
+      const nameParticipant = `${x.fullName} ${x.lastName} ${x.motherLastName}`.toUpperCase()
+      const rutParticipant = x.rut.toUpperCase()
+      const isCompany = filters.companies_id?.filter((c) => {
+        if(c.value === -1 && x.company_id === null) {
+          return true
+        }
+        return c.value === x.company_id
+      })
+
+      if( fullName === '' && rut === '' && (filters.companies_id === undefined || filters.companies_id.length === 0) ) {
+        return true
+      }
+      if( fullName !== '' && rut !== '' && (filters.companies_id.length >= 1) ) {
+        console.log(filters.companies_id.length)
+        return( (nameParticipant.includes(fullName)) && (rutParticipant.includes(rut)) && (isCompany.length === 1))
+      }
+
+      if( fullName !== '' && rut === '' && (filters.companies_id === undefined || filters.companies_id.length === 0) ) {
+        return nameParticipant.includes(fullName)
+      }
+      if( fullName !== '' && rut !== '' && (filters.companies_id === undefined || filters.companies_id.length === 0) ) {
+        return (nameParticipant.includes(fullName) && rutParticipant.includes(rut))
+      }
+      if( fullName !== '' && rut === '' && (filters.companies_id.length >= 1) ) {
+        return (nameParticipant.includes(fullName) && (isCompany.length === 1))
+      }
+
+      if( fullName === '' && rut !== '' && (filters.companies_id === undefined || filters.companies_id.length === 0) ) {
+        return rutParticipant.includes(rut)
+      }
+      if( fullName === '' && rut !== '' && (filters.companies_id.length >= 1) ) {
+        return (rutParticipant.includes(rut) && (isCompany.length === 1))
+      }
+
+      if( fullName === '' && rut === '' && (filters.companies_id.length >= 1) ) {
+        return (isCompany.length === 1)
+      }
+    })
+
+    dispatch(onHandleParticipants(filtered))
+    dispatch(onHandleLoading(false))
+  }
+
   return {
     //* Propiedades
     isLoading,
@@ -213,6 +263,9 @@ export const useParticipantStore = () => {
     //* Metodos para ordenar
     sortedParticipantsByName,
     sortedParticipantsByRUT,
-    sortedParticipantsByCompany
+    sortedParticipantsByCompany,
+
+    //* Filtrar
+    filterParticipants
   }
 }

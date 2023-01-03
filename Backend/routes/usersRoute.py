@@ -28,7 +28,7 @@ def add_user():
         new_user = User(username, hashed_password, email, avatar, role)
 
         emailEmisor = Config.EMAIL
-        emailContrasena = Config.EMAIL_PASSWORD
+        emailContrasena = Config.EMAIL_PASSWORDy
         emailReceptor = email
         user = username
         print(user)

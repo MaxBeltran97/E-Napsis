@@ -3,7 +3,7 @@ import { useForm, useWatch } from "react-hook-form"
 import { Grid } from "@mui/material"
 import { GridForm, GridInput } from "@components/grid"
 import { InputCondition } from "@components/input/InputCondition"
-import { InputAutocomplete, InputAutocompleteAsync, InputRadio, InputText } from "@components/input/generic"
+import { InputAutocomplete, InputRadio, InputText } from "@components/input/generic"
 import { InputEmail, InputRut } from "@components/input/specific"
 import { ButtonSave } from "@components/button"
 
@@ -26,6 +26,7 @@ export const AddParticipantPage = () => {
 
   const [formTitle, setFormTitle] = useState('Registro de Participante')
   const [buttonTitle, setButtonTitle] = useState('Guardar Participante')
+  const [errorsForm, setErrorsForm] = useState(false)
 
   useEffect(() => {
     if(Object.entries(activeParticipant).length !== 0) {
@@ -39,6 +40,14 @@ export const AddParticipantPage = () => {
     startGetCalendarCourses()
     startGetCompanies()
   }, [])
+
+  useEffect(() => {
+    if(Object.values(errors).length === 0) {
+      setErrorsForm(false)
+    } else {
+      setErrorsForm(true)
+    }
+  }, [Object.values(errors).length])
 
   return (
     <GridForm handleSubmit={handleSubmit} formTitle={formTitle} functionFromData={startSavingParticipant}>
@@ -69,7 +78,7 @@ export const AddParticipantPage = () => {
         </GridInput>
       </Grid>
 
-      <ButtonSave buttonTitle={buttonTitle} errorTitle={'Error al Guardar'} isLoading={isLoading} errorsForm={false} />
+      <ButtonSave buttonTitle={buttonTitle} errorTitle={'Error al Guardar'} isLoading={isLoading} errorsForm={errorsForm} />
     </GridForm>
   )
 }

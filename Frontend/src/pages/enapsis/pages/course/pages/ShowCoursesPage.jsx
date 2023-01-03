@@ -4,7 +4,7 @@ import { useCourseStore } from "@hooks/useCourseStore"
 import { ExpandLess, ExpandMore } from "@mui/icons-material"
 import { Button, Divider, Grid, Typography } from "@mui/material"
 import { useEffect, useState } from "react"
-import { CourseItem } from "../components"
+import { CourseFilter, CourseItem } from "../components"
 
 export const ShowCoursesPage = () => {
 
@@ -44,6 +44,8 @@ export const ShowCoursesPage = () => {
     <>
       <Typography variant="h5" sx={{ mt: 1, ml: 2 }}>Cursos</Typography>
       {/* Filtro */}
+      <CourseFilter title={'Buscar por:'} />
+
       <GridPaper>
         <Grid item xs={12}>
           <Grid container alignItems={'center'} columnSpacing={1}>

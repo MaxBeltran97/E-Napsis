@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 
 import { Box, Button, Divider, Grid, Typography } from "@mui/material"
 import { GridPaper } from "@components/grid"
-import { ParticipantItem } from "../components"
+import { ParticipantFilter, ParticipantItem } from "../components"
 
 import { useParticipantStore } from "@hooks/useParticipantStore"
 import { useCompanyStore } from "@hooks/useCompanyStore"
@@ -43,7 +43,9 @@ export const ShowParticipantsPage = () => {
     <>
       <Typography variant="h5" sx={{ mt: 1, ml: 2 }}>Participantes</Typography>
       {/* Filtro */}
+      <ParticipantFilter title={'Buscar por:'}/>
 
+      {/* ParticipantList */}
       <GridPaper>
         <Grid item xs={12}>
           <Grid container alignItems={'center'} columnSpacing={1}>

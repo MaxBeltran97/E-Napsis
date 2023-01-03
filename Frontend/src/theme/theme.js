@@ -12,6 +12,9 @@ export const theme = createTheme({
     buttonSecondary: {
       main: orange[400]
     },
+    buttonTernary: {
+      main: 'rgba(0, 0, 0, 0.54)'
+    },  
     error: {
       main: red[400]
     },

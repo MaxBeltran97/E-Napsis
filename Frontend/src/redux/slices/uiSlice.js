@@ -1,8 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { 
-  ADD_CALENDAR_COURSE, ADD_COMPANY, ADD_COURSES, ADD_PARTICIPANTS, ADD_TELLER, 
-  CALENDAR_COURSE, CLASS_BOOKS, COMPANIES, COURSES, HOME, IMPORT_PARTICIPANTS, PARTICIPANTS, 
-  SHOW_CALENDAR_COURSE, SHOW_COMPANIES, SHOW_COURSES, SHOW_PARTICIPANTS, SHOW_TELLERS, TELLERS 
+import {
+  ADD_CALENDAR_COURSE, ADD_COMPANY, ADD_COURSES, ADD_PARTICIPANTS, ADD_TELLER,
+  AUTOMATIC_NOTICES,
+  CALENDAR_COURSE, CHECKLIST, CLASS_BOOKS, COMPANIES, COURSES, HOLIDAYS, HOME, IMPORT_PARTICIPANTS, PARTICIPANTS,
+  PRIVILEGES,
+  SETTINGS,
+  SETTINGS_COMPANY,
+  SHOW_CALENDAR_COURSE, SHOW_COMPANIES, SHOW_COURSES, SHOW_PARTICIPANTS, SHOW_TELLERS, TELLERS, TEMPLATE_CONTRACT, TEMPLATE_EMAILS
 } from "@models/privateRoutes";
 
 export const uiSlice = createSlice({
@@ -111,10 +115,48 @@ export const uiSlice = createSlice({
         idIcon: 5,
         url: `${CLASS_BOOKS}`,
         rolesAllowed: ['admin', 'coordinator', 'teller', 'teller_with_upload'],
+      },
+      {
+        name: 'Configuración',
+        idIcon: 6,
+        rolesAllowed: ['admin', 'coordinator'],
+        isItemOpen: false,
+        activeOption: {},
+        options: [
+          {
+            name: 'Privilegios',
+            url: `${SETTINGS + PRIVILEGES}`
+          },
+          {
+            name: 'Feriados',
+            url: `${SETTINGS + HOLIDAYS}`
+          },
+          {
+            name: 'Check-List',
+            url: `${SETTINGS + CHECKLIST}`
+          },
+          {
+            name: 'Configurar Empresa',
+            url: `${SETTINGS + SETTINGS_COMPANY}`
+          },
+          {
+            name: 'Template Email',
+            url: `${SETTINGS + TEMPLATE_EMAILS}`
+          },
+          {
+            name: 'Template Contrato',
+            url: `${SETTINGS + TEMPLATE_CONTRACT}`
+          },
+          {
+            name: 'Avisos Automaticos',
+            url: `${SETTINGS + AUTOMATIC_NOTICES}`
+          }
+        ]
       }
     ]
   },
   reducers: {
+    /** Sidebar */
     onOpenSidebar: (state) => {
       state.isSidebarOpen = true
     },
@@ -148,11 +190,13 @@ export const uiSlice = createSlice({
 
     onChangeSidebarActiveOption: (state, {payload}) => {
       state.sidebarActiveItem.activeOption = payload
-    }
+    },
+    /** Fin Sidebar */
   }
 })
 
 export const {
+  /** Sidebar */
   onOpenSidebar,
   onCloseSidebar,
 
@@ -162,5 +206,5 @@ export const {
   onOpenSidebarItem,
   onCloseAllSidebarItems,
 
-  onChangeSidebarActiveOption
+  onChangeSidebarActiveOption,
 } = uiSlice.actions

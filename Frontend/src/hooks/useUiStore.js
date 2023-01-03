@@ -1,12 +1,14 @@
 import { useDispatch, useSelector } from "react-redux"
 
 import { onChangeSidebarActiveItem, onChangeSidebarActiveOption, onCloseAllSidebarItems, onCloseSidebar, onOpenSidebar, onOpenSidebarActiveItem, onOpenSidebarItem } from "@reduxSlices/uiSlice"
+import enapsisApi from "@api/enapsisApi"
 
 export const useUiStore = () => {
 
   const dispatch = useDispatch()
   const { isSidebarOpen, sidebarActiveItem, sidebarItems } = useSelector(state => state.ui)
 
+  /** Sidebar */
   const openSidebar = () => {
     dispatch(onOpenSidebar())
   }
@@ -54,14 +56,15 @@ export const useUiStore = () => {
   const changeSidebarActiveOption = (option) => {
     dispatch(onChangeSidebarActiveOption(option))
   }
+  /** Fin Sidebar */
 
   return {
-    //* Propiedades
+    //* Propiedades Sidebar
     isSidebarOpen,
     sidebarActiveItem,
     sidebarItems,
 
-    //* Metodos
+    //* Metodos Sidebar
     openSidebar,
     closeSidebar,
     setByUrlSidebarActiveItem,
@@ -69,6 +72,6 @@ export const useUiStore = () => {
     openSidebarActiveItem,
     openSidebarItem,
     closeAllSidebarItems,
-    changeSidebarActiveOption
+    changeSidebarActiveOption,
   }
 }

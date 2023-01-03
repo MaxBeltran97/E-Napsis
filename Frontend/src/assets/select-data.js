@@ -16,3 +16,18 @@ export const selectMaritalStatus = [
     'name': 'Viudo(a)'
   }
 ]
+
+export const selectRoles = [
+  {
+    'value': 'admin',
+    'name': 'Administrador'
+  },
+  {
+    'value': 'coordinator',
+    'name': 'Coordinador Académico'
+  },
+  {
+    'value': 'teller',
+    'name': 'Profesor/Relator'
+  }
+]
