@@ -48,6 +48,7 @@ export const useTellerStore = () => {
     } catch (error) {
       console.log(error.response)
     }
+    return null
   }
 
   const startChangeTeller = (teller) => {
@@ -228,6 +229,16 @@ export const useTellerStore = () => {
     dispatch(onHandleLoading(false))
   }
 
+  const startNewKeyTeller = async (teller_id) => {
+    try {
+      const {data} = await enapsisApi.post(`/teller/password/${teller_id}`)
+      return data.ok
+    } catch (error) {
+      console.log(error.response)
+    }
+    return false
+  }
+
   return {
     //* Propiedades
     isLoading,
@@ -242,6 +253,7 @@ export const useTellerStore = () => {
     startResetActiveTeller,
     startSavingTeller,
     startDeleteTeller,
+    startNewKeyTeller,
 
     //* Metodos para ordenar
     sortedTellersByName,

@@ -1,5 +1,5 @@
 import enapsisApi from "@api/enapsisApi"
-import { onHandleActiveHoliday, onHandleEmails, onHandleEmailsLoading, onHandleHolidayLoading, onHandleHolidays, onResetActiveHoliday } from "@reduxSlices/settingSlice"
+import { onHandleActiveEmail, onHandleActiveHoliday, onHandleEmails, onHandleEmailsLoading, onHandleHolidayLoading, onHandleHolidays, onResetActiveEmail, onResetActiveHoliday } from "@reduxSlices/settingSlice"
 import { useDispatch, useSelector } from "react-redux"
 
 export const useSettingStore = () => {
@@ -124,25 +124,52 @@ export const useSettingStore = () => {
   /** Fin Holiday */
   /** Email */
   const startGetEmails = async () => {
-    // dispatch(onHandleEmailsLoading(true))
+    dispatch(onHandleEmailsLoading(true))
 
-    // try {
-    //   const { data } = await enapsisApi.get('')
-    //   if(data.ok) {
-    //     dispatch(onHandleEmails())
-    //   }
-    // } catch (error) {
-    //   console.log(error.response)
-    // }
-    // dispatch(onHandleEmailsLoading(false))
+    try {
+      const { data } = await enapsisApi.get('/templates/email')
+      if(data.ok) {
+        dispatch(onHandleEmails(data.templateEmails))
+      }
+    } catch (error) {
+      console.log(error.response)
+    }
+    dispatch(onHandleEmailsLoading(false))
+  }
+
+  const startGetEmail = async (email_id) => {
+    try {
+      const { data } = await enapsisApi.get(`/templates/email/${email_id}`)
+      if (data.ok) {
+        return data.templateEmail
+      }
+    } catch (error) {
+      console.log(error.response)
+    }
+    return null
   }
 
   const startChangeEmail = (email) => {
+    dispatch(onHandleActiveEmail(email))
+  }
 
+  const startResetEmail = () => {
+    dispatch(onResetActiveEmail())
   }
 
   const startUpdateEmail = async (email) => {
+    dispatch(onHandleEmailsLoading(true))
 
+    try {
+      const { data } = await enapsisApi.put(`/templates/email/${email._id}`, JSON.stringify(email), { headers: { 'Content-Type': 'application/json' }})
+      if(data.ok) {
+        dispatch(onHandleActiveEmail(data.templateEmail))
+      }
+    } catch (error) {
+      console.log(error.response)
+    }
+
+    dispatch(onHandleEmailsLoading(false))
   }
   /** Fin Email */
 
@@ -164,7 +191,9 @@ export const useSettingStore = () => {
     startUpdateHoliday,
     //* Metodos Emails
     startGetEmails,
+    startGetEmail,
     startChangeEmail,
+    startResetEmail,
     startUpdateEmail
   }
 }

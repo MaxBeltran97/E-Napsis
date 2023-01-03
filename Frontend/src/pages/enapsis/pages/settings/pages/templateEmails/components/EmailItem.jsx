@@ -1,3 +1,4 @@
+import { useSettingStore } from "@hooks/useSettingStore"
 import { SETTINGS, TEMPLATE_EMAILS } from "@models/privateRoutes"
 import { EmailOutlined } from "@mui/icons-material"
 import { Divider, Grid, IconButton, Tooltip, Typography } from "@mui/material"
@@ -6,8 +7,10 @@ import { useNavigate } from "react-router-dom"
 export const EmailItem = ({ email }) => {
 
   const navigate = useNavigate()
+  const { startChangeEmail } = useSettingStore()
 
   const routeTemplate = () => {
+    startChangeEmail(email)
     navigate(`${SETTINGS}${TEMPLATE_EMAILS}/${email._id}`, {replace: true})
   }
 

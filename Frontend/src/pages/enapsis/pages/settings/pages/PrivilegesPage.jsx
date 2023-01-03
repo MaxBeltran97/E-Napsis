@@ -107,10 +107,10 @@ export const PrivilegesPage = () => {
               <Grid item xs={12} lg={6}>
                 <Typography sx={{ pl: 1, fontSize: 18 }}>Libro de Clases</Typography>
                 <Grid container direction={'column'} sx={{ pl: 3 }}>
-                  <InputCheckbox control={control} name={'Ver Libro'} label={'showClassBooks'} />
-                  <InputCheckbox control={control} name={'Ingresar y ver Asistencia'} label={'attendanceClassBooks'} />
-                  <InputCheckbox control={control} name={'Ingresar y ver Evaluaciones'} label={'evaluationsClassBooks'} />
-                  <InputCheckbox control={control} name={'Reporte Final'} label={'finalReportClassBooks'} />
+                  <InputCheckbox control={control} name={'Ver Libro'} label={'showClassBook'} />
+                  <InputCheckbox control={control} name={'Ingresar y ver Asistencia'} label={'attendanceClassBook'} />
+                  <InputCheckbox control={control} name={'Ingresar y ver Evaluaciones'} label={'evaluationsClassBook'} />
+                  <InputCheckbox control={control} name={'Reporte Final'} label={'finalReportClassBook'} />
                 </Grid>
               </Grid>
               <Grid item xs={12}>

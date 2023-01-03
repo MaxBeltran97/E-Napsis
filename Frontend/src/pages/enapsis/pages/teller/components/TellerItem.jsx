@@ -4,7 +4,7 @@ import { CloudUploadOutlined, DeleteOutlined, ModeOutlined, Preview, RadioButton
 import { Divider, Grid, IconButton, Tooltip, Typography } from "@mui/material"
 import { useEffect } from "react"
 import { useState } from "react"
-import { TellerView } from "."
+import { DialogSendKey, TellerView } from "."
 
 export const TellerItem = ({ teller }) => {
 
@@ -14,6 +14,7 @@ export const TellerItem = ({ teller }) => {
 
   const [openDeleteView, setOpenDeleteView] = useState(false)
   const [openViewView, setOpenViewView] = useState(false)
+  const [openSendKeyView, setOpenSendKeyView] = useState(false)
 
   const getUsername = async () => {
     const { username } = await startGetTellerUsername(teller.user_id)
@@ -43,6 +44,13 @@ export const TellerItem = ({ teller }) => {
   }
   const handleCloseViewView = () => {
     setOpenViewView(false)
+  }
+
+  const handleOpenSendKeyView = () => {
+    setOpenSendKeyView(true)
+  }
+  const handleCloseSendKeyView = () => {
+    setOpenSendKeyView(false)
   }
 
   return (
@@ -113,7 +121,7 @@ export const TellerItem = ({ teller }) => {
           <Grid container justifyContent={'center'}>
             <Grid item>
               <Tooltip title={'Enviar Clave'}>
-                <IconButton>
+                <IconButton onClick={handleOpenSendKeyView}>
                   <Send fontSize="small" sx={{ transform: 'rotate(-45deg)' }} />
                 </IconButton>
               </Tooltip>
@@ -134,6 +142,11 @@ export const TellerItem = ({ teller }) => {
         functionDelete={onDeleteTeller}
       />
       <TellerView teller={teller} open={openViewView} handleClose={handleCloseViewView} />
+      <DialogSendKey 
+        open={openSendKeyView}
+        handleClose={handleCloseSendKeyView}
+        teller={teller}
+      />
     </Grid>
   )
 }

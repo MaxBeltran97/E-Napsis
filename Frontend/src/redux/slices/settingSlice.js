@@ -9,19 +9,7 @@ export const settingSlice = createSlice({
 
     isEmailsLoading: false,
     activeEmail: {},
-    emails: [
-      {
-        _id: 1,
-        title: 'Enviar Clave Empresa',
-        content: 'xd'
-      },
-      {
-        _id: 2,
-        title: 'Enviar Clave Participante - General',
-        content: 'xd'
-      },
-    ],
-
+    emails: [],
   },
   reducers: {
     /** Holidays */

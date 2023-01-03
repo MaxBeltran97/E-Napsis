@@ -2,23 +2,17 @@ import flask
 from flask import request
 from models.templatesEmail import *
 
-
-
-
-
-
 templatesEmail = flask.Blueprint('templates', __name__)
 
 
-
-@templatesEmail.route('/api/templates/email/', methods=['GET'])
+@templatesEmail.route('/api/templates/email', methods=['GET'])
 def get_templates_email():
     try:
         all_templates = TemplatesEmail.query.all()
         result = templates_email_schema.dump(all_templates)
         return {
             "ok": True,
-            "users": result
+            "templateEmails": result
         }, 200
     except Exception as e:
         print(e)
@@ -35,7 +29,7 @@ def get_template_email(_id):
         template = TemplatesEmail.query.get(_id)
         return {
             "ok": True,
-            "holiday": template.serialize()
+            "templateEmail": template.serialize()
         }, 200
     except Exception as e:
         print(e)
@@ -47,7 +41,7 @@ def get_template_email(_id):
 
 @templatesEmail.route('/api/templates/email/<_id>', methods=['PUT'])
 def update_template_email(_id):
-    
+
     try:
         template = TemplatesEmail.query.get(_id)
 
@@ -60,7 +54,7 @@ def update_template_email(_id):
         db.session.commit()
         return {
             "ok": True,
-            "holiday": template.serialize()
+            "templateEmail": template.serialize()
         }, 200
     except Exception as e:
         print(e)
@@ -70,4 +64,3 @@ def update_template_email(_id):
         }, 500
     finally:
         db.session.close()
-

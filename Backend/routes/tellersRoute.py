@@ -302,8 +302,8 @@ def upload_file_teller():
 @tellers.route('/api/teller/password/<_id>', methods=['POST'])
 def forget_password(_id):
     try:
-
-        user = User.query.get(_id)
+        teller = Teller.query.get(_id)
+        user = User.query.get(teller.user_id)
         data = user.serialize()
 
         alphabet = string.ascii_letters + string.digits
@@ -338,9 +338,6 @@ def forget_password(_id):
         with smtplib.SMTP_SSL('smtp.gmail.com', 465, context=contexto) as smtp:
             smtp.login(emailEmisor, emailContrasena)
             smtp.sendmail(emailEmisor, emailReceptor, em.as_string())
-
-
-
 
         return {
             "ok": True,
