@@ -2,13 +2,13 @@ import { Checkbox, FormControlLabel, Grid } from "@mui/material"
 import { memo } from "react"
 import { Controller } from "react-hook-form"
 
-export const InputCheckbox = memo(({ control, name, label }) => {
+export const InputCheckbox = memo(({ control, name, label, defaultValue = false }) => {
   return (
     <Grid item xs={12}>
       <Controller 
         control={control}
         name={label}
-        defaultValue={false}
+        defaultValue={defaultValue}
         
         render={({field: { onChange, value, ...field}}) => (
           <FormControlLabel 

@@ -2,6 +2,7 @@ import { selectRoles } from "@assets/select-data"
 import { ButtonSave } from "@components/button"
 import { GridForm, GridInput } from "@components/grid"
 import { InputCheckbox, InputSelect } from "@components/input/generic"
+import { useSettingStore } from "@hooks/useSettingStore"
 import { Divider, Grid, Typography } from "@mui/material"
 import { useEffect } from "react"
 import { useState } from "react"
@@ -9,8 +10,11 @@ import { useForm, useWatch } from "react-hook-form"
 
 export const PrivilegesPage = () => {
 
-  const { handleSubmit, formState: {errors}, control } = useForm()
+  const { roles, privileges, privilegesRole, startGetRoles, startGetPrivileges, startGetPrivilegesRole, startResetPrivilegesRole, startUpdatePrivilegesRole } = useSettingStore()
+
+  const { handleSubmit, setValue, formState: {errors}, control } = useForm()
   const role = useWatch({ control, name: 'role'})
+
 
   const [errorsForm, setErrorsForm] = useState(false)
 
@@ -22,8 +26,38 @@ export const PrivilegesPage = () => {
     }
   }, [Object.values(errors).length])
 
+
+  useEffect(() => {
+    startGetPrivileges()
+    startGetRoles()
+  }, [])
+
+
+  useEffect(() => {
+    const roleSelect = roles.filter((rol) => {return rol.name === role})[0]
+    if(!!roleSelect) {
+      startGetPrivilegesRole(roleSelect.identifierRole)
+    }else {
+      startResetPrivilegesRole()
+    }
+  }, [role])
+
+
+  useEffect(() => {
+    privileges.map((privilege) => {
+      setValue(privilege.name, !!(privilegesRole.filter((privilegeRole) => { return privilegeRole.name === privilege.name }))[0])
+      return privilege
+    })
+  }, [privilegesRole])
+  
+
   const onSubmit = (data) => {
-    console.log(data)
+    const roleSelect = roles.filter((rol) => {return rol.name === role})[0]
+    if(!!roleSelect) {
+      startUpdatePrivilegesRole(roleSelect.identifierRole, data)
+    }else {
+      startResetPrivilegesRole()
+    }
   }
   
   return (
@@ -154,7 +188,7 @@ export const PrivilegesPage = () => {
                   <InputCheckbox control={control} name={'Modificar'} label={'modifyCourseCalendar'} />
                   <InputCheckbox control={control} name={'Eliminar'} label={'deleteCourseCalendar'} />
                   <InputCheckbox control={control} name={'Fechas de Clases'} label={'classDatesCourseCalendar'} />
-                  <InputCheckbox control={control} name={'Check-List'} label={'chekListCourseCalendar'} />
+                  <InputCheckbox control={control} name={'Check-List'} label={'checkListCourseCalendar'} />
                   <InputCheckbox control={control} name={'Agregar Participantes al Curso'} label={'addParticipantsCourseCalendar'} />
                 </Grid>
               </Grid>

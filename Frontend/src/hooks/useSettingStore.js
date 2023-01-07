@@ -1,11 +1,11 @@
 import enapsisApi from "@api/enapsisApi"
-import { onHandleActiveEmail, onHandleActiveHoliday, onHandleEmails, onHandleEmailsLoading, onHandleHolidayLoading, onHandleHolidays, onResetActiveEmail, onResetActiveHoliday } from "@reduxSlices/settingSlice"
+import { onHandleActiveEmail, onHandleActiveHoliday, onHandleEmails, onHandleEmailsLoading, onHandleHolidayLoading, onHandleHolidays, onHandlePrivileges, onHandlePrivilegesRole, onHandleRole, onResetActiveEmail, onResetActiveHoliday, onResetPrivilegesRole } from "@reduxSlices/settingSlice"
 import { useDispatch, useSelector } from "react-redux"
 
 export const useSettingStore = () => {
 
   const dispatch = useDispatch()
-  const { isHolidaysLoading, activeHoliday, holidays, isEmailsLoading, activeEmail, emails} = useSelector(state => state.setting)
+  const { isHolidaysLoading, activeHoliday, holidays, isEmailsLoading, activeEmail, emails, roles, privileges, privilegesRole} = useSelector(state => state.setting)
 
   /** Holiday */
   const startGetHolidays = async () => {
@@ -172,6 +172,70 @@ export const useSettingStore = () => {
     dispatch(onHandleEmailsLoading(false))
   }
   /** Fin Email */
+  /** Privileges  */
+  const startGetRoles = async () => {
+    try {
+      const { data } = await enapsisApi.get('/privilege/role')
+      if(data.ok) {
+        dispatch(onHandleRole(data.roles))
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const startGetPrivileges = async () => {
+    try {
+      const { data } = await enapsisApi.get('/privilege')
+      if(data.ok) {
+        dispatch(onHandlePrivileges(data.privileges))
+      }
+    } catch (error) {
+      console.log(error.response)
+    }
+  }
+
+  const startGetPrivilegesRole = async (identifierRole) => {
+    try {
+      const { data } = await enapsisApi.get(`/privilege/role/${identifierRole}`)
+      if(data.ok) {
+        dispatch(onHandlePrivilegesRole(data.privileges))
+      }
+    } catch (error) {
+      console.log(error.response)
+    }
+  }
+
+  const startResetPrivilegesRole = () => {
+    dispatch(onResetPrivilegesRole())
+  }
+
+  const startUpdatePrivilegesRole = async (identifierRole, newPrivileges) => {
+    const privilege = []
+
+    delete newPrivileges.role
+    Object.entries(newPrivileges).forEach(([key, value]) => {
+      if(value === false){
+        delete newPrivileges[key]
+      }else {
+        privilege.push({_id: privileges.filter((privilegeItem) => {return privilegeItem.name === key })[0]._id})
+      }
+    })
+
+    try {
+      const { data } = await enapsisApi.put(`/privilege/role/${identifierRole}`, JSON.stringify({privilege}), { headers: { 'Content-Type': 'application/json' }})
+      if(data.ok) {
+        //hacer algo
+        console.log('quedo de pana')
+      }
+    } catch (error) {
+      console.log(error.response)
+    }
+
+    // console.log(privilege)
+    // console.log(identifierRole)
+  }
+  /** Fin Privileges */
 
   return {
     //* Propiedades Holiday
@@ -182,6 +246,10 @@ export const useSettingStore = () => {
     isEmailsLoading,
     activeEmail,
     emails,
+    //* Propiedades Privileges
+    roles,
+    privileges,
+    privilegesRole,
 
     //* Metodos Holidays
     startGetHolidays,
@@ -194,6 +262,12 @@ export const useSettingStore = () => {
     startGetEmail,
     startChangeEmail,
     startResetEmail,
-    startUpdateEmail
+    startUpdateEmail,
+    //* Metodos Privileges
+    startGetRoles,
+    startGetPrivileges,
+    startGetPrivilegesRole,
+    startResetPrivilegesRole,
+    startUpdatePrivilegesRole,
   }
 }
