@@ -45,7 +45,6 @@ def get_privilege_role(identifierRole):
         return {
             "ok": True,
             "privileges": result
-            
         }, 200
     except Exception as e:
         print(e)
@@ -91,9 +90,8 @@ def update_privilege_role(identifierRole):
 def get_roles():
     try:
         all_roles = UserRole.query.all()
-        result = privileges_schema.dump(all_roles)
+        result = user_role_schemas.dump(all_roles)
 
-        
         return {
             "ok": True,
             "roles": result

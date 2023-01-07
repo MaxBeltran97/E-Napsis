@@ -10,6 +10,10 @@ export const settingSlice = createSlice({
     isEmailsLoading: false,
     activeEmail: {},
     emails: [],
+
+    roles: [],
+    privileges: [],
+    privilegesRole: [],
   },
   reducers: {
     /** Holidays */
@@ -38,8 +42,23 @@ export const settingSlice = createSlice({
     },
     onResetActiveEmail: (state) => {
       state.activeEmail = {}
-    }
+    },
     /** Fin Emails */
+    /** Privileges */
+    onHandleRole: (state, { payload }) => {
+      state.roles = payload
+    },
+    onHandlePrivileges: (state, { payload }) => {
+      state.privileges = payload
+    },
+    onHandlePrivilegesRole: (state, { payload }) => {
+      state.privilegesRole = payload
+    },
+    onResetPrivilegesRole: (state) => {
+      state.privilegesRole = []
+    }
+
+    /** Fin Privileges */
   }
 })
 
@@ -53,5 +72,10 @@ export const {
   onHandleEmailsLoading,
   onHandleEmails,
   onHandleActiveEmail,
-  onResetActiveEmail
+  onResetActiveEmail,
+  /** Privileges */
+  onHandleRole,
+  onHandlePrivileges,
+  onHandlePrivilegesRole,
+  onResetPrivilegesRole
 } = settingSlice.actions
