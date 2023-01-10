@@ -13,6 +13,8 @@ from routes.holidaysRoute import holidays
 from routes.templatesEmailRoute import templatesEmail
 from routes.privilegeRoute import privilege
 from routes.companyDataRoute import companyData
+from routes.contractRoute import contract
+from routes.automaticNoticesRoute import automaticNotice
 
 from database.config import app_config
 from database.db import db
@@ -69,6 +71,10 @@ app.register_blueprint(templatesEmail)
 app.register_blueprint(privilege)
 
 app.register_blueprint(companyData)
+
+app.register_blueprint(contract)
+
+app.register_blueprint(automaticNotice)
 
 
 # Se carga el host

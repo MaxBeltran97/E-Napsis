@@ -7,6 +7,8 @@ from models.userRole import *
 from models.templatesEmail import *
 from models.privilege import *
 from models.userRolePrivilege import *
+from models.contract import *
+from models.automaticNotices import *
 from strgen import StringGenerator
 
 db.init_app(app)
@@ -54,9 +56,6 @@ with app.app_context():
             new_privilege = Privilege(_id, name)
             db.session.add(new_privilege)
             db.session.commit()
-
-
-
 
 
 #----------------------------------------User Roles
@@ -130,6 +129,43 @@ with app.app_context():
             new_templates_email = TemplatesEmail(_id, title, subject, content)
             db.session.add(new_templates_email)
             db.session.commit()
+
+
+#----------------------------------------Contracts
+
+    titleContracts = ['CONTRATO DE PRESTACIÓN DE SERVICIOS - PROFESIONALES A HONORARIOS', 'CONTRATO DE PRESTACIÓN DE SERVICIOS DE CAPACITACIÓN']
+
+
+    for i in range(len(titleContracts)):
+        if(bool(Contract.query.filter_by(title=titleContracts[i]).first()) == False):
+            _id = i + 1
+            title = titleContracts[i]
+            header = '-'
+            content = '-'
+            representativeSignature = '-'
+            new_contracts = Contract(_id, title, header, content, representativeSignature)
+            db.session.add(new_contracts)
+            db.session.commit()
+
+
+#----------------------------------------Automatic Notices
+
+
+    items = ['Curso sin Encuesta de Participantes', 'Curso sin Asistencia o Notas']
+    details = ['Indique la cantidad de días después de terminado un curso que desea enviar aviso al coordinador del curso o al encargado del área',
+     'Indique la cantidad de días después de terminado un curso que desea enviar aviso al coordinador del curso']
+
+    
+    for i in range(len(items)):
+        if(bool(AutomaticNotices.query.filter_by(item=items[i]).first()) == False):
+            _id = i + 1
+            item = items[i]
+            days = 1
+            detail = details[i]
+            new_automatic_notice = AutomaticNotices(_id, item, days, detail)
+            db.session.add(new_automatic_notice)
+            db.session.commit()
+
 
 
     db.create_all()
