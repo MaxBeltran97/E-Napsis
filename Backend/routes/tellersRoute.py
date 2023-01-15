@@ -1,5 +1,5 @@
 import flask
-from flask import request
+from flask import request, Flask
 from flask_jwt_extended import create_access_token, get_jwt_identity, JWTManager, verify_jwt_in_request
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
@@ -16,6 +16,11 @@ import smtplib
 import string
 import secrets
 import os
+
+app = Flask(__name__)
+
+UPLOAD_FOLDER = 'assets/tellerFiles'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 tellers = flask.Blueprint('tellers', __name__)
 
@@ -268,7 +273,7 @@ def upload_file_teller():
         extension = filesplit[len(filesplit)-1]
 
         flag = True
-        while (flag):
+        while(flag):
             try:
                 randomName = StringGenerator(
                     "[\l\d]{20}").render_list(1, unique=True)[0]
@@ -278,9 +283,8 @@ def upload_file_teller():
 
                 db.session.add(new_tellerUpload)
                 db.session.commit()
-
                 file.save(os.path.join(
-                    tellers.config["assets/tellerFiles"], nuevoNombreFile))
+                    app.config["UPLOAD_FOLDER"], nuevoNombreFile))
                 flag = False
             except Exception as e:
                 db.session.rollback()

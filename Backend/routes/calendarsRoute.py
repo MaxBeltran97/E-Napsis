@@ -1,6 +1,6 @@
 import flask
 import os
-from flask import request
+from flask import request, Flask
 from strgen import StringGenerator
 from models.calendarCourseEvaluation import *
 from models.calendarCourseUploadFile import *
@@ -9,6 +9,11 @@ from models.participant import *
 from models.teller import *
 from models.courseTeller import *
 
+
+app = Flask(__name__)
+
+UPLOAD_FOLDER = 'assets/calendarFiles'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 calendars = flask.Blueprint('calendars', __name__)
 
@@ -92,7 +97,6 @@ def get_calendars():
             "msg": "Error al obtener cursos calendarizados"
         }, 500
 
-
 @calendars.route('/api/calendar/<_id>', methods=['GET'])
 def get_calendar(_id):
     try:
@@ -147,7 +151,6 @@ def get_class_books():
             "msg": "Error al obtener el Libro de Clases"
         }, 500
 
-
 @calendars.route('/api/calendar/class_book/<_userTellerId>', methods=['GET'])
 def get_class_books_teller(_userTellerId):
     try:
@@ -181,7 +184,6 @@ def get_class_books_teller(_userTellerId):
             "msg": "Error al obtener el Libro de Clases"
         }, 500
 # --- fin nuevo cambio
-
 
 @calendars.route('/api/calendar/<_id>', methods=['PUT'])
 def update_calendar(_id):
@@ -321,7 +323,7 @@ def upload_file_calendar():
                 db.session.add(new_calendarCourseUpload)
                 db.session.commit()
                 file.save(os.path.join(
-                    calendars.config["assets/calendarFiles"], nuevoNombreFile))
+                    app.config["UPLOAD_FOLDER"], nuevoNombreFile))
                 flag = False
             except Exception as e:
                 db.session.rollback()

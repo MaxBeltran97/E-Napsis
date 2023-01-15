@@ -95,8 +95,8 @@ with app.app_context():
         #Se crea la tabla con los roles
         randomID = StringGenerator(
                 "[\l\d]{20}").render_list(1, unique=True)[0]
-        newRandomID = "4" + randomID #Se crea el identificador random, ver como hacerlo mas único
-        _id = 4
+        newRandomID = "3" + randomID #Se crea el identificador random, ver como hacerlo mas único
+        _id = 3
         identifierRol = newRandomID
         name = "admin"
 
@@ -135,25 +135,26 @@ with app.app_context():
 
     titleContracts = ['CONTRATO DE PRESTACIÓN DE SERVICIOS - PROFESIONALES A HONORARIOS', 'CONTRATO DE PRESTACIÓN DE SERVICIOS DE CAPACITACIÓN']
 
-
-    for i in range(len(titleContracts)):
-        if(bool(Contract.query.filter_by(title=titleContracts[i]).first()) == False):
-            _id = i + 1
-            title = titleContracts[i]
-            header = '-'
-            content = '-'
-            representativeSignature = '-'
-            new_contracts = Contract(_id, title, header, content, representativeSignature)
-            db.session.add(new_contracts)
-            db.session.commit()
+    if((len(Contract.query.all())) != 2):
+        for i in range(len(titleContracts)):
+            if(bool(Contract.query.filter_by(title=titleContracts[i]).first()) == False):
+                _id = i + 1
+                title = titleContracts[i]
+                header = '-'
+                content = '-'
+                representativeSignature = '-'
+                new_contracts = Contract(_id, title, header, content, representativeSignature)
+                db.session.add(new_contracts)
+                db.session.commit()
 
 
 #----------------------------------------Automatic Notices
 
 
-    items = ['Curso sin Encuesta de Participantes', 'Curso sin Asistencia o Notas']
+    items = ['Curso sin Encuesta de Participantes', 'Curso sin Asistencia o Notas', 'Curso sin Checklist']
     details = ['Indique la cantidad de días después de terminado un curso que desea enviar aviso al coordinador del curso o al encargado del área',
-     'Indique la cantidad de días después de terminado un curso que desea enviar aviso al coordinador del curso']
+     'Indique la cantidad de días después de terminado un curso que desea enviar aviso al coordinador del curso',
+     'Indique la cantidad de días después de iniciado un curso que desea enviar aviso']
 
     
     for i in range(len(items)):

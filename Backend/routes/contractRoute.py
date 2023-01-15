@@ -1,9 +1,18 @@
 import flask
-from flask import request
+from flask import request, Flask, send_from_directory
 from models.contract import *
+from models.contractUploadFile import *
+from strgen import StringGenerator
+import os
+import os.path
 
 
 
+
+app = Flask(__name__)
+
+UPLOAD_FOLDER = 'assets/representativeSignature'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 contract = flask.Blueprint('contract', __name__)
 
@@ -34,6 +43,99 @@ def get_contract(_id):
         return {
             "ok": True,
             "contract": contract.serialize()
+        }, 200
+    except Exception as e:
+        print(e)
+        return {
+            "ok": False,
+            "msg": "Error al obtener el contrato"
+        }, 500
+
+@contract.route('/api/contract/<_id>', methods=['PUT'])
+def update_contract(_id):
+
+    try:
+        contract = Contract.query.get(_id)
+
+        title = request.json['title']
+        header = request.json['header']
+        content = request.json['content']
+    
+        
+        contract.title = title
+        contract.header = header
+        contract.content = content
+        
+        
+        db.session.commit()
+        return {
+            "ok": True,
+            "contract": contract.serialize()
+
+        }, 200
+    except Exception as e:
+        print(e)
+        return {
+            "ok": False,
+            "msg": "Error al actualizar el contrato"
+        }, 500
+
+@contract.route('/api/contract/uploadfile/<_id>', methods=['PUT'])
+def upload_file_contract(_id):
+    try:
+        contract = Contract.query.get(_id)
+
+        #verificar si existe la imagen y eliminar
+        if(contract.representativeSignature != '-'):
+            path = os.path.join(
+                    app.config["UPLOAD_FOLDER"], contract.representativeSignature)
+            os.remove(path)
+        
+        file = request.files["representativeSignature"]
+
+        filesplit = file.filename.split('.')
+        extension = filesplit[len(filesplit)-1]
+
+        flag = True
+        while (flag):
+            try:
+                randomName = StringGenerator(
+                    "[\l\d]{20}").render_list(1, unique=True)[0]
+                nuevoNombreFile = randomName + "." + extension
+                contract.representativeSignature = nuevoNombreFile
+                db.session.commit()
+
+                file.save(os.path.join(
+                    app.config["UPLOAD_FOLDER"], nuevoNombreFile))
+                flag = False
+                
+            except Exception as e:
+                db.session.rollback()
+            finally:
+                db.session.close()
+
+        return {
+            "ok": True,
+            "msg": "Archivo Subido"
+        }, 200
+    except Exception as e:
+        print(e)
+        return {
+            "ok": False,
+            "msg": "Error al subir un archivo"
+        }, 500
+
+
+@contract.route('/api/contract/getimage/<_id>', methods=['GET'])
+def get_image(_id):
+    
+    try:
+        contract = Contract.query.get(_id)
+        
+        
+        print(_id) 
+        return {
+                send_from_directory(app.config["UPLOAD_FOLDER"], contract.representativeSignature)
         }, 200
     except Exception as e:
         print(e)
