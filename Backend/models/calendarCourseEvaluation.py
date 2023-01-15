@@ -24,12 +24,6 @@ class CalendarCourseEvaluation(db.Model, Serializer):
 class CalendarCourseEvaluationSchema(ma.Schema):
     class Meta:
         fields = ('_id', 'evaluationDate', 'percentage')
-        #fields = ('_id', 'calendarCourse_id', 'evaluationDate', 'percentage')
 
 
 calendarCourseEvaluations_schemas = CalendarCourseEvaluationSchema(many=True)
-
-# id
-# evaluationDate tipo date null false
-# percentage tipo int nullable false
-# calendar course id (foreign key)

@@ -13,6 +13,9 @@ from routes.holidaysRoute import holidays
 from routes.templatesEmailRoute import templatesEmail
 from routes.privilegeRoute import privilege
 from routes.companyDataRoute import companyData
+from routes.contractRoute import contract
+from routes.automaticNoticesRoute import automaticNotice
+from routes.checkListRoute import checklist
 
 from database.config import app_config
 from database.db import db
@@ -21,8 +24,6 @@ from flask_marshmallow import Marshmallow
 from flask_sqlalchemy import SQLAlchemy
 from flask_restful import Api
 
-
-# from resources.UploadParticipants import UploadParticipants
 
 
 # IMPORTACIÓN DE RECURSOS
@@ -69,6 +70,12 @@ app.register_blueprint(templatesEmail)
 app.register_blueprint(privilege)
 
 app.register_blueprint(companyData)
+
+app.register_blueprint(contract)
+
+app.register_blueprint(automaticNotice)
+
+app.register_blueprint(checklist)
 
 
 # Se carga el host
