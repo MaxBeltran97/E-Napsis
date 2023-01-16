@@ -5,7 +5,7 @@ import { FormControl, FormHelperText, InputLabel, MenuItem, Select } from '@mui/
 import { InputForm } from '../InputForm'
 import { obtenerComunas } from '@pages/enapsis/helpers'
 
-export const InputRegion = memo(({ control, name, label, required = false, error, getValues, setValue, defaultText = 'Seleccione...', items = [], labelComuna }) => {
+export const InputRegion = memo(({ control, name, subName, label, required = false, error, getValues, setValue, defaultText = 'Seleccione...', items = [], labelComuna, direction = 'column' }) => {
   const [active, setActive] = useState(false)
 
   const onFocus = () => {
@@ -35,7 +35,7 @@ export const InputRegion = memo(({ control, name, label, required = false, error
   }
 
   return (
-    <InputForm name={name} active={active} error={!!error}>
+    <InputForm name={name} subName={subName} active={active} error={!!error} direction={direction}>
       <Controller
         control={control}
         name={label}

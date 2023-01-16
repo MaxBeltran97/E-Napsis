@@ -1,5 +1,4 @@
 import { SETTINGS, TEMPLATE_EMAILS } from '@models/privateRoutes'
-import React from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { TemplateEmailPage, TemplateEmailsPage } from '../pages'
 

@@ -2,7 +2,7 @@ import { Grid, TextField, Typography } from '@mui/material'
 import { memo, useState } from 'react'
 import { Controller } from 'react-hook-form'
 
-export const InputTextArea = memo(({ control, name, label, required = false, error }) => {
+export const InputTextArea = memo(({ control, name, subName, label, required = false, error }) => {
   const [active, setActive] = useState(false)
 
   const onFocus = () => {
@@ -15,8 +15,9 @@ export const InputTextArea = memo(({ control, name, label, required = false, err
   
   return (
     <Grid container sx={{ pt: 1 }}>
-      <Grid item xs={12}>
+      <Grid item xs={12} sx={{ display: 'flex', alignItems: 'center' }}>
         <Typography sx={{ color: (!!error) ? 'error.main' : (active) ? 'text.active' : '' }}>{name}</Typography>
+        <Typography sx={{ fontSize: 14, pl: '4px' }} >{subName}</Typography>
       </Grid>
       <Grid item xs={12}>
         <Controller 
@@ -34,7 +35,7 @@ export const InputTextArea = memo(({ control, name, label, required = false, err
               label={(required) ? 'Obligatorio*' : ''}
               fullWidth
               multiline
-              rows={4}
+              minRows={4}
               autoComplete='off'
               size='small'
               sx={{

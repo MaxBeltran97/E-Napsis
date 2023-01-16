@@ -1,4 +1,4 @@
-import { DialogDelete } from "@components/dialog"
+import { DialogAreYouSure, DialogDelete } from "@components/dialog"
 import { useTellerStore } from "@hooks/useTellerStore"
 import { CloudUploadOutlined, DeleteOutlined, ModeOutlined, Preview, RadioButtonChecked, RadioButtonUnchecked, Send, Visibility } from "@mui/icons-material"
 import { Divider, Grid, IconButton, Tooltip, Typography } from "@mui/material"
@@ -8,7 +8,7 @@ import { DialogSendKey, TellerView } from "."
 
 export const TellerItem = ({ teller }) => {
 
-  const { startChangeTeller, startDeleteTeller, startGetTellerUsername } = useTellerStore()
+  const { startChangeTeller, startDeleteTeller, startGetTellerUsername, startNewKeyTeller } = useTellerStore()
   const { situation, fullName, lastName, motherLastName } = teller
   const [usernameTeller, setUsernameTeller] = useState('')
 
@@ -51,6 +51,10 @@ export const TellerItem = ({ teller }) => {
   }
   const handleCloseSendKeyView = () => {
     setOpenSendKeyView(false)
+  }
+  const onSendKeyTeller = async() => {
+    const ok = await startNewKeyTeller(teller._id)
+    return ok
   }
 
   return (
@@ -142,10 +146,19 @@ export const TellerItem = ({ teller }) => {
         functionDelete={onDeleteTeller}
       />
       <TellerView teller={teller} open={openViewView} handleClose={handleCloseViewView} />
-      <DialogSendKey 
+      {/* <DialogSendKey 
         open={openSendKeyView}
         handleClose={handleCloseSendKeyView}
         teller={teller}
+      /> */}
+      <DialogAreYouSure 
+        open={openSendKeyView}
+        handleClose={handleCloseSendKeyView}
+        title={`Enviar Clave a ${teller.fullName} ${teller.lastName}${!!(teller.motherLastName) ? ' '+teller.motherLastName : '' }`}
+        message={'¿Estás seguro de enviar la clave al relator?'}
+        okMessage={'La clave se envio correctamente'}
+        errorMessage={'Ocurrio un error al enviar la clave'}
+        functionFromData={onSendKeyTeller}
       />
     </Grid>
   )

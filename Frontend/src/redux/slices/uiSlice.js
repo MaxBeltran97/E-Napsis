@@ -6,7 +6,7 @@ import {
   PRIVILEGES,
   SETTINGS,
   SETTINGS_COMPANY,
-  SHOW_CALENDAR_COURSE, SHOW_COMPANIES, SHOW_COURSES, SHOW_PARTICIPANTS, SHOW_TELLERS, TELLERS, TEMPLATE_CONTRACT, TEMPLATE_EMAILS
+  SHOW_CALENDAR_COURSE, SHOW_COMPANIES, SHOW_COURSES, SHOW_PARTICIPANTS, SHOW_TELLERS, TELLERS, TEMPLATE_CONTRACTS, TEMPLATE_EMAILS
 } from "@models/privateRoutes";
 
 export const uiSlice = createSlice({
@@ -145,7 +145,7 @@ export const uiSlice = createSlice({
           },
           {
             name: 'Template Contrato',
-            url: `${SETTINGS + TEMPLATE_CONTRACT}`
+            url: `${SETTINGS + TEMPLATE_CONTRACTS}`
           },
           {
             name: 'Avisos Automaticos',

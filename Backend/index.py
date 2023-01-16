@@ -7,6 +7,7 @@ from models.userRole import *
 from models.templatesEmail import *
 from models.privilege import *
 from models.userRolePrivilege import *
+from models.companyData import *
 from strgen import StringGenerator
 
 db.init_app(app)
@@ -33,6 +34,9 @@ with app.app_context():
         db.create_all()
 
     if (insp.has_table("privilege", schema="napsis") == False):
+        db.create_all()
+
+    if (insp.has_table("company_data", schema="napsis") == False):
         db.create_all()
 
 
@@ -133,6 +137,13 @@ with app.app_context():
 
 
     db.create_all()
+
+#----------------------------------------Company Data
+    if(bool(CompanyData.query.all()) == False):
+        #Se crean los datos de 1
+        new_company_data = CompanyData('', '', '', '', '', '', '', '', '', '', '', '', '')
+        db.session.add(new_company_data)
+        db.session.commit()
 
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0")
