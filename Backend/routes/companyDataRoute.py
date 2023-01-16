@@ -3,15 +3,13 @@ from flask import request
 from models.companyData import *
 
 
-
 companyData = flask.Blueprint('companyData', __name__)
 
 
-
-@companyData.route('/api/companydata', methods=['GET'])
+@companyData.route('/api/company_data', methods=['GET'])
 def get_company_data():
     try:
-        all_company_data = companyData.query.all()
+        all_company_data = CompanyData.query.all()
         result = companys_data_schema.dump(all_company_data)
         return {
             "ok": True,
@@ -24,7 +22,7 @@ def get_company_data():
             "msg": "Error al obtener los datos de la compañia"
         }, 500
 
-@companyData.route('/api/companydata/<_id>', methods=['PUT'])
+@companyData.route('/api/company_data/<_id>', methods=['PUT'])
 def update_company_data(_id):
     try:
 

@@ -4,7 +4,7 @@ import { Controller } from 'react-hook-form'
 import { TextField } from '@mui/material'
 import { InputForm } from '../InputForm'
 
-export const InputText = memo(({ control, name, label, required = false, error, disabled = false, withSize = 7 }) => {
+export const InputText = memo(({ control, name, subName, label, required = false, error, disabled = false, withSize = 7, direction = 'column' }) => {
   const [active, setActive] = useState(false)
 
   const onFocus = () => {
@@ -16,7 +16,7 @@ export const InputText = memo(({ control, name, label, required = false, error, 
   }
 
   return (
-    <InputForm name={name} active={active} error={!!error} textBoxSize={withSize}>
+    <InputForm name={name} subName={subName} active={active} error={!!error} textBoxSize={withSize} direction={direction}>
       <Controller 
         control={control}
         name={label}

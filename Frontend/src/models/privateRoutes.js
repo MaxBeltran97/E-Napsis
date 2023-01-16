@@ -29,7 +29,7 @@ export const HOLIDAYS = '/feriados'
 export const CHECKLIST = '/check_list'
 export const SETTINGS_COMPANY = '/configurar_empresa'
 export const TEMPLATE_EMAILS = '/template_emails'
-export const TEMPLATE_CONTRACT = '/template_contratos'
+export const TEMPLATE_CONTRACTS = '/template_contratos'
 export const AUTOMATIC_NOTICES = '/avisos_automaticos'
 
 

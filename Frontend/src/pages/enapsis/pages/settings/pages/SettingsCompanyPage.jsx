@@ -1,8 +1,8 @@
-import { GridPaper } from "@components/grid"
 import { TabContext, TabList, TabPanel } from "@mui/lab"
-import { Grid, Paper, Tab, Typography } from "@mui/material"
+import { Paper, Tab, Typography } from "@mui/material"
 import { Box } from "@mui/system"
 import { useState } from "react"
+import { CompanyData } from "./settingsCompany"
 
 export const SettingsCompanyPage = () => {
   const [value, setValue] = useState('1')
@@ -34,49 +34,49 @@ export const SettingsCompanyPage = () => {
             </Box>
 
             <TabPanel value={'1'}
-              sx={{ pr: 1, pl: 1, pb: 0, pt: 2 }}
+              sx={{ pr: 0, pl: 0, pb: 0, pt: 2 }}
             >
-              <Typography>Datos de Empresa</Typography>
+              <CompanyData />
             </TabPanel>
 
             <TabPanel value={'2'}
-              sx={{ pr: 1, pl: 1, pb: 0, pt: 2 }}
+              sx={{ pr: 0, pl: 0, pb: 0, pt: 2 }}
             >
               <Typography>Atributos Participantes</Typography>
             </TabPanel>
 
             <TabPanel value={'3'}
-              sx={{ pr: 1, pl: 1, pb: 0, pt: 2 }}
+              sx={{ pr: 0, pl: 0, pb: 0, pt: 2 }}
             >
               <Typography>Respaldo</Typography>
             </TabPanel>
 
             <TabPanel value={'4'}
-              sx={{ pr: 1, pl: 1, pb: 0, pt: 2 }}
+              sx={{ pr: 0, pl: 0, pb: 0, pt: 2 }}
             >
               <Typography>Boletas Relator</Typography>
             </TabPanel>
 
             <TabPanel value={'5'}
-              sx={{ pr: 1, pl: 1, pb: 0, pt: 2 }}
+              sx={{ pr: 0, pl: 0, pb: 0, pt: 2 }}
             >
               <Typography>Diplomas</Typography>
             </TabPanel>
 
             <TabPanel value={'6'}
-              sx={{ pr: 1, pl: 1, pb: 0, pt: 2 }}
+              sx={{ pr: 0, pl: 0, pb: 0, pt: 2 }}
             >
               <Typography>E-learning</Typography>
             </TabPanel>
 
             <TabPanel value={'7'}
-              sx={{ pr: 1, pl: 1, pb: 0, pt: 2 }}
+              sx={{ pr: 0, pl: 0, pb: 0, pt: 2 }}
             >
               <Typography>Mostrar Cursos</Typography>
             </TabPanel>
 
             <TabPanel value={'8'}
-              sx={{ pr: 1, pl: 1, pb: 0, pt: 2 }}
+              sx={{ pr: 0, pl: 0, pb: 0, pt: 2 }}
             >
               <Typography>Logo</Typography>
             </TabPanel>
