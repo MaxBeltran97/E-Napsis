@@ -13,9 +13,11 @@ __pycache__/
 # Carpetas con archivos de los usuarios o cursos
 assets/calendarFiles/*
 assets/tellerFiles/*
+assets/representativeSignature/*
 
 !assets/calendarFiles/.gitkeep
 !assets/tellerFiles/.gitkeep
+!assets/representativeSignature/.gitkeep
 
 # C extensions
 *.so

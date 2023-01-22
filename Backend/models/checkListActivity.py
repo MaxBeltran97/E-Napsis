@@ -7,7 +7,7 @@ from helpers.serializable import Serializer
 class CheckListActivity(db.Model, Serializer):
     _id = db.Column(db.Integer, primary_key=True)
     order = db.Column(db.Integer)
-    activity = db.Column(db.String(100))
+    activity = db.Column(db.String(400))
     status = db.Column(db.String(50))
     date = db.Column(db.DateTime)
     roleActivity = db.Column(db.String(100))

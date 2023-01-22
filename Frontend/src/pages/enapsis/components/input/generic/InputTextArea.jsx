@@ -2,7 +2,7 @@ import { Grid, TextField, Typography } from '@mui/material'
 import { memo, useState } from 'react'
 import { Controller } from 'react-hook-form'
 
-export const InputTextArea = memo(({ control, name, subName, label, required = false, error }) => {
+export const InputTextArea = memo(({ control, name, subName, label, required = false, error, minRows = 4 }) => {
   const [active, setActive] = useState(false)
 
   const onFocus = () => {
@@ -35,7 +35,7 @@ export const InputTextArea = memo(({ control, name, subName, label, required = f
               label={(required) ? 'Obligatorio*' : ''}
               fullWidth
               multiline
-              minRows={4}
+              minRows={minRows}
               autoComplete='off'
               size='small'
               sx={{

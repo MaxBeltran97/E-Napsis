@@ -1,15 +1,18 @@
 import enapsisApi from "@api/enapsisApi"
-import { onHandleActiveContract, onHandleActiveEmail, onHandleActiveHoliday, onHandleCompanyData, onHandleEmails, onHandleEmailsLoading, onHandleHolidayLoading, onHandleHolidays, onHandleNotices, onHandleNoticesLoading, onHandlePrivileges, onHandlePrivilegesRole, onHandleRole, onResetActiveContract, onResetActiveEmail, onResetActiveHoliday, onResetPrivilegesRole } from "@reduxSlices/settingSlice"
+import { onHandleActiveContract, onHandleActiveEmail, onHandleActiveHoliday, onHandleCheckListLoading, onHandleChecklistSaves, onHandleCompanyData, onHandleContracts, onHandleContractsLoading, onHandleEmails, onHandleEmailsLoading, onHandleHolidayLoading, onHandleHolidays, onHandleNotices, onHandleNoticesLoading, onHandlePrivileges, onHandlePrivilegesRole, onHandleRole, onResetActiveContract, onResetActiveEmail, onResetActiveHoliday, onResetPrivilegesRole } from "@reduxSlices/settingSlice"
 import { useDispatch, useSelector } from "react-redux"
+import { useNavigate } from "react-router-dom"
 
 export const useSettingStore = () => {
 
+  const navigate = useNavigate()
   const dispatch = useDispatch()
-  const { 
-    isHolidaysLoading, activeHoliday, holidays, 
+  const {
+    isHolidaysLoading, activeHoliday, holidays,
     isEmailsLoading, activeEmail, emails,
     isContractsLoading, activeContract, contracts,
     isNoticesLoading, notices,
+    isCheckListLoading, checkListSaves,
     roles, privileges, privilegesRole,
     companyData
   } = useSelector(state => state.setting)
@@ -20,7 +23,7 @@ export const useSettingStore = () => {
 
     try {
       const { data } = await enapsisApi.get('/calendar/holiday')
-      if(data.ok) {
+      if (data.ok) {
         dispatch(onHandleHolidays(data.holidays))
       }
     } catch (error) {
@@ -30,7 +33,7 @@ export const useSettingStore = () => {
   }
 
   const startChangeHoliday = (holiday) => {
-    holiday ={
+    holiday = {
       ...holiday,
       date: new Date(holiday.date)
     }
@@ -51,10 +54,10 @@ export const useSettingStore = () => {
 
     if (!!holiday._id) {
       try {
-        const { data } = await enapsisApi.put(`/calendar/holiday/${holiday._id}`, JSON.stringify(holiday), { headers: { 'Content-Type': 'application/json' }})
+        const { data } = await enapsisApi.put(`/calendar/holiday/${holiday._id}`, JSON.stringify(holiday), { headers: { 'Content-Type': 'application/json' } })
         if (data.ok) {
           const { data } = await enapsisApi.get('/calendar/holiday')
-          if(data.ok) {
+          if (data.ok) {
             dispatch(onHandleHolidays(data.holidays))
           }
         } else {
@@ -63,12 +66,12 @@ export const useSettingStore = () => {
       } catch (error) {
         console.log(error.response)
       }
-    }else {
+    } else {
       try {
-        const { data } = await enapsisApi.post('/calendar/holiday', JSON.stringify(holiday), { headers: { 'Content-Type': 'application/json' }})
+        const { data } = await enapsisApi.post('/calendar/holiday', JSON.stringify(holiday), { headers: { 'Content-Type': 'application/json' } })
         if (data.ok) {
           const { data } = await enapsisApi.get('/calendar/holiday')
-          if(data.ok) {
+          if (data.ok) {
             dispatch(onHandleHolidays(data.holidays))
           }
         } else {
@@ -85,17 +88,17 @@ export const useSettingStore = () => {
   const startDeleteHoliday = async (holiday_id) => {
     dispatch(onHandleHolidayLoading(true))
 
-      try {
-        const { data } = await enapsisApi.delete(`/calendar/holiday/${holiday_id}`)
-        if(data.ok) {
-          const { data } = await enapsisApi.get('/calendar/holiday')
-          if(data.ok) {
-            dispatch(onHandleHolidays(data.holidays))
-          } 
+    try {
+      const { data } = await enapsisApi.delete(`/calendar/holiday/${holiday_id}`)
+      if (data.ok) {
+        const { data } = await enapsisApi.get('/calendar/holiday')
+        if (data.ok) {
+          dispatch(onHandleHolidays(data.holidays))
         }
-      } catch (error) {
-        console.log(error.response)
       }
+    } catch (error) {
+      console.log(error.response)
+    }
     dispatch(onHandleHolidayLoading(false))
   }
 
@@ -116,12 +119,12 @@ export const useSettingStore = () => {
     }
 
     try {
-      const { data } = await enapsisApi.put(`/calendar/holiday/${holiday._id}`, JSON.stringify(holiday), { headers: { 'Content-Type': 'application/json' }})
-      if(data.ok) {
+      const { data } = await enapsisApi.put(`/calendar/holiday/${holiday._id}`, JSON.stringify(holiday), { headers: { 'Content-Type': 'application/json' } })
+      if (data.ok) {
         const { data } = await enapsisApi.get('/calendar/holiday')
-        if(data.ok) {
+        if (data.ok) {
           dispatch(onHandleHolidays(data.holidays))
-        } 
+        }
       }
     } catch (error) {
       console.log(error.response)
@@ -135,7 +138,7 @@ export const useSettingStore = () => {
 
     try {
       const { data } = await enapsisApi.get('/templates/email')
-      if(data.ok) {
+      if (data.ok) {
         dispatch(onHandleEmails(data.templateEmails))
       }
     } catch (error) {
@@ -165,23 +168,34 @@ export const useSettingStore = () => {
   }
 
   const startUpdateEmail = async (email) => {
-    dispatch(onHandleEmailsLoading(true))
 
     try {
-      const { data } = await enapsisApi.put(`/templates/email/${email._id}`, JSON.stringify(email), { headers: { 'Content-Type': 'application/json' }})
-      if(data.ok) {
+      const { data } = await enapsisApi.put(`/templates/email/${email._id}`, JSON.stringify(email), { headers: { 'Content-Type': 'application/json' } })
+      if (data.ok) {
         dispatch(onHandleActiveEmail(data.templateEmail))
+        return data.ok
       }
     } catch (error) {
       console.log(error.response)
     }
 
-    dispatch(onHandleEmailsLoading(false))
+    return false
   }
   /** Fin Email */
   /** Contracts */
   const startGetContracts = async () => {
+    dispatch(onHandleContractsLoading(true))
 
+    try {
+      const { data } = await enapsisApi.get('/templates/contract')
+      if (data.ok) {
+        dispatch(onHandleContracts(data.contracts))
+      }
+    } catch (error) {
+      console.log(error.response)
+    }
+
+    dispatch(onHandleContractsLoading(false))
   }
 
   const startGetContract = async (contract_id) => {
@@ -195,46 +209,57 @@ export const useSettingStore = () => {
   const startResetContract = () => {
     dispatch(onResetActiveContract())
   }
-  
-  const startUpdateContract = async (contract) => {
 
+  const startUpdateContract = async (contract) => {
+    const signature = contract.representativeSignature
+    
+    delete contract.representativeSignature
+
+    try {
+      const { data } = await enapsisApi.put(`/templates/contract/${contract._id}`, JSON.stringify(contract), { headers: { 'Content-Type': 'application/json' } })
+      if(data.ok) {
+        if(typeof signature !== "string") {
+          let formData = new FormData()
+          formData.append('representativeSignature', signature)
+
+          const {data} = await enapsisApi.put(`/templates/contract/upload_file/${contract._id}`, formData, { headers: { 'Content-Type': 'multipart/form-data' } })
+          if(data.ok) {
+            return data.ok
+          }
+        }
+      }
+    } catch (error) {
+      console.log(error.response)
+    }
+    return false
   }
   /** Fin Contracts */
   /** Notices */
   const startGetNotices = async () => {
-    const data = {
-      ok: true,
-      notices: [
-        {
-          _id: 1,
-          item: 'Curso sin Encuesta de Participantes',
-          days: 5,
-          emails: ['rafa@gmail.com', 'este_no_se_xd@mail.pucv.cl'],
-          detail: 'Indique la cantidad de días después de terminado un curso que desea enviar aviso al coordinador del curso o al encargado del área.'
-        },
-        {
-          _id: 2,
-          item: 'Cursos Sin Asistencia o Notas',
-          days: 2,
-          emails: [],
-          detail: 'Indique la cantidad de días después de terminado un curso que desea enviar aviso al coordinador del curso.'
-        }
-      ]
-    }
-    
     dispatch(onHandleNoticesLoading(true))
+
     try {
-      // const { data } = await enapsisApi.get('')
-      if(data.ok) {
-        await data.notices.map((notice) => {
-          notice.emails = notice.emails.toString()
+      const { data } = await enapsisApi.get('/automatic_notices')
+
+      if (data.ok) {
+        data.notices.map((notice) => {
+          let emailsArray = []
+
+          notice.emails.map((email) => {
+            emailsArray.push(email.email)
+            return email
+          })
+
+          notice.emails = emailsArray.toString()
           return notice
         })
+
         dispatch(onHandleNotices(data.notices))
       }
     } catch (error) {
       console.log(error)
     }
+
     dispatch(onHandleNoticesLoading(false))
   }
 
@@ -243,17 +268,96 @@ export const useSettingStore = () => {
   }
 
   const startUpdateNotices = async (notices) => {
-    //transformar los Emails de cada notice
-    console.log({notices})
-    return true
+    let automatic_notices = []
+
+    notices.noticesFields.map((notice) => {
+      let emails_json = []
+      const emails_split = notice.emails.split(',')
+
+      emails_split.map((email) => {
+        if (email != '') {
+          emails_json.push({ email: email })
+        }
+        return email
+      })
+
+      notice.emails = emails_json
+
+      automatic_notices.push(notice)
+
+      return notice
+    })
+
+    try {
+      const { data } = await enapsisApi.put('/automatic_notices', JSON.stringify({ automatic_notices }), { headers: { 'Content-Type': 'application/json' } })
+      if (data.ok) {
+        const { data } = await enapsisApi.get('/automatic_notices')
+        if (data.ok) {
+          data.notices.map((notice) => {
+            let emailsArray = []
+
+            notice.emails.map((email) => {
+              emailsArray.push(email.email)
+              return email
+            })
+
+            notice.emails = emailsArray.toString()
+            return notice
+          })
+
+          dispatch(onHandleNotices(data.notices))
+        }
+        
+        return data.ok
+      }
+    } catch (error) {
+      console.log(error.response)
+    }
+
+    return false
+  }
+  /** Fin Notices */
+  /** CheckList */
+  const startGetCheckListSaves = async () => {
+    dispatch(onHandleCheckListLoading(true))
+
+    try {
+      const { data } = await enapsisApi.get('/check_list')
+      if(data.ok) {
+        dispatch(onHandleChecklistSaves(data.checkList))
+      }
+    } catch (error) {
+      console.log(error)
+    }
+
+    dispatch(onHandleCheckListLoading(false))
   }
 
-  /** Fin Notices */
+  const startSavingCheckList = async (checkList) => {
+    dispatch(onHandleCheckListLoading(true))
+
+    checkList.checkListActivities.map((activity) => {
+      activity.date = new Date(activity.date).toISOString().slice(0, 19).replace('T', ' ')
+      return activity
+    })
+
+    try {
+      const { data } = await enapsisApi.post('/check_list', JSON.stringify(checkList), { headers: { 'Content-Type': 'application/json' } })
+      if(data.ok) {
+        navigate('../', { replace: true })
+      }
+    } catch (error) {
+      console.log(error.response)
+    }
+
+    dispatch(onHandleCheckListLoading(false))
+  }
+  /** Fin CheckList */
   /** Privileges  */
   const startGetRoles = async () => {
     try {
       const { data } = await enapsisApi.get('/privilege/role')
-      if(data.ok) {
+      if (data.ok) {
         dispatch(onHandleRole(data.roles))
       }
     } catch (error) {
@@ -264,7 +368,7 @@ export const useSettingStore = () => {
   const startGetPrivileges = async () => {
     try {
       const { data } = await enapsisApi.get('/privilege')
-      if(data.ok) {
+      if (data.ok) {
         dispatch(onHandlePrivileges(data.privileges))
       }
     } catch (error) {
@@ -275,7 +379,7 @@ export const useSettingStore = () => {
   const startGetPrivilegesRole = async (identifierRole) => {
     try {
       const { data } = await enapsisApi.get(`/privilege/role/${identifierRole}`)
-      if(data.ok) {
+      if (data.ok) {
         dispatch(onHandlePrivilegesRole(data.privileges))
       }
     } catch (error) {
@@ -292,18 +396,16 @@ export const useSettingStore = () => {
 
     delete newPrivileges.role
     Object.entries(newPrivileges).forEach(([key, value]) => {
-      if(value === false){
+      if (value === false) {
         delete newPrivileges[key]
-      }else {
-        privilege.push({_id: privileges.filter((privilegeItem) => {return privilegeItem.name === key })[0]._id})
+      } else {
+        privilege.push({ _id: privileges.filter((privilegeItem) => { return privilegeItem.name === key })[0]._id })
       }
     })
 
     try {
-      const { data } = await enapsisApi.put(`/privilege/role/${identifierRole}`, JSON.stringify({privilege}), { headers: { 'Content-Type': 'application/json' }})
-      if(data.ok) {
-        return data.ok
-      }
+      const { data } = await enapsisApi.put(`/privilege/role/${identifierRole}`, JSON.stringify({ privilege }), { headers: { 'Content-Type': 'application/json' } })
+      return data.ok
     } catch (error) {
       console.log(error.response)
     }
@@ -314,7 +416,7 @@ export const useSettingStore = () => {
   const startGetCompanyData = async () => {
     try {
       const { data } = await enapsisApi.get('/company_data')
-      if(data.ok) {
+      if (data.ok) {
         dispatch(onHandleCompanyData(data.companyData[0]))
       }
     } catch (error) {
@@ -324,8 +426,8 @@ export const useSettingStore = () => {
 
   const startUpdateCompanyData = async (newCompanyData) => {
     try {
-      const { data } = await enapsisApi.put(`/company_data/${newCompanyData._id}`, JSON.stringify(newCompanyData), { headers: { 'Content-Type': 'application/json' }})
-      if(data.ok) {
+      const { data } = await enapsisApi.put(`/company_data/${newCompanyData._id}`, JSON.stringify(newCompanyData), { headers: { 'Content-Type': 'application/json' } })
+      if (data.ok) {
         dispatch(onHandleCompanyData(data.companyData))
         return data.ok
       }
@@ -352,6 +454,9 @@ export const useSettingStore = () => {
     //* Propiedades Notices
     isNoticesLoading,
     notices,
+    //* Propiedades CheckList
+    isCheckListLoading,
+    checkListSaves,
     //* Propiedades Privileges
     roles,
     privileges,
@@ -381,6 +486,9 @@ export const useSettingStore = () => {
     startGetNotices,
     startGetNotice,
     startUpdateNotices,
+    //* Metodos CheckList
+    startGetCheckListSaves,
+    startSavingCheckList,
     //* Metodos Privileges
     startGetRoles,
     startGetPrivileges,

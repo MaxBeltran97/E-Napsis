@@ -13,25 +13,13 @@ export const settingSlice = createSlice({
 
     isContractsLoading: false,
     activeContract: {},
-    contracts: [
-      {
-        _id: 1,
-        title: 'wena wena',
-        header: 'nose que chucha',
-        content: 'contenido xd',
-        representativeHeader: '?'
-      },
-      {
-        _id: 2,
-        title: 'AAAAAAAA',
-        header: 'texto de ejemplo',
-        content: 'contenido de ejemplo',
-        representativeHeader: '?'
-      }
-    ],
+    contracts: [],
 
     isNoticesLoading: false,
     notices: [],
+
+    isCheckListLoading: false,
+    checkListSaves: [],
 
     roles: [],
     privileges: [],
@@ -90,6 +78,14 @@ export const settingSlice = createSlice({
       state.notices = payload
     },
     /** Fin Notices */
+    /** CheckList */
+    onHandleCheckListLoading: (state, {payload}) => {
+      state.isCheckListLoading = payload
+    },
+    onHandleChecklistSaves: (state, {payload}) => {
+      state.checkListSaves = payload
+    },
+    /** Fin CheckList */
     /** Privileges */
     onHandleRole: (state, { payload }) => {
       state.roles = payload
@@ -131,6 +127,9 @@ export const {
   /** Notices */
   onHandleNoticesLoading,
   onHandleNotices,
+  /** CheckList */
+  onHandleCheckListLoading,
+  onHandleChecklistSaves,
   /** Privileges */
   onHandleRole,
   onHandlePrivileges,

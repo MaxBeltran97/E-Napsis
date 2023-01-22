@@ -84,7 +84,7 @@ export const CalendarCourseView = ({ calendarCourse, open, handleClose }) => {
               ? (
                 <>
                   <Typography variant="h6" sx={{ pt: 2, pb: 2 }} >Fechas de Evaluaciones</Typography>
-                  <TableContainer sx={{ border: '1px solid rgba(224, 224, 224, 1)', borderRadius: 1.5,}}>
+                  <TableContainer sx={{ border: '1px solid rgba(224, 224, 224, 1)', borderRadius: 1.5 }}>
                     <Table>
                       <TableHead>
                         <TableRow>
