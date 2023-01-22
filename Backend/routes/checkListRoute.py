@@ -8,7 +8,7 @@ from models.checkListActivity import *
 
 checklist = flask.Blueprint('checklist', __name__)
 
-@checklist.route('/api/checklist', methods=['POST'])
+@checklist.route('/api/check_list', methods=['POST'])
 def add_checklist():
     try:
         logo_id = request.json['logo_id']
@@ -40,7 +40,7 @@ def add_checklist():
 
         return {
             "ok": True,
-            "checklist": checkListSerialized
+            "checkList": checkListSerialized
         }, 201
     except Exception as e:
         print(e)
@@ -51,7 +51,7 @@ def add_checklist():
     finally:
         db.session.close()
         
-@checklist.route('/api/checklist', methods=['GET'])
+@checklist.route('/api/check_list', methods=['GET'])
 def get_checklists():
     try:
         all_checklist = CheckList.query.all()
@@ -75,7 +75,7 @@ def get_checklists():
             "msg": "Error al obtener los checkList"
         }, 500
 
-@checklist.route('/api/checklist/<_id>', methods=['GET'])
+@checklist.route('/api/check_list/<_id>', methods=['GET'])
 def get_checklist(_id):
     
     try:
@@ -94,7 +94,7 @@ def get_checklist(_id):
         
         return {
             "ok": True,
-            "user": checklistSerialized
+            "checkList": checklistSerialized
         }, 200
     except Exception as e:
         print(e)

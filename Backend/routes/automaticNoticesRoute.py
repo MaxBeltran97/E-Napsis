@@ -11,9 +11,8 @@ automaticNotice = flask.Blueprint('automaticNotice', __name__)
 
 
 
-@automaticNotice.route('/api/automaticNotice', methods=['GET'])
+@automaticNotice.route('/api/automatic_notices', methods=['GET'])
 def get_notices():
-
     try:
         all_notices = AutomaticNotices.query.all()
         result = automatic_notices_schema.dump(all_notices)
@@ -36,7 +35,7 @@ def get_notices():
         }, 500
 
 
-@automaticNotice.route('/api/automaticNotice/email/<notice_id>', methods=['GET'])
+@automaticNotice.route('/api/automatic_notice/email/<notice_id>', methods=['GET'])
 def get_email(notice_id):
 
     try:
@@ -62,7 +61,7 @@ def get_email(notice_id):
         }, 500
 
 
-@automaticNotice.route('/api/automaticNotice', methods=['PUT'])
+@automaticNotice.route('/api/automatic_notices', methods=['PUT'])
 def update_notices():
 
     try:

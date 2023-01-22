@@ -22,6 +22,6 @@ class CheckList(db.Model, Serializer):
 
 class CheckListSchema(ma.Schema):
     class Meta:
-        fields = ('_id', 'logo_id')
+        fields = ('_id', 'logo_id', 'calendarCourse_id')
 
 check_list_schema = CheckListSchema(many=True)

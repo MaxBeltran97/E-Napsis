@@ -172,15 +172,17 @@ with app.app_context():
             db.session.commit()
 
 
-
-    db.create_all()
-
 #----------------------------------------Company Data
+
+
     if(bool(CompanyData.query.all()) == False):
         #Se crean los datos de 1
         new_company_data = CompanyData('', '', '', '', '', '', '', '', '', '', '', '', '')
         db.session.add(new_company_data)
         db.session.commit()
+
+
+    db.create_all()
 
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0")

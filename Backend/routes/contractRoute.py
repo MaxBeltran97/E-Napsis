@@ -1,5 +1,5 @@
 import flask
-from flask import request, Flask, send_from_directory
+from flask import request, Flask, send_file
 from models.contract import *
 from models.contractUploadFile import *
 from strgen import StringGenerator
@@ -17,8 +17,7 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 contract = flask.Blueprint('contract', __name__)
 
 
-
-@contract.route('/api/contract', methods=['GET'])
+@contract.route('/api/templates/contract', methods=['GET'])
 def get_contracts():
 
     try:
@@ -35,7 +34,7 @@ def get_contracts():
             "msg": "Error al obtener los contratos"
         }, 500
 
-@contract.route('/api/contract/<_id>', methods=['GET'])
+@contract.route('/api/templates/contract/<_id>', methods=['GET'])
 def get_contract(_id):
 
     try:
@@ -51,7 +50,7 @@ def get_contract(_id):
             "msg": "Error al obtener el contrato"
         }, 500
 
-@contract.route('/api/contract/<_id>', methods=['PUT'])
+@contract.route('/api/templates/contract/<_id>', methods=['PUT'])
 def update_contract(_id):
 
     try:
@@ -80,7 +79,7 @@ def update_contract(_id):
             "msg": "Error al actualizar el contrato"
         }, 500
 
-@contract.route('/api/contract/uploadfile/<_id>', methods=['PUT'])
+@contract.route('/api/templates/contract/upload_file/<_id>', methods=['PUT'])
 def upload_file_contract(_id):
     try:
         contract = Contract.query.get(_id)
@@ -125,18 +124,15 @@ def upload_file_contract(_id):
             "msg": "Error al subir un archivo"
         }, 500
 
-
-@contract.route('/api/contract/getimage/<_id>', methods=['GET'])
-def get_image(_id):
-    
+@contract.route('/api/templates/contract/get_image/<_id>', methods=['GET'])
+def get_image(_id): 
     try:
         contract = Contract.query.get(_id)
-        
-        
-        print(_id) 
-        return {
-                send_from_directory(app.config["UPLOAD_FOLDER"], contract.representativeSignature)
-        }, 200
+
+        path = os.path.join(
+                    app.config["UPLOAD_FOLDER"], contract.representativeSignature)
+
+        return send_file(path)
     except Exception as e:
         print(e)
         return {
