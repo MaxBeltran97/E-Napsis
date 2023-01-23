@@ -2,19 +2,22 @@ import enapsisApi from "@api/enapsisApi"
 import { onHandleActiveContract, onHandleActiveEmail, onHandleActiveHoliday, onHandleCheckListLoading, onHandleChecklistSaves, onHandleCompanyData, onHandleContracts, onHandleContractsLoading, onHandleEmails, onHandleEmailsLoading, onHandleHolidayLoading, onHandleHolidays, onHandleNotices, onHandleNoticesLoading, onHandlePrivileges, onHandlePrivilegesRole, onHandleRole, onResetActiveContract, onResetActiveEmail, onResetActiveHoliday, onResetPrivilegesRole } from "@reduxSlices/settingSlice"
 import { useDispatch, useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
+import { useCalendarCourseStore } from "./useCalendarCourseStore"
 
 export const useSettingStore = () => {
 
   const navigate = useNavigate()
   const dispatch = useDispatch()
+
+  const { startGetCalendarCourse } = useCalendarCourseStore()
+
   const {
     isHolidaysLoading, activeHoliday, holidays,
     isEmailsLoading, activeEmail, emails,
     isContractsLoading, activeContract, contracts,
     isNoticesLoading, notices,
     isCheckListLoading, checkListSaves,
-    roles, privileges, privilegesRole,
-    companyData
+    roles, privileges, privilegesRole
   } = useSelector(state => state.setting)
 
   /** Holiday */
@@ -352,6 +355,26 @@ export const useSettingStore = () => {
 
     dispatch(onHandleCheckListLoading(false))
   }
+
+  const filterCheckList = async (filters) => {
+    dispatch(onHandleCheckListLoading(true))
+
+    const { data } = await enapsisApi.get('/check_list')
+    const checkListAwait = data.checkList
+
+    const filteredArray = await Promise.all(checkListAwait.map(async x => [(await startGetCalendarCourse(x.calendarCourse_id)), 0, x]))
+    let filtered = filteredArray.filter((x) => {
+      const isCalendar = x[0]?._id === filters.calendarCourse_id
+      // isLogo
+
+      return true
+    })
+
+    filtered = filtered.map(x => x[2])
+
+    dispatch(onHandleChecklistSaves(filtered))
+    dispatch(onHandleCheckListLoading(false))
+  }
   /** Fin CheckList */
   /** Privileges  */
   const startGetRoles = async () => {
@@ -412,31 +435,6 @@ export const useSettingStore = () => {
     return false
   }
   /** Fin Privileges */
-  /** Company Data */
-  const startGetCompanyData = async () => {
-    try {
-      const { data } = await enapsisApi.get('/company_data')
-      if (data.ok) {
-        dispatch(onHandleCompanyData(data.companyData[0]))
-      }
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
-  const startUpdateCompanyData = async (newCompanyData) => {
-    try {
-      const { data } = await enapsisApi.put(`/company_data/${newCompanyData._id}`, JSON.stringify(newCompanyData), { headers: { 'Content-Type': 'application/json' } })
-      if (data.ok) {
-        dispatch(onHandleCompanyData(data.companyData))
-        return data.ok
-      }
-    } catch (error) {
-      console.log(error)
-    }
-    return false
-  }
-  /** Fin Company Data */
 
   return {
     //* Propiedades Holiday
@@ -457,12 +455,11 @@ export const useSettingStore = () => {
     //* Propiedades CheckList
     isCheckListLoading,
     checkListSaves,
+    filterCheckList,
     //* Propiedades Privileges
     roles,
     privileges,
     privilegesRole,
-    //* Propiedades CompanyData
-    companyData,
 
     //* Metodos Holidays
     startGetHolidays,
@@ -494,9 +491,6 @@ export const useSettingStore = () => {
     startGetPrivileges,
     startGetPrivilegesRole,
     startResetPrivilegesRole,
-    startUpdatePrivilegesRole,
-    //* Metodos CompanyData
-    startGetCompanyData,
-    startUpdateCompanyData
+    startUpdatePrivilegesRole
   }
 }

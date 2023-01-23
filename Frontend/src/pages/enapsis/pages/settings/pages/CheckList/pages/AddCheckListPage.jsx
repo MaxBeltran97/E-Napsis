@@ -1,15 +1,15 @@
 import { ButtonSave } from '@components/button'
 import { GridInput, GridPaper } from '@components/grid'
-import { InputAutocomplete } from '@components/input/generic'
+import { InputAutocomplete, InputText } from '@components/input/generic'
 import { useCalendarCourseStore } from '@hooks/useCalendarCourseStore'
 import { useSettingStore } from '@hooks/useSettingStore'
 import { CHECKLIST, SETTINGS } from '@models/privateRoutes'
 import { NavigateNext } from '@mui/icons-material'
 import { Breadcrumbs, Divider, Grid, Link, Tooltip, Typography, useForkRef } from '@mui/material'
 import { getCalendarCoursesWithAutocomplete } from '@pages/enapsis/helpers'
-import React from 'react'
+import React, { useState } from 'react'
 import { useEffect } from 'react'
-import { useFieldArray, useForm } from 'react-hook-form'
+import { useFieldArray, useForm, useWatch } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 import { checkListTareasDefault } from '../assets'
 import { CheckListAddItem } from '../components'
@@ -24,7 +24,7 @@ export const AddCheckListPage = () => {
   const { handleSubmit, setValue, formState: { errors }, control } = useForm({
     defaultValues: {
       logo_id: '',
-      calendarCoure_id: '',
+      calendarCourse_id: '',
       checkListActivities: []
     }
   })
@@ -33,6 +33,18 @@ export const AddCheckListPage = () => {
     control,
     name: 'checkListActivities'
   })
+
+  const calendarCourseId = useWatch({ control, name: 'calendarCourse_id'})
+
+  const updateData = async() => {
+    //obtener nombre del logo
+  }
+
+  useEffect(() => {
+    if(!!calendarCourseId) {
+      updateData()
+    }
+  }, [calendarCourseId])
 
   useEffect(() => {
     setValue('checkListActivities', checkListTareasDefault)
@@ -71,6 +83,7 @@ export const AddCheckListPage = () => {
           <Grid item xs={12} lg={7}>
             <GridInput>
               <InputAutocomplete control={control} name={'Curso Calendarizado'} label={'calendarCourse_id'} required={true} error={errors.calendarCourse_id} items={getCalendarCoursesWithAutocomplete(calendarCourses)} />
+              <InputText control={control} name={'Logo Asociado'} label={'logo_id'} disabled={true} />
             </GridInput>
           </Grid>
           <Grid item xs={12}

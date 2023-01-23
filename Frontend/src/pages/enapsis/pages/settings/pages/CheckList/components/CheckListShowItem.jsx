@@ -11,6 +11,7 @@ export const CheckListShowItem = ({ checkList }) => {
   const { startGetCalendarCourse } = useCalendarCourseStore()
 
   const [courseName, setCourseName] = useState('')
+  const [logoName, setLogoName] = useState('generico')
 
   const [openViewView, setOpenViewView] = useState(false)
 
@@ -33,10 +34,13 @@ export const CheckListShowItem = ({ checkList }) => {
   return (
     <Grid item xs={12}>
       <Grid container alignItems={'center'} columnSpacing={1}>
-        <Grid item xs={8}>
+        <Grid item xs={6}>
           <Typography sx={{ pl: 1 }} >{courseName}</Typography>
         </Grid>
-        <Grid item xs={4}>
+        <Grid item xs={3}>
+          <Typography sx={{ pl: 1 }} >{logoName}</Typography>
+        </Grid>
+        <Grid item xs={3}>
           <Grid container justifyContent={'space-evenly'} wrap={'wrap'}>
             <Grid item>
               <Tooltip title={'Ver Datos'}>

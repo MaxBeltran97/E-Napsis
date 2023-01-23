@@ -15,6 +15,7 @@ export const CheckListView = ({ checkList, open, handleClose }) => {
   const { startGetCalendarCourse } = useCalendarCourseStore()
 
   const [calendarCourseName, setCalendarCourseName] = useState('')
+  const [logoName, setLogoName] = useState('generico')
 
   const getCalendarCourseName = async () => {
     const { internalCode, internalName } = await startGetCalendarCourse(checkList.calendarCourse_id)
@@ -26,7 +27,8 @@ export const CheckListView = ({ checkList, open, handleClose }) => {
   }, [])
 
   let rows = [
-    createData('Curso Asociado', calendarCourseName)
+    createData('Curso Asociado', calendarCourseName),
+    createData('Logo Asociado', logoName)
   ]
 
   return (

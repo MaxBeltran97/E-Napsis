@@ -23,9 +23,7 @@ export const settingSlice = createSlice({
 
     roles: [],
     privileges: [],
-    privilegesRole: [],
-
-    companyData: {},
+    privilegesRole: []
   },
   reducers: {
     /** Holidays */
