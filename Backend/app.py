@@ -16,6 +16,7 @@ from routes.companyDataRoute import companyData
 from routes.contractRoute import contract
 from routes.automaticNoticesRoute import automaticNotice
 from routes.checkListRoute import checklist
+from routes.logoRoute import logos
 
 from database.config import app_config
 from database.db import db
@@ -76,6 +77,8 @@ app.register_blueprint(contract)
 app.register_blueprint(automaticNotice)
 
 app.register_blueprint(checklist)
+
+app.register_blueprint(logos)
 
 
 # Se carga el host

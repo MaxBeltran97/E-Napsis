@@ -33,9 +33,10 @@ def add_calendar():
         startDate = request.json['startDate']
         endDate = request.json['endDate']
         participantValue = request.json['participantValue']
+        logo_id = request.json['logo_id']
 
         new_calendarCourse = CalendarCourse(internalCode, internalName, course_id, instruction, courseTotalHours,
-                                                 ejecutionPlace, ejecutionCity, ejecutionRegion, startDate, endDate, participantValue)
+                                                 ejecutionPlace, ejecutionCity, ejecutionRegion, startDate, endDate, participantValue, logo_id)
 
         db.session.add(new_calendarCourse)
         db.session.commit()
@@ -201,6 +202,7 @@ def update_calendar(_id):
         startDate = request.json['startDate']
         endDate = request.json['endDate']
         participantValue = request.json['participantValue']
+        logo_id = request.json['logo_id']
 
         calendarCourse.internalCode = internalCode
         calendarCourse.internalName = internalName
@@ -213,6 +215,7 @@ def update_calendar(_id):
         calendarCourse.startDate = startDate
         calendarCourse.endDate = endDate
         calendarCourse.participantValue = participantValue
+        calendarCourse.logo_id = logo_id
 
         db.session.commit()
 
