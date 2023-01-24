@@ -5,13 +5,11 @@ from helpers.serializable import Serializer
 
 class CheckList(db.Model, Serializer):
     _id = db.Column(db.Integer, primary_key=True)
-    logo_id = db.Column(db.String(50))
     calendarCourse_id = db.Column(
         db.Integer, db.ForeignKey('calendar_course._id'))
 
 
-    def __init__(self, logo_id, calendarCourse_id):
-        self.logo_id = logo_id
+    def __init__(self, calendarCourse_id):
         self.calendarCourse_id = calendarCourse_id
 
 
@@ -22,6 +20,6 @@ class CheckList(db.Model, Serializer):
 
 class CheckListSchema(ma.Schema):
     class Meta:
-        fields = ('_id', 'logo_id', 'calendarCourse_id')
+        fields = ('_id', 'calendarCourse_id')
 
 check_list_schema = CheckListSchema(many=True)

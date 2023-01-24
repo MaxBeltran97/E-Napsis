@@ -1,7 +1,6 @@
 import flask
 from flask import request, Flask, send_file
 from models.contract import *
-from models.contractUploadFile import *
 from strgen import StringGenerator
 import os
 import os.path
