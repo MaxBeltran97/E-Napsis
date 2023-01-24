@@ -16,8 +16,9 @@ class CalendarCourse(db.Model, Serializer):
     startDate = db.Column(db.DateTime, nullable=False)
     endDate = db.Column(db.DateTime, nullable=False)
     participantValue = db.Column(db.Integer, nullable=False)
+    logo_id = db.Column(db.Integer, db.ForeignKey('logo._id'))
 
-    def __init__(self, internalCode, internalName, course_id, instruction, courseTotalHours, ejecutionPlace, ejecutionCity, ejecutionRegion, startDate, endDate, participantValue):
+    def __init__(self, internalCode, internalName, course_id, instruction, courseTotalHours, ejecutionPlace, ejecutionCity, ejecutionRegion, startDate, endDate, participantValue, logo_id):
         self.internalCode = internalCode
         self.internalName = internalName
         self.course_id = course_id
@@ -29,6 +30,7 @@ class CalendarCourse(db.Model, Serializer):
         self.startDate = startDate
         self.endDate = endDate
         self.participantValue = participantValue
+        self.logo_id = logo_id
         self.xd = None
 
     def serialize(self):
@@ -39,7 +41,7 @@ class CalendarCourse(db.Model, Serializer):
 class CalendarCourseSchema(ma.Schema):
     class Meta:
         fields = ('_id', 'internalCode', 'internalName', 'course_id', 'instruction', 'courseTotalHours',
-                  'ejecutionPlace', 'ejecutionCity', 'ejecutionRegion', 'startDate', 'endDate', 'participantValue', 'xd')
+                  'ejecutionPlace', 'ejecutionCity', 'ejecutionRegion', 'startDate', 'endDate', 'participantValue', 'xd', 'logo_id')
 
 
 calendar_course_schema = CalendarCourseSchema()

@@ -11,9 +11,8 @@ checklist = flask.Blueprint('checklist', __name__)
 @checklist.route('/api/check_list', methods=['POST'])
 def add_checklist():
     try:
-        logo_id = request.json['logo_id']
         calendarCourse_id = request.json['calendarCourse_id']
-        new_checkList = CheckList(logo_id, calendarCourse_id)
+        new_checkList = CheckList(calendarCourse_id)
 
         db.session.add(new_checkList)
         db.session.commit()
