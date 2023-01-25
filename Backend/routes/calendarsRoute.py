@@ -41,29 +41,29 @@ def add_calendar():
         db.session.add(new_calendarCourse)
         db.session.commit()
 
-        # Obtener datos para las otras tablas
-        evaluationDates = request.json['evaluationDates']
-        for item in evaluationDates:
-            try:
-                new_calendarCourseEvaluation = CalendarCourseEvaluation(
-                    new_calendarCourse._id, item['evaluationDate'], item['percentage'])
+        # # Obtener datos para las otras tablas
+        # evaluationDates = request.json['evaluationDates']
+        # for item in evaluationDates:
+        #     try:
+        #         new_calendarCourseEvaluation = CalendarCourseEvaluation(
+        #             new_calendarCourse._id, item['evaluationDate'], item['percentage'])
 
-                db.session.add(new_calendarCourseEvaluation)
-                db.session.commit()
-            except Exception as e:
-                print(e)
+        #         db.session.add(new_calendarCourseEvaluation)
+        #         db.session.commit()
+        #     except Exception as e:
+        #         print(e)
 
-        courseEvaluationDB = CalendarCourseEvaluation.query.filter_by(
-            calendarCourse_id=new_calendarCourse._id)
+        # courseEvaluationDB = CalendarCourseEvaluation.query.filter_by(
+        #     calendarCourse_id=new_calendarCourse._id)
 
-        calendarCourseSerialized = new_calendarCourse.serialize()
-        courseEvaluationList = calendarCourseEvaluations_schemas.dump(
-            courseEvaluationDB)
-        calendarCourseSerialized["evaluationDates"] = courseEvaluationList
+        # calendarCourseSerialized = new_calendarCourse.serialize()
+        # courseEvaluationList = calendarCourseEvaluations_schemas.dump(
+        #     courseEvaluationDB)
+        # calendarCourseSerialized["evaluationDates"] = courseEvaluationList
 
         return {
             "ok": True,
-            "calendarCourse": calendarCourseSerialized
+            "calendarCourse": new_calendarCourse.serialize()
         }, 201
     except Exception as e:
         print(e)
@@ -73,7 +73,6 @@ def add_calendar():
         }, 500
     finally:
         db.session.close()
-
 
 @calendars.route('/api/calendar', methods=['GET'])
 def get_calendars():
@@ -219,48 +218,48 @@ def update_calendar(_id):
 
         db.session.commit()
 
-        courseEvaluation = request.json['evaluationDates']
-        courseEvaluationDB = CalendarCourseEvaluation.query.filter_by(
-            calendarCourse_id=calendarCourse._id)
+        # courseEvaluation = request.json['evaluationDates']
+        # courseEvaluationDB = CalendarCourseEvaluation.query.filter_by(
+        #     calendarCourse_id=calendarCourse._id)
 
-        # Si existe se actualiza, sino, se elimina
+        # # Si existe se actualiza, sino, se elimina
 
-        for itemDB in courseEvaluationDB:
-            flag = False
-            for item in courseEvaluation:
-                if (itemDB._id == item.get('_id')):
-                    flag = True
-                    itemDB.evaluationDate = item['evaluationDate']
-                    itemDB.percentage = item['percentage']
-                    db.session.commit()
-                    break
-            if (flag == False):
-                db.session.delete(itemDB)
-                db.session.commit()
+        # for itemDB in courseEvaluationDB:
+        #     flag = False
+        #     for item in courseEvaluation:
+        #         if (itemDB._id == item.get('_id')):
+        #             flag = True
+        #             itemDB.evaluationDate = item['evaluationDate']
+        #             itemDB.percentage = item['percentage']
+        #             db.session.commit()
+        #             break
+        #     if (flag == False):
+        #         db.session.delete(itemDB)
+        #         db.session.commit()
 
-        # Los nuevos que no poseen id se agregan
-        for item in courseEvaluation:
-            if (item.get('_id') == None):
-                try:
-                    new_calendarCourseEvaluation = CalendarCourseEvaluation(
-                        calendarCourse._id, item['evaluationDate'], item['percentage'])
+        # # Los nuevos que no poseen id se agregan
+        # for item in courseEvaluation:
+        #     if (item.get('_id') == None):
+        #         try:
+        #             new_calendarCourseEvaluation = CalendarCourseEvaluation(
+        #                 calendarCourse._id, item['evaluationDate'], item['percentage'])
 
-                    db.session.add(new_calendarCourseEvaluation)
-                    db.session.commit()
-                except Exception as e:
-                    print(e)
+        #             db.session.add(new_calendarCourseEvaluation)
+        #             db.session.commit()
+        #         except Exception as e:
+        #             print(e)
 
-        courseEvaluationDB = CalendarCourseEvaluation.query.filter_by(
-            calendarCourse_id=calendarCourse._id)
+        # courseEvaluationDB = CalendarCourseEvaluation.query.filter_by(
+        #     calendarCourse_id=calendarCourse._id)
 
-        calendarCourseSerialized = calendarCourse.serialize()
-        courseEvaluationList = calendarCourseEvaluations_schemas.dump(
-            courseEvaluationDB)
-        calendarCourseSerialized["evaluationDates"] = courseEvaluationList
+        # calendarCourseSerialized = calendarCourse.serialize()
+        # courseEvaluationList = calendarCourseEvaluations_schemas.dump(
+        #     courseEvaluationDB)
+        # calendarCourseSerialized["evaluationDates"] = courseEvaluationList
 
         return {
             "ok": True,
-            "calendarCourse": calendarCourseSerialized
+            "calendarCourse": calendarCourse.serialize()
         }, 200
     except Exception as e:
         print(e)

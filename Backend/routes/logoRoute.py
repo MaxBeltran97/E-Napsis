@@ -4,6 +4,7 @@ from models.logo import *
 from strgen import StringGenerator
 import os
 import os.path
+import pandas as pd
 
 
 
@@ -90,6 +91,7 @@ def get_logos():
     try:
         all_logos = Logo.query.all()
         result = logos_schema.dump(all_logos)
+
         return {
             "ok": True,
             "logos": result
