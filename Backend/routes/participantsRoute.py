@@ -1,9 +1,18 @@
 import flask
-from flask import request
+from flask import request, Flask
 from models.participant import *
+from models.calendarCourseEvaluation import *
+import os
+import openpyxl
 import pandas as pd
 
 
+
+
+app = Flask(__name__)
+
+UPLOAD_FOLDER = 'assets/excelEvaluation'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 participants = flask.Blueprint('participants', __name__)
 
@@ -30,6 +39,21 @@ def add_participant():
 
         db.session.add(new_participant)
         db.session.commit()
+
+        evaluation_id = CalendarCourseEvaluation.query.filter_by(calendarCourse_id = calendarCourse_id)
+
+        if(bool(evaluation_id.first()) == True):
+            
+            excelPathComplete = ''
+            for i in evaluation_id:
+                
+                excelPathComplete = os.path.join(app.config["UPLOAD_FOLDER"], i.excelPath)    
+                break
+            wb = openpyxl.load_workbook(excelPathComplete)
+            ws = wb.active
+            ws.cell(row=ws.max_row + 1, column=1).value = new_participant._id
+            wb.save(excelPathComplete)
+
         return {
             "ok": True,
             "participant": new_participant.serialize()
@@ -95,6 +119,14 @@ def update_participant(_id):
         gender = request.json['gender']
         position = request.json['position']
 
+        isChangeCourse = False
+        
+        courseBefore = ''
+
+        if(calendarCourse_id != participant.calendarCourse_id):
+            courseBefore = participant.calendarCourse_id
+            isChangeCourse = True
+
         participant.calendarCourse_id = calendarCourse_id
         participant.participantType = participantType
         participant.company_id = company_id
@@ -109,6 +141,41 @@ def update_participant(_id):
         participant.position = position
 
         db.session.commit()
+
+        
+        if(isChangeCourse == True):
+            evaluation_id = CalendarCourseEvaluation.query.filter_by(calendarCourse_id =courseBefore)
+
+            if(bool(evaluation_id.first()) == True):
+            
+                excelPathComplete = ''
+                for i in evaluation_id:
+                    excelPathComplete = os.path.join(app.config["UPLOAD_FOLDER"], i.excelPath)    
+                    break
+
+                wb = openpyxl.load_workbook(excelPathComplete)
+                ws = wb.active
+
+                for i in range(1, ws.max_row + 1):
+                    if(ws[i][0].value == participant._id):
+                        ws.delete_rows(i)
+                        break
+                wb.save(excelPathComplete)
+
+            new_course = CalendarCourseEvaluation.query.filter_by(calendarCourse_id = participant.calendarCourse_id)
+
+            if(bool(new_course.first()) == True):
+                
+                excelPathComplete = ''
+                for i in new_course:
+                    
+                    excelPathComplete = os.path.join(app.config["UPLOAD_FOLDER"], i.excelPath)    
+                    break
+                wb = openpyxl.load_workbook(excelPathComplete)
+                ws = wb.active
+                ws.cell(row=ws.max_row + 1, column=1).value = participant._id
+                wb.save(excelPathComplete)
+
         return {
             "ok": True,
             "participant": participant.serialize()
@@ -130,6 +197,27 @@ def delete_participant(_id):
 
         db.session.delete(participant)
         db.session.commit()
+
+
+        evaluation_id = CalendarCourseEvaluation.query.filter_by(calendarCourse_id = participant.calendarCourse_id)
+
+
+        if(bool(evaluation_id.first()) == True):
+            
+            excelPathComplete = ''
+            for i in evaluation_id:
+                excelPathComplete = os.path.join(app.config["UPLOAD_FOLDER"], i.excelPath)    
+                break
+            
+            wb = openpyxl.load_workbook(excelPathComplete)
+            ws = wb.active
+
+            for i in range(1, ws.max_row + 1):
+                if(ws[i][0].value == participant._id):
+                    ws.delete_rows(i)
+                    break
+            wb.save(excelPathComplete)
+
         return {
             "ok": True,
             "participant": participant.serialize()
