@@ -1,6 +1,7 @@
 import flask
 from flask import request, Flask, send_file
 from models.logo import *
+from models.calendarCourse import *
 from strgen import StringGenerator
 import os
 import os.path
@@ -150,6 +151,13 @@ def delete_logo(_id):
 
     try:
         logo = Logo.query.get(_id)
+
+        calendarCourse = CalendarCourse.query.filter_by(logo_id = logo._id)
+
+        for i in calendarCourse:
+            i.logo_id = None
+            db.session.commit()
+        
         
         #verificar si existe la imagen y eliminar
         if(logo.logo_img != '-'):
@@ -160,8 +168,6 @@ def delete_logo(_id):
         db.session.delete(logo)
         db.session.commit()
 
-        
-            
         return {
             "ok": True,
             "logo": logo.serialize()

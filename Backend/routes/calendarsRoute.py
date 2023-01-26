@@ -13,7 +13,9 @@ from models.courseTeller import *
 app = Flask(__name__)
 
 UPLOAD_FOLDER = 'assets/calendarFiles'
+UPLOAD_FOLDER_EXCEL = 'assets/excelEvaluation'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['UPLOAD_FOLDER_EXCEL'] = UPLOAD_FOLDER_EXCEL
 
 calendars = flask.Blueprint('calendars', __name__)
 
@@ -41,26 +43,6 @@ def add_calendar():
         db.session.add(new_calendarCourse)
         db.session.commit()
 
-        # # Obtener datos para las otras tablas
-        # evaluationDates = request.json['evaluationDates']
-        # for item in evaluationDates:
-        #     try:
-        #         new_calendarCourseEvaluation = CalendarCourseEvaluation(
-        #             new_calendarCourse._id, item['evaluationDate'], item['percentage'])
-
-        #         db.session.add(new_calendarCourseEvaluation)
-        #         db.session.commit()
-        #     except Exception as e:
-        #         print(e)
-
-        # courseEvaluationDB = CalendarCourseEvaluation.query.filter_by(
-        #     calendarCourse_id=new_calendarCourse._id)
-
-        # calendarCourseSerialized = new_calendarCourse.serialize()
-        # courseEvaluationList = calendarCourseEvaluations_schemas.dump(
-        #     courseEvaluationDB)
-        # calendarCourseSerialized["evaluationDates"] = courseEvaluationList
-
         return {
             "ok": True,
             "calendarCourse": new_calendarCourse.serialize()
@@ -79,12 +61,6 @@ def get_calendars():
     try:
         all_calendarCourses = CalendarCourse.query.all()
         result = calendar_course_schemas.dump(all_calendarCourses)
-        for item in result:
-            courseEvaluationDB = CalendarCourseEvaluation.query.filter_by(
-                calendarCourse_id=item.get('_id'))
-            courseEvaluationList = calendarCourseEvaluations_schemas.dump(
-                courseEvaluationDB)
-            item["evaluationDates"] = courseEvaluationList
 
         return {
             "ok": True,
@@ -101,17 +77,11 @@ def get_calendars():
 def get_calendar(_id):
     try:
         calendarCourse = CalendarCourse.query.get(_id)
-        courseEvaluationDB = CalendarCourseEvaluation.query.filter_by(
-            calendarCourse_id=calendarCourse._id)
 
-        calendarCourseSerialized = calendarCourse.serialize()
-        courseEvaluationList = calendarCourseEvaluations_schemas.dump(
-            courseEvaluationDB)
-        calendarCourseSerialized["evaluationDates"] = courseEvaluationList
 
         return {
             "ok": True,
-            "calendarCourse": calendarCourseSerialized
+            "calendarCourse": calendarCourse.serialize()
         }, 200
     except Exception as e:
         print(e)
@@ -276,14 +246,21 @@ def delete_calendar(_id):
         evaluations = CalendarCourseEvaluation.query.filter_by(calendarCourse_id = _id)
         files = CalendarCourseUploadFile.query.filter_by(calendarCourse_id = _id)
         participants = Participant.query.filter_by(calendarCourse_id = _id)
-
+        excelPath = ''
         for participant in participants:
             participant.calendarCourse_id = None
             db.session.commit()
 
         for evaluation in evaluations:
+            excelPath = evaluation.excelPath
             db.session.delete(evaluation)
             db.session.commit()
+
+        path = os.path.join(
+                app.config["UPLOAD_FOLDER_EXCEL"],excelPath
+            )
+        os.remove(path)
+
 
         for fileCourse in files:
             db.session.delete(fileCourse)
