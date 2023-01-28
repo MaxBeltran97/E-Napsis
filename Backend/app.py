@@ -18,6 +18,7 @@ from routes.automaticNoticesRoute import automaticNotice
 from routes.checkListRoute import checklist
 from routes.logoRoute import logos
 from routes.calendarEvaluationRoute import evaluation
+from routes.calendarAttendanceRoute import calendarAttendance
 
 from database.config import app_config
 from database.db import db
@@ -35,8 +36,8 @@ ma = Marshmallow(app)
 jwt = JWTManager(app)
 
 # Se establece enviroment como argumento
-enviroment = "development"
-# enviroment = "production"
+#enviroment = "development"
+enviroment = "production"
 
 # Se setean variables de configuración según ambient(env)
 
@@ -83,6 +84,7 @@ app.register_blueprint(logos)
 
 app.register_blueprint(evaluation)
 
+app.register_blueprint(calendarAttendance)
 
 # Se carga el host
 SQLAlchemy(app)
