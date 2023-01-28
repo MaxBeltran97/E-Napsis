@@ -1,4 +1,5 @@
 import enapsisApi from "@api/enapsisApi"
+import { radioInstructionModality } from "@assets/radio-data"
 import { ADD_CALENDAR_COURSE, CALENDAR_COURSE } from "@models/privateRoutes"
 import { onHandleActiveCalendarCourse, onHandleCalendarCourses, onHandleLoading, onResetActiveCalendarCourse } from "@reduxSlices/calendarCourseSlice"
 import { useDispatch, useSelector } from "react-redux"
@@ -12,7 +13,10 @@ export const useCalendarCourseStore = () => {
   const navigate = useNavigate()
   const { user, startCheckRole } = useAuthStore()
   const { startGetCourse } = useCourseStore()
-  const { isLoading, activeCalendarCourse, calendarCourses } = useSelector(state => state.calendarCourse)
+  const { 
+    isLoading, activeCalendarCourse, calendarCourses,
+    isLoadingEvaluations, activeEvaluation, evaluations
+  } = useSelector(state => state.calendarCourse)
 
   const startGetCalendarCourses = async () => {
     dispatch(onHandleLoading(true))
@@ -41,42 +45,17 @@ export const useCalendarCourseStore = () => {
     return null
   }
 
-  const startGetClassBooks = async() => {
-    dispatch(onHandleLoading(true))
-    try {
-      const roleTeller = await startCheckRole(['teller', 'teller_with_upload'])
-      if(roleTeller) {
-        const { data } = await enapsisApi.get(`/calendar/class_book/${user._id}`)
-        if (data.ok) {
-          dispatch(onHandleCalendarCourses(data.calendarCourses))
-        }
-      } else {
-        const roleAdminCoord = await startCheckRole(['admin', 'coordinator'])
-        if(roleAdminCoord) {
-          const { data } = await enapsisApi.get('/calendar/class_book')
-          if (data.ok) {
-            dispatch(onHandleCalendarCourses(data.calendarCourses))
-          }
-        }
-      }
-    } catch (error) {
-      console.log(error.response)
-    }
-
-    dispatch(onHandleLoading(false))
-  }
-
   const startChangeCalendarCourse = (calendarCourse) => {
     calendarCourse = {
       ...calendarCourse,
       startDate: new Date(calendarCourse.startDate),
       endDate: new Date(calendarCourse.endDate),
-      evaluationDates: calendarCourse.evaluationDates.map(item => {
-        return item = {
-          ...item,
-          evaluationDate: new Date(item.evaluationDate)
-        }
-      })
+      // evaluationDates: calendarCourse.evaluationDates.map(item => {
+      //   return item = {
+      //     ...item,
+      //     evaluationDate: new Date(item.evaluationDate)
+      //   }
+      // })
     }
 
     dispatch(onHandleActiveCalendarCourse(calendarCourse))
@@ -93,17 +72,18 @@ export const useCalendarCourseStore = () => {
     calendarCourse = {
       ...calendarCourse,
       courseTotalHours: parseInt(calendarCourse.courseTotalHours),
+      instruction: radioInstructionModality.find(element => element.name === calendarCourse.instruction).value,
       startDate: new Date(calendarCourse.startDate).toISOString().slice(0, 19).replace('T', ' '),
       endDate: new Date(calendarCourse.endDate).toISOString().slice(0, 19).replace('T', ' '),
       participantValue: parseInt(calendarCourse.participantValue),
-      evaluationDates: calendarCourse.evaluationDates.filter(item => { return (item.evaluationDate !== '' && item.evaluationDate !== null) })
-        .map(item => {
-          return item = {
-            ...item,
-            evaluationDate: new Date(item.evaluationDate).toISOString().slice(0, 19).replace('T', ' '),
-            percentage: parseInt(item.percentage)
-          }
-        })
+      // evaluationDates: calendarCourse.evaluationDates.filter(item => { return (item.evaluationDate !== '' && item.evaluationDate !== null) })
+      //   .map(item => {
+      //     return item = {
+      //       ...item,
+      //       evaluationDate: new Date(item.evaluationDate).toISOString().slice(0, 19).replace('T', ' '),
+      //       percentage: parseInt(item.percentage)
+      //     }
+      //   })
     }
     delete calendarCourse.sence
 
@@ -263,6 +243,53 @@ export const useCalendarCourseStore = () => {
 
     dispatch(onHandleCalendarCourses(filtered))
     dispatch(onHandleLoading(false))
+  }
+
+  //* CLASS BOOK
+  const startGetClassBooks = async() => {
+    dispatch(onHandleLoading(true))
+    try {
+      const roleTeller = await startCheckRole(['teller', 'teller_with_upload'])
+      if(roleTeller) {
+        const { data } = await enapsisApi.get(`/calendar/class_book/${user._id}`)
+        if (data.ok) {
+          dispatch(onHandleCalendarCourses(data.calendarCourses))
+        }
+      } else {
+        const roleAdminCoord = await startCheckRole(['admin', 'coordinator'])
+        if(roleAdminCoord) {
+          const { data } = await enapsisApi.get('/calendar/class_book')
+          if (data.ok) {
+            dispatch(onHandleCalendarCourses(data.calendarCourses))
+          }
+        }
+      }
+    } catch (error) {
+      console.log(error.response)
+    }
+
+    dispatch(onHandleLoading(false))
+  }
+
+  //* Evaluations
+  const startGetEvaluations = async(calendarCourse_id) => {
+
+  }
+
+  const startSavingEvaluation = async(calendarCourse_id, evaluation) => {
+
+  }
+
+  const startDeleteEvaluation = async(evaluation_id) => {
+
+  }
+
+  const startGetGrades = async(evaluation_id) => {
+
+  }
+
+  const startUploadGrades = async(evaluation_id, grades) => {
+
   }
 
   return {

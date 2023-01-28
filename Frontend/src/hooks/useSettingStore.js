@@ -362,15 +362,28 @@ export const useSettingStore = () => {
     const { data } = await enapsisApi.get('/check_list')
     const checkListAwait = data.checkList
 
-    const filteredArray = await Promise.all(checkListAwait.map(async x => [(await startGetCalendarCourse(x.calendarCourse_id)), 0, x]))
+    const filteredArray = await Promise.all(checkListAwait.map(async x => [(await startGetCalendarCourse(x.calendarCourse_id)), x]))
     let filtered = filteredArray.filter((x) => {
       const isCalendar = x[0]?._id === filters.calendarCourse_id
-      // isLogo
+      const isLogo = x[0]?.logo_id === filters.logo_id
 
-      return true
+      if(filters.calendarCourse_id === undefined && filters.logo_id === undefined) {
+        return true
+      }
+      if(filters.calendarCourse_id !== undefined && filters.logo_id !== undefined) {
+        return (isCalendar && isLogo)
+      }
+
+      if(filters.calendarCourse_id !== undefined && filters.logo_id === undefined) {
+        return (isCalendar)
+      }
+
+      if(filters.calendarCourse_id === undefined && filters.logo_id !== undefined) {
+        return (isLogo)
+      }
     })
 
-    filtered = filtered.map(x => x[2])
+    filtered = filtered.map(x => x[1])
 
     dispatch(onHandleChecklistSaves(filtered))
     dispatch(onHandleCheckListLoading(false))

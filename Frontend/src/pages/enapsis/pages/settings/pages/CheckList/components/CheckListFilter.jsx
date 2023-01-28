@@ -1,9 +1,10 @@
 import { Filter } from '@components/accordion'
 import { InputAutocomplete } from '@components/input/generic'
 import { useCalendarCourseStore } from '@hooks/useCalendarCourseStore'
+import { useSettingCompanyStore } from '@hooks/useSettingCompanyStore'
 import { useSettingStore } from '@hooks/useSettingStore'
 import { Button, Grid } from '@mui/material'
-import { getCalendarCoursesWithAutocomplete } from '@pages/enapsis/helpers'
+import { getCalendarCoursesWithAutocomplete, getLogosWithAutocomplete } from '@pages/enapsis/helpers'
 import React from 'react'
 import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
@@ -11,13 +12,14 @@ import { useForm } from 'react-hook-form'
 export const CheckListFilter = ({ title }) => {
   
   const { calendarCourses, startGetCalendarCourses } = useCalendarCourseStore()
-  //store de los logos
+  const { logos, startGetLogos } = useSettingCompanyStore()
+
   const { filterCheckList } = useSettingStore()
   const { handleSubmit, control } = useForm()
   
   useEffect(() => {
     startGetCalendarCourses()
-    //obtener los logos
+    startGetLogos()
   }, [])
 
   const onSubmit = (data) => {
@@ -34,9 +36,9 @@ export const CheckListFilter = ({ title }) => {
               <InputAutocomplete control={control} name={'Curso Asociado'} label={'calendarCourse_id'} items={getCalendarCoursesWithAutocomplete(calendarCourses)} />
             </Grid>
             {/* Input para el logo asociado */}
-            {/* <Grid item xs={12} lg={6}>
-              <InputAutocomplete control={control} name={'Curso Asociado'} label={'calendarCourse_id'} items={getCalendarCoursesWithAutocomplete(calendarCourses)} />
-            </Grid> */}
+            <Grid item xs={12} lg={6}>
+              <InputAutocomplete control={control} name={'Logo Asociado'} label={'logo_id'} items={getLogosWithAutocomplete(logos)} />
+            </Grid>
             <Grid container justifyContent={'center'} sx={{ mt: 3 }}>
               <Button type='submit'
                 variant='outlined'

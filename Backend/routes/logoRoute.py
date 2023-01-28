@@ -5,7 +5,7 @@ from strgen import StringGenerator
 import os
 import os.path
 
-
+import pandas as pd
 
 
 app = Flask(__name__)
@@ -42,6 +42,7 @@ def add_logo():
 
 @logos.route('/api/logos/upload_file/<_id>', methods=['PUT'])
 def upload_file_logo(_id):
+    print('a')
     try:
         logo = Logo.query.get(_id)
         
@@ -90,6 +91,7 @@ def get_logos():
     try:
         all_logos = Logo.query.all()
         result = logos_schema.dump(all_logos)
+
         return {
             "ok": True,
             "logos": result
@@ -133,8 +135,7 @@ def update_logo(_id):
 
         return {
             "ok": True,
-            "contract": logo.serialize()
-
+            "logo": logo.serialize()
         }, 200
     except Exception as e:
         print(e)
@@ -158,8 +159,6 @@ def delete_logo(_id):
         db.session.delete(logo)
         db.session.commit()
 
-        
-            
         return {
             "ok": True,
             "logo": logo.serialize()
@@ -173,13 +172,16 @@ def delete_logo(_id):
     finally:
         db.session.close()
 
-@logos.route('/api/logos/get_imagen/<_id>', methods=['GET'])
-def get_image(_id):
+@logos.route('/api/logos/get_image/<logo_image>', methods=['GET'])
+def get_image(logo_image):
     try:
-        logo = Logo.query.get(_id)
+        # print('aaaaaaaa')
+        # print(logo_image)
+        # logo = Logo.query.filter_by(logo_img=logo_image)
+        # print(logo)
 
         path = os.path.join(
-                    app.config["UPLOAD_FOLDER"], logo.logo_img)
+                    app.config["UPLOAD_FOLDER"], logo_image)
         
         return send_file(path)
 

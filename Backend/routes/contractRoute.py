@@ -123,13 +123,13 @@ def upload_file_contract(_id):
             "msg": "Error al subir un archivo"
         }, 500
 
-@contract.route('/api/templates/contract/get_image/<_id>', methods=['GET'])
-def get_image(_id): 
+@contract.route('/api/templates/contract/get_image/<representativeSignature>', methods=['GET'])
+def get_image(representativeSignature): 
     try:
-        contract = Contract.query.get(_id)
+        # contract = Contract.query.get(_id)
 
         path = os.path.join(
-                    app.config["UPLOAD_FOLDER"], contract.representativeSignature)
+                    app.config["UPLOAD_FOLDER"], representativeSignature)
 
         return send_file(path)
     except Exception as e:

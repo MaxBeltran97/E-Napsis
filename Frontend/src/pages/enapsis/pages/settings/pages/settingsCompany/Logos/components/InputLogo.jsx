@@ -4,12 +4,14 @@ import { ErrorOutline, FileDownloadDoneOutlined, FileUploadOutlined } from '@mui
 import { Button, FormControl, FormHelperText, Grid, Typography } from '@mui/material'
 import React, { useEffect, useRef } from 'react'
 import { useState } from 'react'
-import { Controller } from 'react-hook-form'
+import { Controller, useWatch } from 'react-hook-form'
 
-export const InputFirma = ({ control, name, label, error, helperText, allowedExtensions = [], contract }) => {
+export const InputLogo = ({ control, name, label, error, helperText, allowedExtensions = [], logo }) => {
   const [fileReady, setFileReady] = useState(null)
   const [image, setImage] = useState(null)
   const [value, setValue] = useState('')
+
+  const imageURL = useWatch({control, label})
 
   const fileInputRef = useRef()
   const { VITE_API_URL } = getEnvVariables()
@@ -28,6 +30,13 @@ export const InputFirma = ({ control, name, label, error, helperText, allowedExt
     return true
   }
 
+  const isFile = (file) => {
+    if(!!file.name) {
+      return true
+    }
+    return false
+  }
+
   const onChange = (field, { target }) => {
     setValue(target.value)
 
@@ -42,17 +51,25 @@ export const InputFirma = ({ control, name, label, error, helperText, allowedExt
     }
   }
 
+  useEffect(() => {
+    if(typeof imageURL.logo_img === "string") {
+      setImage(null)
+      setValue('')
+      setFileReady(null)
+    }
+  }, [imageURL])
+
   return (
     <InputForm name={name} active={false} error={!!error}>
 
       <Grid container>
         <Grid item xs={12}>
           {
-            (image)
-              ? (<img src={URL.createObjectURL(image)} width={200} />)
-              : (contract.representativeSignature === '-')
+            (!!image)
+              ? (<img src={URL.createObjectURL(image)} width={110} />)
+              : (logo.logo_img === '-' || !!logo)
                 ? null
-                : (<img src={`${VITE_API_URL}/templates/contract/get_image/${contract.representativeSignature}`} width={200}/>)
+                : (<img src={`${VITE_API_URL}/logos/get_image/${logo.logo_img}`} width={110}/>)
           }
         </Grid>
 
@@ -102,7 +119,7 @@ export const InputFirma = ({ control, name, label, error, helperText, allowedExt
                               ? <ErrorOutline sx={{ mr: 1 }} />
                               : <FileUploadOutlined sx={{ mr: 1 }} />
                           }
-                          Subir Firma
+                          Subir Logo
                         </>
                       )
                   }
@@ -125,7 +142,8 @@ export const InputFirma = ({ control, name, label, error, helperText, allowedExt
 
             rules={{
               validate: {
-                checkFiles: file => isValidExtensions(file) || '*Archivo con extensión inválida'
+                checkFiles: file => isValidExtensions(file) || '*Archivo con extensión inválida',
+                checkFile: file => isFile(file) || '*Logo Obligatorio'
               }
             }}
           />

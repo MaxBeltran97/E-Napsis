@@ -1,12 +1,18 @@
+import { useCalendarCourseStore } from '@hooks/useCalendarCourseStore'
+import { CLASS_BOOKS, SETTINGS } from '@models/privateRoutes'
 import { CloudUploadOutlined, ImportContacts, MenuBook, ModeOutlined } from '@mui/icons-material'
 import { Button, Divider, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from '@mui/material'
 import React from 'react'
+import { useNavigate } from 'react-router-dom'
 
 function createData(rowName, value) {
   return { rowName, value }
 }
 
 export const ClassBookItem = ({ calendarCourse }) => {
+
+  const navigate = useNavigate()
+  const { startChangeCalendarCourseWithoutAdd } = useCalendarCourseStore()
 
   const { internalCode, internalName, startDate, endDate } = calendarCourse
   const startDateFormat = new Date(startDate).toLocaleDateString('es-es')
@@ -18,6 +24,10 @@ export const ClassBookItem = ({ calendarCourse }) => {
     createData('Fecha de Termino', endDateFormat),
     createData('Nombre Interno', internalName),
   ]
+
+  const routeEvaluations = () => {
+    navigate(`${CLASS_BOOKS}/${calendarCourse._id}/evaluaciones`, { replace: true })
+  }
 
   return (
     <>
@@ -98,7 +108,8 @@ export const ClassBookItem = ({ calendarCourse }) => {
           <Grid item xs={2}>
             <Grid container alignItems={'center'} direction={'column'} rowSpacing={1}>
               <Grid item>
-                <Button variant='outlined'
+                <Button onClick={routeEvaluations}
+                  variant='outlined'
                   startIcon={<ModeOutlined />}
                   sx={{ textTransform: 'initial !important' }}
                 >

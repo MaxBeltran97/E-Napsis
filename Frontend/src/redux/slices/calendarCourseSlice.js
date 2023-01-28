@@ -6,7 +6,10 @@ export const calendarCourseSlice = createSlice({
     isLoading: false,
     activeCalendarCourse: {},
     calendarCourses: [],
-    errors: {}
+    errors: {},
+    isLoadingEvaluations: false,
+    activeEvaluation: {},
+    evaluations: [],
   },
   reducers: {
     onHandleLoading: (state, {payload}) => {
@@ -20,6 +23,23 @@ export const calendarCourseSlice = createSlice({
     },
     onResetActiveCalendarCourse: (state) => {
       state.activeCalendarCourse = {}
+    },
+
+    // Evaluations
+    onHandleEvaluationLoading: (state, {payload}) => {
+      state.isLoadingEvaluations = payload
+    },
+    onHandleEvaluations: (state, {payload}) => {
+      state.evaluations = payload
+    },
+    onResetEvaluations: (state) => {
+      state.evaluations = []
+    },
+    onHandleActiveEvaluation: (state, {payload}) => {
+      state.activeEvaluation = payload
+    },
+    onResetActiveEvaluation: (state) => {
+      state.activeEvaluation = {}
     }
   }
 })
@@ -28,5 +48,12 @@ export const {
   onHandleLoading,
   onHandleCalendarCourses,
   onHandleActiveCalendarCourse,
-  onResetActiveCalendarCourse
+  onResetActiveCalendarCourse,
+
+  //Evaluations
+  onHandleEvaluationLoading,
+  onHandleEvaluations,
+  onResetEvaluations,
+  onHandleActiveEvaluation,
+  onResetActiveEvaluation,
 } = calendarCourseSlice.actions

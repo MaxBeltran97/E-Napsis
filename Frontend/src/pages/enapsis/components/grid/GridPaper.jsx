@@ -1,6 +1,6 @@
 import { Grid, Paper } from "@mui/material"
 
-export const GridPaper = ({ children, rowSpacing = 2 }) => {
+export const GridPaper = ({ children, rowSpacing = 2, columnSpacing = 2 }) => {
   return (
     <Paper elevation={2}
       sx={{
@@ -10,7 +10,7 @@ export const GridPaper = ({ children, rowSpacing = 2 }) => {
         borderRadius: 2
       }}
     >
-      <Grid container columnSpacing={2} rowSpacing={rowSpacing}>
+      <Grid container columnSpacing={columnSpacing} rowSpacing={rowSpacing}>
         {children}
       </Grid>
     </Paper>

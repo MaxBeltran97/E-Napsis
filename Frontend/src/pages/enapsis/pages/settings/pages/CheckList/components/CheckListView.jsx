@@ -1,4 +1,5 @@
 import { useCalendarCourseStore } from '@hooks/useCalendarCourseStore'
+import { useSettingCompanyStore } from '@hooks/useSettingCompanyStore'
 import { Close } from '@mui/icons-material'
 import { Dialog, DialogContent, DialogTitle, IconButton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material'
 import React from 'react'
@@ -13,17 +14,21 @@ function createData(rowName, value) {
 export const CheckListView = ({ checkList, open, handleClose }) => {
 
   const { startGetCalendarCourse } = useCalendarCourseStore()
+  const { startGetLogo } = useSettingCompanyStore()
 
   const [calendarCourseName, setCalendarCourseName] = useState('')
   const [logoName, setLogoName] = useState('generico')
 
-  const getCalendarCourseName = async () => {
-    const { internalCode, internalName } = await startGetCalendarCourse(checkList.calendarCourse_id)
+  const updateData = async () => {
+    const { internalCode, internalName, logo_id } = await startGetCalendarCourse(checkList.calendarCourse_id)
     setCalendarCourseName(`${internalCode} - ${internalName}`)
+
+    const { title } = await startGetLogo(logo_id)
+    setLogoName(title)
   }
 
   useEffect(() => {
-    getCalendarCourseName()
+    updateData()
   }, [])
 
   let rows = [

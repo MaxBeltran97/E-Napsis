@@ -1,7 +1,9 @@
 import { ButtonSave } from '@components/button'
 import { GridInput, GridPaper } from '@components/grid'
 import { InputAutocomplete, InputText } from '@components/input/generic'
+import { InputConditionExist } from '@components/input/InputConditionExist'
 import { useCalendarCourseStore } from '@hooks/useCalendarCourseStore'
+import { useSettingCompanyStore } from '@hooks/useSettingCompanyStore'
 import { useSettingStore } from '@hooks/useSettingStore'
 import { CHECKLIST, SETTINGS } from '@models/privateRoutes'
 import { NavigateNext } from '@mui/icons-material'
@@ -18,10 +20,13 @@ export const AddCheckListPage = () => {
 
   const navigate = useNavigate()
 
-  const { calendarCourses, startGetCalendarCourses } = useCalendarCourseStore()
+  const { calendarCourses, startGetCalendarCourses, startGetCalendarCourse } = useCalendarCourseStore()
+  const { startGetLogo } = useSettingCompanyStore()
   const { isCheckListLoading, startSavingCheckList } = useSettingStore()
 
-  const { handleSubmit, setValue, formState: { errors }, control } = useForm({
+  const [logo, setLogo] = useState('')
+
+  const { handleSubmit, setValue, unregister, formState: { errors }, control } = useForm({
     defaultValues: {
       logo_id: '',
       calendarCourse_id: '',
@@ -37,12 +42,19 @@ export const AddCheckListPage = () => {
   const calendarCourseId = useWatch({ control, name: 'calendarCourse_id'})
 
   const updateData = async() => {
-    //obtener nombre del logo
+    //obtener calendarCourse
+    const calendarData = await startGetCalendarCourse(calendarCourseId)
+    //obtener logo
+    const logoData = await startGetLogo(calendarData.logo_id)
+    setValue('logo_id', logoData.title)
+    setLogo(logoData.title)
   }
 
   useEffect(() => {
-    if(!!calendarCourseId) {
+    if(!!calendarCourseId && calendarCourseId !== '') {
       updateData()
+    }else {
+      setLogo(null)
     }
   }, [calendarCourseId])
 
@@ -83,7 +95,10 @@ export const AddCheckListPage = () => {
           <Grid item xs={12} lg={7}>
             <GridInput>
               <InputAutocomplete control={control} name={'Curso Calendarizado'} label={'calendarCourse_id'} required={true} error={errors.calendarCourse_id} items={getCalendarCoursesWithAutocomplete(calendarCourses)} />
-              <InputText control={control} name={'Logo Asociado'} label={'logo_id'} disabled={true} />
+              
+              <InputConditionExist value={logo} unregister={unregister} labelCondition={'logo_id'}>
+                <InputText control={control} name={'Logo Asociado'} label={'logo_id'} disabled={true} />
+              </InputConditionExist>
             </GridInput>
           </Grid>
           <Grid item xs={12}
