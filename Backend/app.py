@@ -17,6 +17,7 @@ from routes.contractRoute import contract
 from routes.automaticNoticesRoute import automaticNotice
 from routes.checkListRoute import checklist
 from routes.logoRoute import logos
+from routes.calendarEvaluationRoute import evaluation
 
 from database.config import app_config
 from database.db import db
@@ -79,6 +80,8 @@ app.register_blueprint(automaticNotice)
 app.register_blueprint(checklist)
 
 app.register_blueprint(logos)
+
+app.register_blueprint(evaluation)
 
 
 # Se carga el host
