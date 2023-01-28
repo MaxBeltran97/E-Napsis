@@ -3,6 +3,7 @@ import os
 from flask import request, Flask
 from strgen import StringGenerator
 from models.calendarCourseEvaluation import *
+from models.calendarCourseAttendance import *
 from models.calendarCourseUploadFile import *
 from models.calendarCourse import *
 from models.participant import *
@@ -13,9 +14,11 @@ from models.courseTeller import *
 app = Flask(__name__)
 
 UPLOAD_FOLDER = 'assets/calendarFiles'
-UPLOAD_FOLDER_EXCEL = 'assets/excelEvaluation'
+UPLOAD_FOLDER_EVALUATION = 'assets/excelEvaluation'
+UPLOAD_FOLDER_ATTENDANCE = 'assets/excelAttendance'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.config['UPLOAD_FOLDER_EXCEL'] = UPLOAD_FOLDER_EXCEL
+app.config['UPLOAD_FOLDER_EVALUATION'] = UPLOAD_FOLDER_EVALUATION
+app.config['UPLOAD_FOLDER_ATTENDANCE'] = UPLOAD_FOLDER_ATTENDANCE
 
 calendars = flask.Blueprint('calendars', __name__)
 
@@ -188,44 +191,6 @@ def update_calendar(_id):
 
         db.session.commit()
 
-        # courseEvaluation = request.json['evaluationDates']
-        # courseEvaluationDB = CalendarCourseEvaluation.query.filter_by(
-        #     calendarCourse_id=calendarCourse._id)
-
-        # # Si existe se actualiza, sino, se elimina
-
-        # for itemDB in courseEvaluationDB:
-        #     flag = False
-        #     for item in courseEvaluation:
-        #         if (itemDB._id == item.get('_id')):
-        #             flag = True
-        #             itemDB.evaluationDate = item['evaluationDate']
-        #             itemDB.percentage = item['percentage']
-        #             db.session.commit()
-        #             break
-        #     if (flag == False):
-        #         db.session.delete(itemDB)
-        #         db.session.commit()
-
-        # # Los nuevos que no poseen id se agregan
-        # for item in courseEvaluation:
-        #     if (item.get('_id') == None):
-        #         try:
-        #             new_calendarCourseEvaluation = CalendarCourseEvaluation(
-        #                 calendarCourse._id, item['evaluationDate'], item['percentage'])
-
-        #             db.session.add(new_calendarCourseEvaluation)
-        #             db.session.commit()
-        #         except Exception as e:
-        #             print(e)
-
-        # courseEvaluationDB = CalendarCourseEvaluation.query.filter_by(
-        #     calendarCourse_id=calendarCourse._id)
-
-        # calendarCourseSerialized = calendarCourse.serialize()
-        # courseEvaluationList = calendarCourseEvaluations_schemas.dump(
-        #     courseEvaluationDB)
-        # calendarCourseSerialized["evaluationDates"] = courseEvaluationList
 
         return {
             "ok": True,
@@ -244,6 +209,7 @@ def delete_calendar(_id):
     try:
         calendarCourse = CalendarCourse.query.get(_id)
         evaluations = CalendarCourseEvaluation.query.filter_by(calendarCourse_id = _id)
+        attendances = CalendarCourseAttendance.query.filter_by(calendarCourse_id = _id)
         files = CalendarCourseUploadFile.query.filter_by(calendarCourse_id = _id)
         participants = Participant.query.filter_by(calendarCourse_id = _id)
         excelPath = ''
@@ -256,11 +222,20 @@ def delete_calendar(_id):
             db.session.delete(evaluation)
             db.session.commit()
 
-        path = os.path.join(
-                app.config["UPLOAD_FOLDER_EXCEL"],excelPath
+        evaluationPath = os.path.join(
+                app.config["UPLOAD_FOLDER_EVALUATION"],excelPath
             )
-        os.remove(path)
+        os.remove(evaluationPath)
 
+        for attendance in attendances:
+            excelPath = attendance.excelPath
+            db.session.delete(attendance)
+            db.session.commit()
+
+        attendancePath = os.path.join(
+                app.config["UPLOAD_FOLDER_ATTENDANCE"],excelPath
+        )
+        os.remove(attendancePath)
 
         for fileCourse in files:
             db.session.delete(fileCourse)

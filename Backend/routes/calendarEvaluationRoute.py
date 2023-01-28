@@ -2,7 +2,6 @@ import flask
 from flask import request, Flask
 from models.calendarCourseEvaluation import *
 from models.participant import *
-import pandas as pd
 from strgen import StringGenerator
 import os
 import openpyxl
@@ -14,7 +13,6 @@ UPLOAD_FOLDER = 'assets/excelEvaluation'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 evaluation = flask.Blueprint('evaluation', __name__)
-
 
 
 
@@ -222,5 +220,5 @@ def get_grades(_id):
         print(e)
         return {
             "ok": False,
-            "msg": "Error al actualizar las notas"
+            "msg": "Error al obtener las notas"
         }, 500
