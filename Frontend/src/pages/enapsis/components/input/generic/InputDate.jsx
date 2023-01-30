@@ -7,7 +7,7 @@ import { memo, useState } from "react"
 import { Controller } from "react-hook-form"
 import { InputForm } from "../InputForm"
 
-export const InputDate = memo(({ control, name, label, required = false, error, minDate, maxDate }) => {
+export const InputDate = memo(({ control, name, label, required = false, error, minDate, maxDate, listErrorDates = [], errorListMessage }) => {
   const [active, setActive] = useState(false)
 
   const onFocus = () => {
@@ -39,6 +39,23 @@ export const InputDate = memo(({ control, name, label, required = false, error, 
       }
     }
     return true
+  }
+
+  const isValidDateInList = (date) => {
+    let flag = true
+
+    if(listErrorDates.length > 0) {
+      if(!!date) {
+        listErrorDates.forEach(dateInList => {
+          const differenceDays = differenceInDays(date, new Date(dateInList))
+          if(differenceDays === 0) {
+            flag = false
+          }
+        });
+      }
+    }
+    
+    return flag
   }
 
   return (
@@ -84,7 +101,8 @@ export const InputDate = memo(({ control, name, label, required = false, error, 
               message: '*Este campo es obligatorio'
             },
             validate: {
-              checkDate: date => isValidDate(date) || '*Fecha inválida'
+              checkDate: date => isValidDate(date) || '*Fecha inválida',
+              checkDateInList: date => isValidDateInList(date) || errorListMessage
             }
           }}
         />

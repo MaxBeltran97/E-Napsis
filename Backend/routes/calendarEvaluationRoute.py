@@ -16,12 +16,9 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 evaluation = flask.Blueprint('evaluation', __name__)
 
 
-
-
 @evaluation.route('/api/calendar/evaluation', methods=['POST'])
 def add_evaluation():
     try:
-
         evaluationDate = request.json['evaluationDate']
         percentage = request.json['percentage']
         title = request.json['title']
@@ -81,6 +78,7 @@ def add_evaluation():
                 "ok": True
             }, 201
     except Exception as e:
+        print('aa')
         print(e)
         return {
             "ok": False,
@@ -88,6 +86,39 @@ def add_evaluation():
         }, 500
     finally:
         db.session.close()
+
+@evaluation.route('/api/calendar/evaluation/<_idCalendar>', methods=['GET'])
+def get_evaluations(_idCalendar):
+    try:
+        all_evaluations = CalendarCourseEvaluation.query.filter_by(calendarCourse_id = _idCalendar)
+        result = calendarCourseEvaluations_schemas.dump(all_evaluations)
+
+        return {
+            "ok": True,
+            "evaluations": result
+        }, 200
+    except Exception as e:
+        print(e)
+        return {
+            'ok': False,
+            'msg': 'Error al obtener las evaluaciones'
+        }
+
+@evaluation.route('/api/calendar/evaluation/evaluation/<_idEvaluation>', methods=['GET'])
+def get_evaluation(_idEvaluation):
+    try:
+        evaluation = CalendarCourseEvaluation.query.get(_idEvaluation)
+
+        return {
+            "ok": True,
+            "evaluation": evaluation.serialize()
+        }, 200
+    except Exception as e:
+        print(e)
+        return {
+            'ok': False,
+            'msg': 'Error al obtener la evaluacion'
+        }
 
 @evaluation.route('/api/calendar/evaluation/<_id>', methods=['PUT'])
 def update_evaluation(_id):
@@ -173,7 +204,7 @@ def upload_grades(_id):
             for i in range(1, ws.max_row + 1):
                 if(ws[i][0].value == p['participant_id']):
                     fila = i
-            ws[fila][columna-1].value = p['grade']
+            ws[fila][columna-1].value = float(p['grade'].replace(",", "."))
 
         wb.save(path)
 
@@ -209,8 +240,16 @@ def get_grades(_id):
 
         for i in range(2, ws.max_row + 1):
 
-            grades.append({"participant_id": ws[i][0].value, 
-            "grade": ws[i][columna-1].value})
+            grade = None
+            if(ws[i][columna-1].value != None):
+                grade = (str(ws[i][columna-1].value)).replace(".", ",")
+
+            grades.append(
+                {
+                    "participant_id": ws[i][0].value, 
+                    "grade": grade
+                }
+            )
 
         wb.save(path)
 

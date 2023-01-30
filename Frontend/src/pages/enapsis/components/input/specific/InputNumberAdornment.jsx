@@ -16,7 +16,7 @@ export const InputNumberAdornment = memo(({ control, name, label, required = fal
   }
 
   const isValidMinValue = (value) => {
-    if(!!minValue) {
+    if(typeof minValue === 'number') {
       const numberValue = parseInt(value)
       if(numberValue < minValue) {
         return false
@@ -26,7 +26,7 @@ export const InputNumberAdornment = memo(({ control, name, label, required = fal
   }
 
   const isValidMaxValue = (value) => {
-    if(!!maxValue) {
+    if(typeof maxValue === 'number') {
       const numberValue = parseInt(value)
       if(numberValue > maxValue) {
         return false

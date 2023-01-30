@@ -1,11 +1,13 @@
 import enapsisApi from "@api/enapsisApi"
 import { radioInstructionModality } from "@assets/radio-data"
 import { ADD_CALENDAR_COURSE, CALENDAR_COURSE } from "@models/privateRoutes"
-import { onHandleActiveCalendarCourse, onHandleCalendarCourses, onHandleLoading, onResetActiveCalendarCourse } from "@reduxSlices/calendarCourseSlice"
+import { DataObject } from "@mui/icons-material"
+import { onHandleActiveCalendarCourse, onHandleActiveEvaluation, onHandleCalendarCourses, onHandleEvaluationLoading, onHandleEvaluations, onHandleGrades, onHandleGradesLoading, onHandleLoading, onResetActiveCalendarCourse, onResetActiveEvaluation, onResetEvaluations, onResetGrades } from "@reduxSlices/calendarCourseSlice"
 import { useDispatch, useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
 import { useAuthStore } from "./useAuthStore"
 import { useCourseStore } from "./useCourseStore"
+import { useParticipantStore } from "./useParticipantStore"
 
 export const useCalendarCourseStore = () => {
 
@@ -13,9 +15,11 @@ export const useCalendarCourseStore = () => {
   const navigate = useNavigate()
   const { user, startCheckRole } = useAuthStore()
   const { startGetCourse } = useCourseStore()
+  const { startGetParticipant } = useParticipantStore()
   const { 
     isLoading, activeCalendarCourse, calendarCourses,
-    isLoadingEvaluations, activeEvaluation, evaluations
+    isLoadingEvaluations, activeEvaluation, evaluations,
+    isLoadingGrades, grades
   } = useSelector(state => state.calendarCourse)
 
   const startGetCalendarCourses = async () => {
@@ -273,23 +277,199 @@ export const useCalendarCourseStore = () => {
 
   //* Evaluations
   const startGetEvaluations = async(calendarCourse_id) => {
+    dispatch(onHandleEvaluationLoading(true))
+    try {
+      const { data } = await enapsisApi.get(`/calendar/evaluation/${calendarCourse_id}`)
+      if(data.ok) {
+        const sorted = [...data.evaluations].sort((a, b) => {
+          const dateA = new Date(a.evaluationDate)
+          const dateB = new Date(b.evaluationDate)
 
+          if(dateA > dateB) {
+            return 1
+          }
+          if(dateA < dateB) {
+            return -1
+          }
+          return 0
+        })
+        dispatch(onHandleEvaluations(sorted))
+      }
+    } catch (error) {
+      console.log(error.response)
+    }
+    dispatch(onHandleEvaluationLoading(false))
   }
 
-  const startSavingEvaluation = async(calendarCourse_id, evaluation) => {
-
+  const startGetEvaluation = async(evaluation_id) => {
+    try {
+      const { data } = await enapsisApi.get(`/calendar/evaluation/evaluation/${evaluation_id}`)
+      if(data.ok) {
+        return data.evaluation
+      }
+    } catch (error) {
+      console.log(error)
+    }
+    return null
   }
 
-  const startDeleteEvaluation = async(evaluation_id) => {
-
+  const startSavingEvaluation = async(evaluation) => {
+    dispatch(onHandleEvaluationLoading(true))
+    evaluation = {
+      ...evaluation,
+      evaluationDate: new Date(evaluation.evaluationDate).toISOString().slice(0,19).replace('T', ' ')
+    }
+    
+    if (!!evaluation._id) {
+      try {
+        const { data } = await enapsisApi.put(`/calendar/evaluation/${evaluation._id}`, JSON.stringify(evaluation), { headers: { 'Content-Type': 'application/json' } })
+        if(data.ok) {
+          const { data } = await enapsisApi.get(`/calendar/evaluation/${evaluation.calendarCourse_id}`)
+          if(data.ok) {
+            const sorted = [...data.evaluations].sort((a, b) => {
+              const dateA = new Date(a.evaluationDate)
+              const dateB = new Date(b.evaluationDate)
+    
+              if(dateA > dateB) {
+                return 1
+              }
+              if(dateA < dateB) {
+                return -1
+              }
+              return 0
+            })
+            dispatch(onHandleEvaluations(sorted))
+          }
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    } else {
+      try {
+        const { data } = await enapsisApi.post('/calendar/evaluation', JSON.stringify(evaluation), { headers: { 'Content-Type': 'application/json' } })
+        if (data.ok) {
+          const { data } = await enapsisApi.get(`/calendar/evaluation/${evaluation.calendarCourse_id}`)
+          if(data.ok) {
+            const sorted = [...data.evaluations].sort((a, b) => {
+              const dateA = new Date(a.evaluationDate)
+              const dateB = new Date(b.evaluationDate)
+    
+              if(dateA > dateB) {
+                return 1
+              }
+              if(dateA < dateB) {
+                return -1
+              }
+              return 0
+            })
+            dispatch(onHandleEvaluations(sorted))
+          }
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    dispatch(onHandleEvaluationLoading(false))
   }
 
+  const startDeleteEvaluation = async(evaluation_id, calendarCourse_id) => {
+    dispatch(onHandleEvaluationLoading(true))
+    try {
+      const { data } = await enapsisApi.delete(`/calendar/evaluation/${evaluation_id}`)
+      if (data.ok) {
+        const { data } = await enapsisApi.get(`/calendar/evaluation/${calendarCourse_id}`)
+        if(data.ok) {
+          dispatch(onHandleEvaluations(data.evaluations))
+        }
+      }
+    } catch (error) {
+      console.log(error)
+    }
+    dispatch(onHandleEvaluationLoading(false))
+  }
+
+  const startResetEvaluations = () => {
+    dispatch(onResetEvaluations())
+  }
+
+  const startChangeEvaluation = (evaluation) => {
+    evaluation = {
+      ...evaluation,
+      evaluationDate: new Date(evaluation.evaluationDate)
+    }
+    dispatch(onHandleActiveEvaluation(evaluation))
+
+    setTimeout(() => {
+      dispatch(onResetActiveEvaluation())
+    }, 100)
+  }
+
+  const startChangeEvaluationGrades = (evaluation) => {
+    dispatch(onHandleActiveEvaluation(evaluation))
+  }
+
+  const startResetEvaluation = () => {
+    dispatch(onResetActiveEvaluation())
+  }
+
+  //* Grades
   const startGetGrades = async(evaluation_id) => {
+    dispatch(onHandleGradesLoading(true))
 
+    try {
+      const { data } = await enapsisApi.get(`/calendar/evaluation/grades/${evaluation_id}`)
+      if(data.ok) {
+        const participantArray = await Promise.all(data.grades.map(async x => [(await startGetParticipant(x.participant_id)), x]))
+        const grades = participantArray.map(x => {
+          let grade = ''
+          if(x[1].grade?.length === 1) {
+            grade = `${x[1].grade},0`
+          }else {
+            grade = x[1].grade
+          }
+          
+          return {
+            participant: x[0],
+            grade: grade
+          }
+        })
+
+        dispatch(onHandleGrades(grades))
+      }
+    } catch (error) {
+      console.log(error)
+    }
+
+    dispatch(onHandleGradesLoading(false))
   }
 
-  const startUploadGrades = async(evaluation_id, grades) => {
+  const startUploadGrades = async(evaluation_id, newGrades) => {
+    dispatch(onHandleGradesLoading(true))
+    console.log({evaluation_id})
+    console.log({newGrades})
 
+    const grades = newGrades.gradesFields.map(x => {
+      return {
+        participant_id: x.participant._id,
+        grade: x.grade
+      }
+    })
+
+    try {
+      const {data} = await enapsisApi.put(`/calendar/evaluation/grades/${evaluation_id}`, JSON.stringify({grades}), { headers: { 'Content-Type': 'application/json' } })
+      if (data.ok) {
+        dispatch(onHandleGradesLoading(false))
+        return true
+      }
+    } catch (error) {
+      console.log(error)
+    }
+    dispatch(onHandleGradesLoading(false))
+    return false
+  }
+
+  const startResetGrades = () => {
+    dispatch(onResetGrades())
   }
 
   return {
@@ -297,6 +477,11 @@ export const useCalendarCourseStore = () => {
     isLoading,
     activeCalendarCourse,
     calendarCourses,
+    isLoadingEvaluations,
+    activeEvaluation,
+    evaluations,
+    isLoadingGrades,
+    grades,
 
     //*Metodos
     startGetCalendarCourses,
@@ -313,6 +498,21 @@ export const useCalendarCourseStore = () => {
     sortedCalendarCoursesByDate,
 
     //* Filter
-    filterCalendarCourses
+    filterCalendarCourses,
+
+    //* Evaluations
+    startGetEvaluations,
+    startGetEvaluation,
+    startResetEvaluations,
+    startSavingEvaluation,
+    startChangeEvaluation,
+    startDeleteEvaluation,
+    startChangeEvaluationGrades,
+    startResetEvaluation,
+
+    //* Grades
+    startGetGrades,
+    startResetGrades,
+    startUploadGrades
   }
 }

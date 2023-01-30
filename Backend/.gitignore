@@ -12,11 +12,13 @@ __pycache__/
 
 # Carpetas con archivos de los usuarios o cursos
 assets/calendarFiles/*
+assets/excelEvaluation/*
 assets/tellerFiles/*
 assets/subCompanyLogos/*
 assets/representativeSignature/*
 
 !assets/calendarFiles/.gitkeep
+!assets/excelEvaluation/.gitkeep
 !assets/tellerFiles/.gitkeep
 !assets/subCompanyLogos/.gitkeep
 !assets/representativeSignature/.gitkeep

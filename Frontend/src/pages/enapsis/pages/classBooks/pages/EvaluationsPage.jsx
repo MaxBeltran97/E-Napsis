@@ -1,4 +1,5 @@
 import { GridPaper } from '@components/grid'
+import { SkeletonListItemV2 } from '@components/skeleton'
 import { useCalendarCourseStore } from '@hooks/useCalendarCourseStore'
 import { CLASS_BOOKS } from '@models/privateRoutes'
 import { NavigateNext } from '@mui/icons-material'
@@ -6,6 +7,7 @@ import { Breadcrumbs, Divider, Grid, Link, Table, TableBody, TableCell, TableCon
 import React, { useEffect } from 'react'
 import { useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
+import { AddEvaluation, EvaluationItem } from '../components'
 
 function createData(rowName, value) {
   return { rowName, value }
@@ -15,14 +17,17 @@ export const EvaluationsPage = () => {
 
   const { pathname } = useLocation()
   const navigate = useNavigate()
-  const { startGetCalendarCourse } = useCalendarCourseStore()
+  const {
+    evaluations, isLoadingEvaluations,
+    startGetCalendarCourse, startGetEvaluations, startResetEvaluations,
+  } = useCalendarCourseStore()
 
   const [calendarCourse, setCalendarCourse] = useState(null)
 
   const getData = async (calendar_id) => {
     const calendar = await startGetCalendarCourse(calendar_id)
-    console.log({ calendar })
     setCalendarCourse(calendar)
+    startGetEvaluations(calendar._id)
   }
 
   useEffect(() => {
@@ -31,6 +36,7 @@ export const EvaluationsPage = () => {
   }, [])
 
   const routeClassBook = () => {
+    startResetEvaluations()
     navigate(`${CLASS_BOOKS}`, { replace: true })
   }
 
@@ -111,7 +117,43 @@ export const EvaluationsPage = () => {
           </TableContainer>
         </Grid>
       </GridPaper>
+      
+      {/* Agregar una evaluacion */}
+      <AddEvaluation calendarCourse_id={calendarCourse?._id} />
 
+      {/* Mostrar evaluaciones */}
+      <GridPaper rowSpacing={1}>
+        <Grid item xs={12}>
+          <Grid container alignItems={'center'} columnSpacing={1}>
+            <Grid item xs={4}>
+              <Typography sx={{ userSelect: 'none', pt: 1, pb: 1, textAlign: 'center' }} >Título</Typography>
+            </Grid>
+            <Grid item xs={2}>
+              <Typography sx={{ userSelect: 'none', textAlign: 'center' }} >% de Ponderación</Typography>
+            </Grid>
+            <Grid item xs={2}>
+              <Typography sx={{ userSelect: 'none', textAlign: 'center' }} >Fecha</Typography>
+            </Grid>
+            <Grid item xs={4}>
+              <Typography sx={{ userSelect: 'none', textAlign: 'center' }} >Acciones</Typography>
+            </Grid>
+          </Grid>
+
+          <Grid item xs={12} sx={{ mt: 1 }}>
+            <Divider />
+          </Grid>
+        </Grid>
+
+        {
+          isLoadingEvaluations
+            ? <SkeletonListItemV2 />
+            : (
+              evaluations.map((evaluation) => (
+                <EvaluationItem key={evaluation._id} evaluation={evaluation} calendarCourse_id={calendarCourse?._id} />
+              ))
+            )
+        }
+      </GridPaper>
     </>
   )
 }
