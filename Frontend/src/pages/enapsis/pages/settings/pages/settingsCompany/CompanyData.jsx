@@ -4,6 +4,7 @@ import { DialogAreYouSure } from '@components/dialog'
 import { GridInput } from '@components/grid'
 import { InputText, InputTextArea } from '@components/input/generic'
 import { InputRegion, InputRut } from '@components/input/specific'
+import { useSettingCompanyStore } from '@hooks/useSettingCompanyStore'
 import { useSettingStore } from '@hooks/useSettingStore'
 import { Grid, Typography } from '@mui/material'
 import React from 'react'
@@ -13,7 +14,7 @@ import { useForm } from 'react-hook-form'
 
 export const CompanyData = () => {
 
-  const { companyData, startGetCompanyData, startUpdateCompanyData } = useSettingStore()
+  const { companyData, startGetCompanyData, startUpdateCompanyData } = useSettingCompanyStore()
 
   const { handleSubmit, setValue, getValues, formState: { errors }, control } = useForm()
 

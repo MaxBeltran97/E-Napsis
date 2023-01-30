@@ -1,6 +1,7 @@
 import { radioInstructionModality } from "@assets/radio-data"
 import { selectRegiones } from "@assets/select-regiones"
 import { useCourseStore } from "@hooks/useCourseStore"
+import { useSettingCompanyStore } from "@hooks/useSettingCompanyStore"
 import { Close } from "@mui/icons-material"
 import { Dialog, DialogContent, DialogTitle, IconButton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material"
 import { useEffect } from "react"
@@ -13,17 +14,26 @@ function createData(rowName, value) {
 export const CalendarCourseView = ({ calendarCourse, open, handleClose }) => {
 
   const { startGetCourse } = useCourseStore()
+  const { startGetLogo } = useSettingCompanyStore()
+
   const instructionObj = radioInstructionModality.find(element => element.value === calendarCourse.instruction)
   const regionObj = selectRegiones.find(element => element.value === calendarCourse.ejecutionRegion)
   const [course, setCourse] = useState('')
+  const [logo, setLogo] = useState('')
 
   const getCourseName = async () => {
     const courseData = await startGetCourse(calendarCourse.course_id)
     setCourse(courseData)
   }
 
+  const getLogoName = async () => {
+    const logoData = await startGetLogo(calendarCourse.logo_id)
+    setLogo(logoData)
+  }
+
   useEffect(() => {
     getCourseName()
+    getLogoName()
   }, [])
 
   const rows = [
@@ -31,7 +41,7 @@ export const CalendarCourseView = ({ calendarCourse, open, handleClose }) => {
     createData('Nombre Interno', calendarCourse.internalName),
     createData('Curso Asociado', course.activityName),
     createData('Codigo Sence', course.sence),
-    createData('Modalidad de Instrucción', instructionObj.name),
+    createData('Modalidad de Instrucción', instructionObj?.name),
     createData('Horas Totales', calendarCourse.courseTotalHours),
     createData('Fecha de Inicio', new Date(calendarCourse.startDate).toLocaleDateString('es-es')),
     createData('Fecha de Término', new Date(calendarCourse.endDate).toLocaleDateString('es-es')),
@@ -39,6 +49,7 @@ export const CalendarCourseView = ({ calendarCourse, open, handleClose }) => {
     createData('Lugar de Ejecución', calendarCourse.ejecutionPlace),
     createData('Ciudad de Ejecución', (calendarCourse.ejecutionCity === '') ? 'Sin Datos' : calendarCourse.ejecutionCity),
     createData('Región de Ejecución', (calendarCourse.ejecutionRegion === '') ? 'Sin Datos' : regionObj.name),
+    createData('SubEmpresa Asociada', logo.title)
   ]
 
   return (
@@ -79,7 +90,7 @@ export const CalendarCourseView = ({ calendarCourse, open, handleClose }) => {
           </Table>
         </TableContainer>
 
-          {
+          {/* {
             ((calendarCourse.evaluationDates)?.length > 0)
               ? (
                 <>
@@ -117,7 +128,7 @@ export const CalendarCourseView = ({ calendarCourse, open, handleClose }) => {
                 </>
               )
               : null
-          }
+          } */}
       </DialogContent>
     </Dialog>
   )

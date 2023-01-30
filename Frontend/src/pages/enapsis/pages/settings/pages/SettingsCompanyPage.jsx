@@ -3,6 +3,7 @@ import { Paper, Tab, Typography } from "@mui/material"
 import { Box } from "@mui/system"
 import { useState } from "react"
 import { CompanyData } from "./settingsCompany"
+import { LogosPage } from "./settingsCompany/Logos"
 
 export const SettingsCompanyPage = () => {
   const [value, setValue] = useState('1')
@@ -29,7 +30,7 @@ export const SettingsCompanyPage = () => {
                 <Tab label={'Diplomas'}               value={'5'} sx={{ textTransform: 'none', fontSize: 16 }} />
                 <Tab label={'E-learning'}             value={'6'} sx={{ textTransform: 'none', fontSize: 16 }} />
                 <Tab label={'Mostrar Cursos'}         value={'7'} sx={{ textTransform: 'none', fontSize: 16 }} />
-                <Tab label={'Logo'}                   value={'8'} sx={{ textTransform: 'none', fontSize: 16 }} />
+                <Tab label={'Logos'}                  value={'8'} sx={{ textTransform: 'none', fontSize: 16 }} />
               </TabList>
             </Box>
 
@@ -78,7 +79,7 @@ export const SettingsCompanyPage = () => {
             <TabPanel value={'8'}
               sx={{ pr: 0, pl: 0, pb: 0, pt: 2 }}
             >
-              <Typography>Logo</Typography>
+              <LogosPage />
             </TabPanel>
           </TabContext>
         </Box>

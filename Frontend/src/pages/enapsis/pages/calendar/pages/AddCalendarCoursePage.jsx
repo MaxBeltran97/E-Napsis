@@ -10,12 +10,14 @@ import { selectRegiones } from "@assets/select-regiones"
 
 import { useCalendarCourseStore } from "@hooks/useCalendarCourseStore"
 import { useCourseStore } from "@hooks/useCourseStore"
-import { getCoursesWithAutocomplete } from "@pages/enapsis/helpers"
+import { getCoursesWithAutocomplete, getLogosWithAutocomplete } from "@pages/enapsis/helpers"
 import { useEffect, useState } from "react"
 import { radioInstructionModality } from "@assets/radio-data"
+import { useSettingCompanyStore } from "@hooks/useSettingCompanyStore"
 
 export const AddCalendarCoursePage = () => {
   const { courses, startGetCourses, startGetCourse } = useCourseStore()
+  const { logos, startGetLogos } = useSettingCompanyStore()
   const { isLoading, activeCalendarCourse, startSavingCalendarCourse, startResetActiveCalendarCourse } = useCalendarCourseStore()
 
   const { handleSubmit, getValues, setValue, formState: {errors}, control } = useForm({defaultValues: activeCalendarCourse})
@@ -58,6 +60,7 @@ export const AddCalendarCoursePage = () => {
 
   useEffect(() => {
     startGetCourses()
+    startGetLogos()
   }, [])
 
   useEffect(() => {
@@ -96,12 +99,13 @@ export const AddCalendarCoursePage = () => {
             </Grid>
             <Grid item xs={12} lg={8}>
               <InputNumberAdornment control={control} name={'Valor por Participante'} label={'participantValue'} required={true} error={errors.participantValue} adornment={'$'} position={'start'} withSize={3.5} />
+              <InputAutocomplete control={control} name={'SubEmpresa Asociada'} label={'logo_id'} required={true} error={errors.logo_id} items={getLogosWithAutocomplete(logos)} />
             </Grid>
           </Grid>
         </GridInput>
       </Grid>
       
-      <Grid item xs={12}>
+      {/* <Grid item xs={12}>
         <GridInput title={'Fechas de Evaluaciones'}>
           <Grid container>
             <Grid item xs={12} lg={8}>
@@ -109,7 +113,7 @@ export const AddCalendarCoursePage = () => {
             </Grid>
           </Grid>
         </GridInput>
-      </Grid>
+      </Grid> */}
 
       <ButtonSave buttonTitle={buttonTitle} errorTitle={'Error al Calendarizar'} isLoading={isLoading} errorsForm={errorsForm} />
     </GridForm>

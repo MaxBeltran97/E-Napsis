@@ -309,7 +309,7 @@ export const useCourseStore = () => {
         return true
       }
       if( name !== '' && sence !== '' && filters.activityType !== 'no-aplica' && filters.instruction !== '' ) {
-        
+        return (nameCourse.includes(name) && senceCourse.includes(sence) && x.activityType === filters.activityType && x.instruction === filters.instruction)
       }
 
       if( name !== '' && sence === '' && filters.activityType === 'no-aplica' && filters.instruction === '' ) {
