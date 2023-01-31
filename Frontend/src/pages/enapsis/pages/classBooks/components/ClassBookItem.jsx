@@ -29,6 +29,10 @@ export const ClassBookItem = ({ calendarCourse }) => {
     navigate(`${CLASS_BOOKS}/${calendarCourse._id}/evaluaciones`, { replace: true })
   }
 
+  const routeAttendances = () => {
+    navigate(`${CLASS_BOOKS}/${calendarCourse._id}/asistencia`, {replace: true})
+  }
+
   return (
     <>
       <Grid item xs={12}>
@@ -87,7 +91,8 @@ export const ClassBookItem = ({ calendarCourse }) => {
           <Grid item xs={2}>
             <Grid container alignItems={'center'} direction={'column'} rowSpacing={1}>
               <Grid item>
-                <Button variant='outlined'
+                <Button onClick={routeAttendances}
+                  variant='outlined'
                   startIcon={<ModeOutlined />}
                   sx={{ textTransform: 'initial !important' }}
                 >

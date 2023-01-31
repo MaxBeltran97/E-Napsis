@@ -10,7 +10,7 @@ import { useForm, useWatch } from 'react-hook-form'
 
 export const AddEvaluation = ({ calendarCourse_id }) => {
 
-  const { activeEvaluation, evaluations, startSavingEvaluation, startGetCalendarCourse } = useCalendarCourseStore()
+  const { activeEvaluation, evaluations, startSavingEvaluation, startGetCalendarCourse, startGetEvaluations } = useCalendarCourseStore()
 
   const { handleSubmit, setValue, clearErrors, formState: { errors }, control } = useForm({
     defaultValues: {
@@ -40,7 +40,6 @@ export const AddEvaluation = ({ calendarCourse_id }) => {
     setCalendarCourse(calendar)
     setValue('calendarCourse_id', calendar?._id)
     
-    setListEvaluation(evaluations)
     setLoading(false)
   }
 
@@ -77,7 +76,7 @@ export const AddEvaluation = ({ calendarCourse_id }) => {
       setFormTitle('Modificar Evaluación')
       setIsModifying(true)
 
-      setListEvaluation(evaluations.filter(x => {return (x._id !== activeEvaluation._id)}))
+      setListEvaluation(getEvaluationDates(evaluations.filter(x => {return (x._id !== activeEvaluation._id)})) )
     }
   }, [activeEvaluation])
 
@@ -91,7 +90,7 @@ export const AddEvaluation = ({ calendarCourse_id }) => {
     setFormTitle('Registrar Evaluación')
     setIsModifying(false)
 
-    setListEvaluation(evaluations)
+    setListEvaluation(getEvaluationDates(evaluations))
   }
 
   const onSubmit = (data) => {
@@ -99,6 +98,10 @@ export const AddEvaluation = ({ calendarCourse_id }) => {
     startSavingEvaluation(data)
     onResetForm()
   }
+
+  useEffect(() => {
+    setListEvaluation(getEvaluationDates(evaluations))
+  }, [evaluations])
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -114,7 +117,7 @@ export const AddEvaluation = ({ calendarCourse_id }) => {
                 {
                   (loading)
                   ? null
-                  : <InputDate control={control} name={'Fecha'} label={'evaluationDate'} required={true} error={errors.evaluationDate} minDate={new Date(calendarCourse?.startDate)} maxDate={new Date(calendarCourse?.endDate)} listErrorDates={getEvaluationDates(listEvaluation)} errorListMessage={'*Fecha ya ocupada'} />
+                  : <InputDate control={control} name={'Fecha'} label={'evaluationDate'} required={true} error={errors.evaluationDate} minDate={new Date(calendarCourse?.startDate)} maxDate={new Date(calendarCourse?.endDate)} listErrorDates={listEvaluation} errorListMessage={'*Fecha ya está agregada'} />
                 }
               </Grid>
             </Grid>  

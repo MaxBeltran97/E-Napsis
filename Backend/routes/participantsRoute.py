@@ -8,8 +8,6 @@ import openpyxl
 import pandas as pd
 
 
-
-
 app = Flask(__name__)
 
 UPLOAD_FOLDER_EVALUATION = 'assets/excelEvaluation'
@@ -18,7 +16,6 @@ app.config['UPLOAD_FOLDER_EVALUATION'] = UPLOAD_FOLDER_EVALUATION
 app.config['UPLOAD_FOLDER_ATTENDANCE'] = UPLOAD_FOLDER_ATTENDANCE
 
 participants = flask.Blueprint('participants', __name__)
-
 
 
 @participants.route('/api/participant', methods=['POST'])
@@ -38,40 +35,41 @@ def add_participant():
         position = request.json['position']
 
         new_participant = Participant(calendarCourse_id, participantType, company_id, nationalityType,
-                                           rut, fullName, lastName, motherLastName, institution, email, gender, position)
+                                      rut, fullName, lastName, motherLastName, institution, email, gender, position)
 
         db.session.add(new_participant)
         db.session.commit()
 
-        evaluation_id = CalendarCourseEvaluation.query.filter_by(calendarCourse_id = calendarCourse_id)
-        attendance_id = CalendarCourseAttendance.query.filter_by(calendarCourse_id = calendarCourse_id)
+        evaluation_id = CalendarCourseEvaluation.query.filter_by(
+            calendarCourse_id=calendarCourse_id)
+        attendance_id = CalendarCourseAttendance.query.filter_by(
+            calendarCourse_id=calendarCourse_id)
 
-        if(bool(evaluation_id.first()) == True):
-            
+        if (bool(evaluation_id.first()) == True):
+
             excelPathEvaluationComplete = ''
             for i in evaluation_id:
-                
-                excelPathEvaluationComplete = os.path.join(app.config["UPLOAD_FOLDER_EVALUATION"], i.excelPath)    
+
+                excelPathEvaluationComplete = os.path.join(
+                    app.config["UPLOAD_FOLDER_EVALUATION"], i.excelPath)
                 break
             wb = openpyxl.load_workbook(excelPathEvaluationComplete)
             ws = wb.active
             ws.cell(row=ws.max_row + 1, column=1).value = new_participant._id
             wb.save(excelPathEvaluationComplete)
 
-        if(bool(attendance_id.first()) == True):
+        if (bool(attendance_id.first()) == True):
 
             excelPathAttendanceComplete = ''
             for i in attendance_id:
 
-                excelPathAttendanceComplete = os.path.join(app.config["UPLOAD_FOLDER_ATTENDANCE"], i.excelPath)
+                excelPathAttendanceComplete = os.path.join(
+                    app.config["UPLOAD_FOLDER_ATTENDANCE"], i.excelPath)
                 break
             wb = openpyxl.load_workbook(excelPathAttendanceComplete)
             ws = wb.active
             ws.cell(row=ws.max_row + 1, column=1).value = new_participant._id
             wb.save(excelPathAttendanceComplete)
-
-
-        
 
         return {
             "ok": True,
@@ -139,10 +137,10 @@ def update_participant(_id):
         position = request.json['position']
 
         isChangeCourse = False
-        
+
         courseBefore = ''
 
-        if(calendarCourse_id != participant.calendarCourse_id):
+        if (calendarCourse_id != participant.calendarCourse_id):
             courseBefore = participant.calendarCourse_id
             isChangeCourse = True
 
@@ -161,57 +159,63 @@ def update_participant(_id):
 
         db.session.commit()
 
-        
-        if(isChangeCourse == True):
-            evaluation_id = CalendarCourseEvaluation.query.filter_by(calendarCourse_id = courseBefore)
-            attendance_id = CalendarCourseAttendance.query.filter_by(calendarCourse_id = courseBefore)
+        if (isChangeCourse == True):
+            evaluation_id = CalendarCourseEvaluation.query.filter_by(
+                calendarCourse_id=courseBefore)
+            attendance_id = CalendarCourseAttendance.query.filter_by(
+                calendarCourse_id=courseBefore)
 
-            if(bool(evaluation_id.first()) == True):
-            
+            if (bool(evaluation_id.first()) == True):
+
                 excelPathEvaluationComplete = ''
                 for i in evaluation_id:
-                    excelPathEvaluationComplete = os.path.join(app.config["UPLOAD_FOLDER_EVALUATION"], i.excelPath)    
+                    excelPathEvaluationComplete = os.path.join(
+                        app.config["UPLOAD_FOLDER_EVALUATION"], i.excelPath)
                     break
 
                 wb = openpyxl.load_workbook(excelPathEvaluationComplete)
                 ws = wb.active
 
                 for i in range(1, ws.max_row + 1):
-                    if(ws[i][0].value == participant._id):
+                    if (ws[i][0].value == participant._id):
                         ws.delete_rows(i)
                         break
                 wb.save(excelPathEvaluationComplete)
 
                 excelPathAttendanceComplete = ''
                 for i in attendance_id:
-                    excelPathAttendanceComplete = os.path.join(app.config["UPLOAD_FOLDER_ATTENDANCE"], i.excelPath)
+                    excelPathAttendanceComplete = os.path.join(
+                        app.config["UPLOAD_FOLDER_ATTENDANCE"], i.excelPath)
                     break
                 wb = openpyxl.load_workbook(excelPathAttendanceComplete)
                 ws = wb.active
 
                 for i in range(1, ws.max_row + 1):
-                    if(ws[i][0].value == participant._id):
+                    if (ws[i][0].value == participant._id):
                         ws.delete_rows(i)
                         break
                 wb.save(excelPathAttendanceComplete)
 
-            new_course = CalendarCourseEvaluation.query.filter_by(calendarCourse_id = participant.calendarCourse_id)
+            new_course = CalendarCourseEvaluation.query.filter_by(
+                calendarCourse_id=participant.calendarCourse_id)
 
-            if(bool(new_course.first()) == True):
-                
+            if (bool(new_course.first()) == True):
+
                 excelPathEvaluationComplete = ''
                 for i in new_course:
-                    
-                    excelPathEvaluationComplete = os.path.join(app.config["UPLOAD_FOLDER_EVALUATION"], i.excelPath)    
+
+                    excelPathEvaluationComplete = os.path.join(
+                        app.config["UPLOAD_FOLDER_EVALUATION"], i.excelPath)
                     break
                 wb = openpyxl.load_workbook(excelPathEvaluationComplete)
                 ws = wb.active
                 ws.cell(row=ws.max_row + 1, column=1).value = participant._id
                 wb.save(excelPathEvaluationComplete)
-                
+
                 excelPathAttendanceComplete = ''
                 for i in new_course:
-                    excelPathAttendanceComplete = os.path.join(app.config["UPLOAD_FOLDER_ATTENDANCE"], i.excelPath)
+                    excelPathAttendanceComplete = os.path.join(
+                        app.config["UPLOAD_FOLDER_ATTENDANCE"], i.excelPath)
                     break
                 wb = openpyxl.load_workbook(excelPathAttendanceComplete)
                 ws = wb.active
@@ -240,23 +244,24 @@ def delete_participant(_id):
         db.session.delete(participant)
         db.session.commit()
 
+        evaluation_id = CalendarCourseEvaluation.query.filter_by(
+            calendarCourse_id=participant.calendarCourse_id)
+        attendance_id = CalendarCourseAttendance.query.filter_by(
+            calendarCourse_id=participant.calendarCourse_id)
 
-        evaluation_id = CalendarCourseEvaluation.query.filter_by(calendarCourse_id = participant.calendarCourse_id)
-        attendance_id = CalendarCourseAttendance.query.filter_by(calendarCourse_id = participant.calendarCourse_id)
+        if (bool(evaluation_id.first()) == True):
 
-
-        if(bool(evaluation_id.first()) == True):
-            
             excelPathEvaluationComplete = ''
             for i in evaluation_id:
-                excelPathEvaluationComplete = os.path.join(app.config["UPLOAD_FOLDER_EVALUATION"], i.excelPath)    
+                excelPathEvaluationComplete = os.path.join(
+                    app.config["UPLOAD_FOLDER_EVALUATION"], i.excelPath)
                 break
-            
+
             wb = openpyxl.load_workbook(excelPathEvaluationComplete)
             ws = wb.active
 
             for i in range(1, ws.max_row + 1):
-                if(ws[i][0].value == participant._id):
+                if (ws[i][0].value == participant._id):
                     ws.delete_rows(i)
                     break
             wb.save(excelPathEvaluationComplete)
@@ -265,17 +270,18 @@ def delete_participant(_id):
 
             excelPathAttendanceComplete = ''
             for i in attendance_id:
-                excelPathAttendanceComplete = os.path.join(app.config["UPLOAD_FOLDER_ATTENDANCE"], i.excelPath)
+                excelPathAttendanceComplete = os.path.join(
+                    app.config["UPLOAD_FOLDER_ATTENDANCE"], i.excelPath)
                 break
             wb = openpyxl.load_workbook(excelPathAttendanceComplete)
             ws = wb.active
 
             for i in range(1, ws.max_row + 1):
-                if(ws[i][0].value == participant._id):
+                if (ws[i][0].value == participant._id):
                     ws.delete_rows(i)
                     break
             wb.save(excelPathAttendanceComplete)
-            
+
         return {
             "ok": True,
             "participant": participant.serialize()
@@ -315,9 +321,38 @@ def upload_file_participants():
 
             try:
                 new_participant = Participant(calendarCourse_id, participantType, company_id, nationalityType,
-                                                   rut, fullName, lastName, motherLastName, institution, email, gender, position)
+                                              rut, fullName, lastName, motherLastName, institution, email, gender, position)
                 db.session.add(new_participant)
                 db.session.commit()
+
+                evaluation_id = CalendarCourseEvaluation.query.filter_by(
+                    calendarCourse_id=calendarCourse_id)
+
+                attendance_id = CalendarCourseAttendance.query.filter_by(
+                    calendarCourse_id=calendarCourse_id)
+
+                if (bool(evaluation_id.first()) == True):
+                    excelPathEvaluationComplete = ''
+                    for i in evaluation_id:
+                        excelPathEvaluationComplete = os.path.join(
+                            app.config["UPLOAD_FOLDER_EVALUATION"], i.excelPath)
+                        break
+                    wb = openpyxl.load_workbook(excelPathEvaluationComplete)
+                    ws = wb.active
+                    ws.cell(row=ws.max_row + 1, column=1).value = new_participant._id
+                    wb.save(excelPathEvaluationComplete)
+
+                if (bool(attendance_id.first()) == True):
+                    excelPathAttendanceComplete = ''
+                    for i in attendance_id:
+                        excelPathAttendanceComplete = os.path.join(
+                            app.config["UPLOAD_FOLDER_ATTENDANCE"], i.excelPath)
+                        break
+                    wb = openpyxl.load_workbook(excelPathAttendanceComplete)
+                    ws = wb.active
+                    ws.cell(row=ws.max_row + 1, column=1).value = new_participant._id
+                    wb.save(excelPathAttendanceComplete)
+
             except Exception as e:
                 msg = (msg + f"{i}, ")
                 db.session.rollback()

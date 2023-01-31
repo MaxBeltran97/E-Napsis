@@ -1,3 +1,4 @@
+export * from './getAttendanceDates';
 export * from './getCalendarCoursesWithAutocomplete';
 export * from './getCompaniesWithAutocomplete';
 export * from './getCoursesWithAutocomplete';

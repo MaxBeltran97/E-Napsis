@@ -66,6 +66,7 @@ export const GradesPage = () => {
   }, [isLoadingGrades])
 
   const routeClassBook = () => {
+    startResetGrades()
     startResetEvaluations()
     navigate(`${CLASS_BOOKS}`, { replace: true })
   }

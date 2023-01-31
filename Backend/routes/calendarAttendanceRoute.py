@@ -84,6 +84,39 @@ def add_attendance():
     finally:
         db.session.close()
 
+@calendarAttendance.route('/api/calendar/attendance/<_idCalendar>', methods=['GET'])
+def get_attendances(_idCalendar):
+    try:
+        all_attendances = CalendarCourseAttendance.query.filter_by(calendarCourse_id = _idCalendar)
+        result = calendar_course_attendance_schemas.dump(all_attendances)
+
+        return {
+            "ok": True,
+            "attendances": result
+        }, 200
+    except Exception as e:
+        print(e)
+        return {
+            'ok': False,
+            'msg': 'Error al obtener las asistencias'
+        }
+
+@calendarAttendance.route('/api/calendar/attendance/attendance/<_idAttendance>', methods=['GET'])
+def get_attendance_id(_idAttendance):
+    try:
+        attendance = CalendarCourseAttendance.query.get(_idAttendance)
+
+        return {
+            "ok": True,
+            "attendance": attendance.serialize()
+        }, 200
+    except Exception as e:
+        print(e)
+        return {
+            'ok': False,
+            'msg': 'Error al obtener la asistencia'
+        }
+
 @calendarAttendance.route('/api/calendar/attendance/<_id>', methods=['PUT'])
 def update_attendance(_id):
 
@@ -168,7 +201,7 @@ def upload_attendance(_id):
             for i in range(1, ws.max_row + 1):
                 if(ws[i][0].value == p['participant_id']):
                     fila = i
-            ws[fila][columna-1].value = p['attendance']
+            ws[fila][columna-1].value = int(p['attendance'])
  
         wb.save(path)
 
@@ -182,7 +215,7 @@ def upload_attendance(_id):
             "msg": "Error al subir la asistencia"
         }, 500
 
-@calendarAttendance.route('/api/calendar/attendance/<_id>', methods=['GET'])
+@calendarAttendance.route('/api/calendar/attendance/file/<_id>', methods=['GET'])
 def get_attendance(_id):
 
     try:
@@ -206,8 +239,18 @@ def get_attendance(_id):
         
         for i in range(2, ws.max_row + 1):
 
-            attendances.append({"participant_id": ws[i][0].value,
-            "attendance": ws[i][columna-1].value})
+            attendance = None
+            if(ws[i][columna-1].value != None):
+                attendance = str(ws[i][columna-1].value)
+            else:
+                attendance = ''
+
+            attendances.append(
+                {
+                    "participant_id": ws[i][0].value,
+                    "attendance": attendance
+                }
+            )
 
         wb.save(path)
 

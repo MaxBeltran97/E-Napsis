@@ -1,6 +1,7 @@
 import { TextField } from "@mui/material"
 import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers"
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
+import { differenceInCalendarDays } from "date-fns"
 import { differenceInDays, differenceInHours } from "date-fns/esm"
 import { es } from 'date-fns/locale'
 import { memo, useState } from "react"
@@ -47,7 +48,7 @@ export const InputDate = memo(({ control, name, label, required = false, error, 
     if(listErrorDates.length > 0) {
       if(!!date) {
         listErrorDates.forEach(dateInList => {
-          const differenceDays = differenceInDays(date, new Date(dateInList))
+          const differenceDays = differenceInCalendarDays(date, new Date(dateInList))
           if(differenceDays === 0) {
             flag = false
           }
