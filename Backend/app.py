@@ -19,6 +19,7 @@ from routes.checkListRoute import checklist
 from routes.logoRoute import logos
 from routes.calendarEvaluationRoute import evaluation
 from routes.calendarAttendanceRoute import calendarAttendance
+from routes.classBookRoute import classBook
 
 from database.config import app_config
 from database.db import db
@@ -86,5 +87,6 @@ app.register_blueprint(evaluation)
 
 app.register_blueprint(calendarAttendance)
 
+app.register_blueprint(classBook)
 # Se carga el host
 SQLAlchemy(app)
