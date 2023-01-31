@@ -42,11 +42,11 @@ export const ParticipantView = ({ participant, open, handleClose }) => {
     createData('Curso Asociado', calendarCourseName),
     createData('Empresa', companyName),
     createData((participant.nationalityType === 'chileno') ? 'RUT' : 'DNI', participant.rut ),
-    createData('Nacionalidad', nationalityObj.name),
+    createData('Nacionalidad', nationalityObj?.name),
     createData('Nombres', participant.fullName),
     createData('Apellidos', `${participant.lastName} ${participant.motherLastName}`),
     createData('Email', participant.email),
-    createData('Género', genderObj.name),
+    createData('Género', genderObj?.name),
     createData('Establecimiento', (participant.institution === '') ? 'Sin Datos' : participant.institution ),
     createData('Cargo Desempeñado', (participant.position === '') ? 'Sin Datos' : participant.position ),
   ]
