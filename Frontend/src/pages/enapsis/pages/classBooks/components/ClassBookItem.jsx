@@ -1,8 +1,13 @@
+import enapsisApi from '@api/enapsisApi'
+import { getEnvVariables } from '@helpers/getEnvVariables'
 import { useCalendarCourseStore } from '@hooks/useCalendarCourseStore'
 import { CLASS_BOOKS, SETTINGS } from '@models/privateRoutes'
 import { CloudUploadOutlined, ImportContacts, MenuBook, ModeOutlined } from '@mui/icons-material'
 import { Button, Divider, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from '@mui/material'
 import React from 'react'
+import { useEffect } from 'react'
+import { useRef } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 function createData(rowName, value) {
@@ -17,6 +22,27 @@ export const ClassBookItem = ({ calendarCourse }) => {
   const { internalCode, internalName, startDate, endDate } = calendarCourse
   const startDateFormat = new Date(startDate).toLocaleDateString('es-es')
   const endDateFormat = new Date(endDate).toLocaleDateString('es-es')
+  
+  const [pdfData, setPdfData] = useState(null)
+  const { VITE_API_URL } = getEnvVariables()
+
+  const downloadPdfRef = useRef()
+
+  const handleDownloadPdf = async () => {
+    
+    const response = await fetch(`${VITE_API_URL}/classBook/${calendarCourse._id}`)
+    console.log(response)
+    const pdfBlob = await response.blob()
+    console.log({pdfBlob})
+    setPdfData(URL.createObjectURL(pdfBlob))
+  }
+
+  useEffect(() => {
+    if(pdfData !== null) {
+      downloadPdfRef.current.click()
+      setPdfData(null)
+    }
+  }, [pdfData])
 
   const rows = [
     createData('Código Interno', internalCode),
@@ -77,7 +103,9 @@ export const ClassBookItem = ({ calendarCourse }) => {
                 </Button>
               </Grid>
               <Grid item>
-                <Button variant='outlined'
+                <a ref={downloadPdfRef} href={pdfData} target='_blank' rel='noopener noreferrer' download={`${calendarCourse.internalName}-LibroConContenido.pdf`}></a>
+                <Button onClick={handleDownloadPdf}
+                  variant='outlined'
                   color='buttonSecondary'
                   startIcon={<MenuBook />}
                   sx={{ textTransform: 'initial !important' }}
