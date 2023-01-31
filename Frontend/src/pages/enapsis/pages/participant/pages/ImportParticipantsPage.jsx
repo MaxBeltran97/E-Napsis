@@ -44,7 +44,7 @@ export const ImportParticipantsPage = () => {
               <InputFilesView control={control} name={'Excel de Participantes'} label={'excelParticipants'} required={true} error={errors.excelParticipants} helperText={'.xls .xlsx'} textButton={'Subir Archivo'} allowedExtensions={['xls', 'xlsx']} withSize={8.67} />
             </Grid>
             <Grid item xs={12} sx={{ pt: 1 }}>
-              <a ref={downloadFileRef} href={'../src/assets/formato_importar_participantes.xlsx'} target='_blank' rel='noopener noreferrer' download={'formato_participantes.xls'}></a>
+              <a ref={downloadFileRef} href={'../src/assets/formato_importar_participantes.xlsx'} target='_blank' rel='noopener noreferrer' download={'formato_participantes.xlsx'}></a>
               <Button variant='outlined' onClick={() => downloadFileRef.current.click()} size='small' color='success'>
                 <FileDownloadOutlined sx={{ mr: 1 }} fontSize='small' />
                 Formato de archivo excel

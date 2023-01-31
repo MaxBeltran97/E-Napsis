@@ -2,9 +2,9 @@ import { Checkbox, FormControlLabel, Grid } from "@mui/material"
 import { memo } from "react"
 import { Controller } from "react-hook-form"
 
-export const InputCheckbox = memo(({ control, name, label, defaultValue = false }) => {
+export const InputCheckbox = memo(({ control, name, label, defaultValue = false, size = 12 }) => {
   return (
-    <Grid item xs={12}>
+    <Grid item xs={ size }>
       <Controller 
         control={control}
         name={label}

@@ -241,6 +241,8 @@ def get_grades(_id):
             grade = None
             if(ws[i][columna-1].value != None):
                 grade = (str(ws[i][columna-1].value)).replace(".", ",")
+            else:
+                grade = ''
 
             grades.append(
                 {

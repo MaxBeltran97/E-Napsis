@@ -14,6 +14,11 @@ export const calendarCourseSlice = createSlice({
     isLoadingGrades: false,
     grades: [],
 
+    isLoadingAttendances: false,
+    attendances: [],
+
+    isLoadingPartAttendance: false,
+    participantsAttendance: []
   },
   reducers: {
     onHandleLoading: (state, {payload}) => {
@@ -53,8 +58,30 @@ export const calendarCourseSlice = createSlice({
     onHandleGrades: (state, {payload}) => {
       state.grades = payload
     },
-    onResetGrades: (state, {payload}) => {
+    onResetGrades: (state) => {
       state.grades = []
+    },
+
+    // Attendances
+    onHandleAttendanceLoading: (state, {payload}) => {
+      state.isLoadingAttendances = payload
+    },
+    onHandleAttendances: (state, {payload}) => {
+      state.attendances = payload
+    },
+    onResetAttendances: (state) => {
+      state.attendances = []
+    },
+
+    // ParticipantsAttendance
+    onHandleParticipantsAttendanceLoading: (state, {payload}) => {
+      state.isLoadingPartAttendance = payload
+    },
+    onHandleParticipantsAttendance: (state, {payload}) => {
+      state.participantsAttendance = payload
+    },
+    onResetParticipantsAttendance: (state) => {
+      state.participantsAttendance = []
     }
   }
 })
@@ -76,4 +103,14 @@ export const {
   onHandleGradesLoading,
   onHandleGrades,
   onResetGrades,
+
+  //Attendance
+  onHandleAttendanceLoading,
+  onHandleAttendances,
+  onResetAttendances,
+
+  //ParticipantsAttendance
+  onHandleParticipantsAttendanceLoading,
+  onHandleParticipantsAttendance,
+  onResetParticipantsAttendance
 } = calendarCourseSlice.actions

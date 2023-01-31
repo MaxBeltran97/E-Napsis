@@ -18,13 +18,7 @@ from models.calendarCourseAttendance import *
 from models.courseActvityContentHours import *
 from models.calendarCourseEvaluation import *
 
-
-
-
-
 app = Flask(__name__)
-
-
 
 UPLOAD_FOLDER_LOGOS = 'assets/subCompanyLogos'
 UPLOAD_FOLDER_PATH = 'assets/classBook'
@@ -32,7 +26,6 @@ app.config['UPLOAD_FOLDER_LOGOS'] = UPLOAD_FOLDER_LOGOS
 app.config['UPLOAD_FOLDER_PATH'] = UPLOAD_FOLDER_PATH
 
 classBook = flask.Blueprint('classBook', __name__)
-
 
 @classBook.route('/api/classBook/<_id>', methods=['GET'])
 def create_classbook(_id):
@@ -168,10 +161,7 @@ def create_classbook(_id):
         
         
         for i in attendances:
-            
-            
             if contI <= contT:
-                
                 data.append(i.date.strftime("%d-%m-%Y"))
                 data.append('Firma')
                 
@@ -182,8 +172,6 @@ def create_classbook(_id):
                 
                 table = doc.add_table(rows=0, cols=10)
                 
-                
-
                 for j in participants:
                     if contP % 14 == 0:
                         row = table.add_row()
@@ -208,7 +196,6 @@ def create_classbook(_id):
             for row in table.rows:
                 row.height = Cm(1)
             
-        
             for cell in table.columns[0].cells:
                 cell.width = Inches(0.5)
 
@@ -282,8 +269,8 @@ def create_classbook(_id):
                     row.cells[k].text = data[k]
             row = table.add_row()
             cont += 1
-            name = j.fullName + ' ' + j.lastName + ' ' + j.motherLastName
-            row.cells[0].text =str(cont)
+            name = i.fullName + ' ' + i.lastName + ' ' + i.motherLastName
+            row.cells[0].text = str(cont)
             row.cells[1].text = name
         
         table.style = 'Table Grid'
