@@ -75,7 +75,7 @@ export const AddLogo = () => {
                 <InputText control={control} name={'Título'} label={'title'} required={true} error={errors.title} />
                 <InputText control={control} name={'Codigo'} label={'code'} required={true} error={errors.code} />
               </Grid>
-              <Grid item sx={12} lg={6}>
+              <Grid item xs={12} lg={6}>
                 {
                   (isModifying)
                     ? <img src={`${VITE_API_URL}/logos/get_image/${logoActual}`} width={110} />

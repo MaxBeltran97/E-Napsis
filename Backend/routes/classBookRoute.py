@@ -161,10 +161,7 @@ def create_classbook(_id):
         
         
         for i in attendances:
-            
-            
             if contI <= contT:
-                
                 data.append(i.date.strftime("%d-%m-%Y"))
                 data.append('Firma')
                 
@@ -175,8 +172,6 @@ def create_classbook(_id):
                 
                 table = doc.add_table(rows=0, cols=10)
                 
-                
-
                 for j in participants:
                     if contP % 14 == 0:
                         row = table.add_row()
@@ -201,7 +196,6 @@ def create_classbook(_id):
             for row in table.rows:
                 row.height = Cm(1)
             
-        
             for cell in table.columns[0].cells:
                 cell.width = Inches(0.5)
 

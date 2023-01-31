@@ -29,11 +29,8 @@ export const ClassBookItem = ({ calendarCourse }) => {
   const downloadPdfRef = useRef()
 
   const handleDownloadPdf = async () => {
-    
     const response = await fetch(`${VITE_API_URL}/classBook/${calendarCourse._id}`)
-    console.log(response)
     const pdfBlob = await response.blob()
-    console.log({pdfBlob})
     setPdfData(URL.createObjectURL(pdfBlob))
   }
 
